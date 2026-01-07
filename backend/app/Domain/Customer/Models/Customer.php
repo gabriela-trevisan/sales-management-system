@@ -34,6 +34,14 @@ class Customer extends Model
     }
 
     /**
+     * Get the customer segment
+     */
+    public function segment()
+    {
+        return $this->belongsTo(\App\Domain\Customer\Models\CustomerSegment::class, 'segment_id');
+    }
+
+    /**
      * Get the addresses for the customer
      */
     public function addresses()

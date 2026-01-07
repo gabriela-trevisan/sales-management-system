@@ -20,13 +20,17 @@ class CustomerResource extends JsonResource
             'phone' => $this->phone,
             'status' => $this->status,
             'rfm_score' => $this->rfm_score,
-            'assigned_to' => [
-                'id' => $this->assignedUser?->id,
-                'name' => $this->assignedUser?->name,
-            ],
-            'addresses_count' => $this->whenLoaded('addresses', fn() => $this->addresses->count()),
-            'contacts_count' => $this->whenLoaded('contacts', fn() => $this->contacts->count()),
-            'opportunities_count' => $this->whenLoaded('opportunities', fn() => $this->opportunities->count()),
+            'segment' => $this->whenLoaded('segment', fn() => [
+                'id' => $this->segment->id,
+                'name' => $this->segment->name,
+            ]),
+            'assigned_to' => $this->whenLoaded('assignedUser', fn() => [
+                'id' => $this->assignedUser->id,
+                'name' => $this->assignedUser->name,
+            ]),
+            'addresses' => $this->whenLoaded('addresses', fn() => $this->addresses),
+            'contacts' => $this->whenLoaded('contacts', fn() => $this->contacts),
+            'opportunities' => $this->whenLoaded('opportunities', fn() => $this->opportunities),
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];

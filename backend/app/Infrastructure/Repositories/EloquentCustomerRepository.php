@@ -9,7 +9,7 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
 {
     public function findById(int $id): ?Customer
     {
-        return Customer::with(['addresses', 'contacts', 'assignedUser'])->find($id);
+        return Customer::with(['addresses', 'contacts', 'assignedUser', 'segment'])->find($id);
     }
 
     public function findByDocument(string $document): ?Customer

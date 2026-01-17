@@ -1,25 +1,38 @@
 # 🚀 Sales Management System
 
-Sistema completo de gestão de vendas e CRM desenvolvido com Laravel 11, React 19 e TypeScript.
+Sistema completo de gestão de vendas e CRM desenvolvido com Laravel 11, React 19 e TypeScript.  
+**Nicho:** Consultoria e Desenvolvimento de Software Customizado
 
 [![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)](https://php.net)
 [![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
+[![Zod](https://img.shields.io/badge/Zod-3-3E67B1?logo=zod&logoColor=white)](https://zod.dev)
+[![Documentation](https://img.shields.io/badge/Docs-PHPDoc%20%2B%20JSDoc-blue)](https://github.com)
 
 ---
 
 ## 📋 Sobre o Projeto
 
-Sistema de gestão de vendas e CRM profissional com recursos avançados para gerenciamento de:
+Sistema de gestão de vendas e CRM especializado para empresas de **consultoria e desenvolvimento de software**.  
+Focado em gerenciar projetos customizados, alocação de equipes, propostas técnicas e comissões de equipe comercial.
 
-- 📊 **Pipeline de Vendas**: Funil customizável com drag-and-drop
-- 👥 **Gestão de Clientes**: CRM completo com scoring RFM e segmentação
-- 💰 **Propostas Comerciais**: Geração e acompanhamento de propostas
-- 💵 **Cálculo de Comissões**: Regras configuráveis e automáticas
-- 📈 **Dashboard Analítico**: Métricas, gráficos e forecast de vendas
-- 🤖 **Automação**: Workflows automatizados e follow-ups inteligentes
+- 📊 **Pipeline de Vendas Consultivo**: Prospecção → Discovery → Proposta Técnica → Negociação → Contrato → Ganho
+- 👥 **CRUD Completo de Clientes B2B**: Segmentação por setor com filtros, paginação e **validação profissional**
+- ✨ **Validação de Formulários**: react-hook-form + Zod + react-imask com máscaras dinâmicas
+- 🛡️ **Validação de CPF/CNPJ**: Algoritmo completo com dígitos verificadores
+- 🏢 **Segmentação por Setor**: Indústria, Financeiro, Varejo, Saúde, Logística, Educação
+- 💼 **Catálogo de Serviços**: Horas técnicas (Arquiteto, Dev Sênior/Pleno/Júnior, QA, DevOps, UX/UI)
+- 📦 **Pacotes de Projeto**: Discovery (40h), MVP (320h), Squad Dedicado (160h/mês)
+- 💰 **Propostas Técnicas**: Geração e acompanhamento com escopo detalhado
+- 💵 **Cálculo de Comissões**: Regras por tipo de serviço e valor de projeto
+- 📈 **Dashboard Analítico**: Métricas reais, gráficos de vendas mensais e pipeline
+- 📚 **API Documentada**: Swagger/OpenAPI completo
+- � **Código Documentado**: PHPDoc e JSDoc/TSDoc completos seguindo padrões oficiais
+- �🔒 **Segurança de Dados**: CPF/CNPJ, telefones e CEPs armazenados sem formatação (apenas números)
+- 🛡️ **LGPD Compliance**: Soft deletes, sanitização automática via mutators, validação robusta
+- 👥 **Responsabilidade de Clientes**: Auto-atribuição ao criador, campo protegido contra alteração
 
 ---
 
@@ -27,7 +40,9 @@ Sistema de gestão de vendas e CRM profissional com recursos avançados para ger
 
 ### Backend
 - **PHP** 8.3
-- **Laravel** 11.47
+- **Laravel** 11.47 (DDD Architecture)
+- **Laravel Sanctum** 4.2 (JWT Authentication)
+- **l5-swagger** 10.1 (OpenAPI Documentation)
 - **MySQL** 9.0
 - **Redis** 7.2
 - **PHPUnit** 11.x
@@ -36,8 +51,13 @@ Sistema de gestão de vendas e CRM profissional com recursos avançados para ger
 - **React** 19.x
 - **TypeScript** 5.x
 - **Vite** 7.3
-- **Tailwind CSS** (a ser instalado)
-- **React Router** (a ser instalado)
+- **Tailwind CSS** 3.4
+- **React Hook Form** 7.x (Form Management)
+- **Zod** 3.x (Schema Validation)
+- **React IMask** 7.x (Input Masks)
+- **Recharts** (Dashboard Charts)
+- **Lucide React** (Icons)
+- **Axios** (HTTP Client)
 
 ### Infraestrutura
 - **Docker** & **Docker Compose**
@@ -100,7 +120,9 @@ docker-compose exec frontend npm install
 5. **Acesse a aplicação:**
 - **Frontend**: http://localhost:5173
 - **Backend API**: http://localhost:8000
+- **Swagger**: http://localhost:8000/api/documentation
 - **Mailhog**: http://localhost:8025
+- **MySQL**: localhost:3307 (user: root, password: secret)
 
 ---
 
@@ -143,26 +165,102 @@ sales-management-system/
 ├── backend/                 # Laravel API
 │   ├── app/
 │   │   ├── Domain/         # Camada de domínio (DDD)
+│   │   │   └── Customer/  # Aggregate Root Customer
+│   │   │       ├── Models/           # Customer, CustomerContact, CustomerAddress (com mutators)
+│   │   │       ├── Repositories/     # CustomerRepositoryInterface
+│   │   │       └── Services/         # CustomerService
 │   │   ├── Application/    # Casos de uso
 │   │   ├── Infrastructure/ # Implementações técnicas
+│   │   │   └── Repositories/        # EloquentCustomerRepository
 │   │   └── Presentation/   # Controllers e API
+│   │       └── Http/
+│   │           ├── Controllers/     # AuthController, CustomerController, DashboardController
+│   │           └── Requests/        # CreateCustomerRequest, UpdateCustomerRequest (validações)
 │   ├── database/
+│   │   ├── migrations/              # 21 migrations
+│   │   └── seeders/                 # 8 seeders com dados realistas
 │   ├── tests/
 │   └── Dockerfile
 ├── frontend/               # React SPA
 │   ├── src/
-│   │   ├── components/    # Componentes reutilizáveis
+│   │   ├── components/    # Componentes reutilizáveis (Layout, Sidebar, Header)
+│   │   ├── contexts/      # AuthContext para gerenciamento de autenticação
 │   │   ├── features/      # Features por módulo
-│   │   ├── hooks/         # Custom hooks
-│   │   ├── services/      # API services
+│   │   │   ├── auth/      # LoginPage
+│   │   │   ├── customers/ # CustomerListPage, CustomerFormModal
+│   │   │   └── dashboard/ # DashboardPage com métricas e gráficos
+│   │   ├── schemas/       # Zod schemas (customerSchema.ts)
+│   │   ├── services/      # API services (customerService, segmentService, dashboardService)
+│   │   ├── types/         # TypeScript interfaces e types
 │   │   └── utils/         # Utilitários
+│   │       ├── formatters.ts   # formatDocument, formatPhone, cleanDocument, formatCurrency, formatDate
+│   │       └── validators.ts   # validateCPF, validateCNPJ, validateDocument, validatePhone, validateEmail
 │   └── Dockerfile
 ├── docker/
 │   └── nginx/             # Configurações Nginx
-├── docker-compose.yml     # Orquestração dos containers
-├── DEVELOPMENT_GUIDE.md   # Guia de desenvolvimento
+├── docker-compose.yml     # Orquestração de 6 containers
+├── PROJECT_STATUS.md      # Status detalhado e atualizado do projeto
+├── PORTFOLIO_PROJECTS_PLAN.md  # Planejamento de todos os projetos do portfólio
 └── README.md              # Este arquivo
 ```
+
+---
+
+## 🎨 Qualidade de Código
+
+O projeto segue padrões de documentação reconhecidos pela indústria:
+
+### Padrões de Documentação
+
+**Backend (PHP):**
+- 📝 **PHPDoc** - Padrão oficial PHP ([docs.phpdoc.org](https://docs.phpdoc.org/))
+- Tags: `@param`, `@return`, `@throws`, `@var`, `@see`
+- Integração com PHPStan, Psalm, IDEs
+- Exemplos:
+  ```php
+  /**
+   * Remove formatação do documento antes de salvar.
+   * 
+   * Armazena apenas números (CPF: 11 dígitos, CNPJ: 14 dígitos).
+   * 
+   * @param string $value Documento com ou sem formatação
+   * @return void
+   */
+  public function setDocumentAttribute($value): void
+  ```
+
+**Frontend (TypeScript):**
+- 📝 **JSDoc/TSDoc** - Padrão JavaScript/TypeScript ([jsdoc.app](https://jsdoc.app/))
+- Tags: `@param`, `@returns`, `@example`, `@see`
+- Type inference automático com Zod
+- Exemplos:
+  ```typescript
+  /**
+   * Valida CPF (Cadastro de Pessoas Físicas).
+   * 
+   * Utiliza algoritmo oficial com verificação de dígitos verificadores.
+   * 
+   * @param cpf - CPF com ou sem formatação
+   * @returns true se válido, false caso contrário
+   * 
+   * @example
+   * validateCPF('123.456.789-09') // true ou false
+   */
+  export function validateCPF(cpf: string): boolean
+  ```
+
+### Benefícios
+
+✅ **Autocomplete inteligente** - IDEs mostram hints ao passar mouse  
+✅ **Geração de docs** - phpDocumentor, TypeDoc automáticos  
+✅ **Análise estática** - PHPStan, ESLint mais precisos  
+✅ **Onboarding rápido** - Novos devs entendem código facilmente  
+✅ **Menos bugs** - Melhor entendimento previne erros  
+
+### Cobertura de Documentação
+
+**Backend:** 100% dos controllers, services, models, commands e requests documentados  
+**Frontend:** 100% dos services, validators, formatters e schemas documentados  
 
 ---
 
@@ -200,32 +298,72 @@ npm run test:coverage
 
 ## 📖 Documentação da API
 
-A documentação completa da API estará disponível em:
-- **Swagger UI**: http://localhost:8000/api/documentation (a ser implementado)
+A documentação completa da API está disponível via Swagger/OpenAPI:
+- **Swagger UI**: http://localhost:8000/api/documentation
+
+### Endpoints Disponíveis
+
+**Autenticação:**
+- `POST /api/auth/login` - Login e geração de token JWT
+- `POST /api/auth/logout` - Logout e invalidação do token
+- `GET /api/auth/me` - Dados do usuário autenticado
+
+**Dashboard:**
+- `GET /api/dashboard/metrics` - Métricas gerais (clientes, oportunidades, pipeline, conversão)
+- `GET /api/dashboard/recent-activities` - Últimas atividades do sistema
+
+**Clientes:**
+- `GET /api/customers` - Listar clientes com filtros e paginação
+- `POST /api/customers` - Criar novo cliente
+- `GET /api/customers/{id}` - Buscar cliente por ID
+- `PUT /api/customers/{id}` - Atualizar cliente
+- `DELETE /api/customers/{id}` - Remover cliente
+- `GET /api/customer-segments` - Listar segmentos disponíveis
+
+**Credenciais de Teste:**
+- Email: `admin@salesmanagement.com`
+- Senha: `password`
 
 ---
 
 ## 🎯 Funcionalidades Principais
 
 ### ✅ Implementadas
-- ✅ Setup inicial do projeto
-- ✅ Configuração Docker
-- ✅ Estrutura base Laravel e React
+- ✅ **Infraestrutura**: Docker com 6 containers (Nginx, Laravel, React, MySQL, Redis, Mailhog)
+- ✅ **Autenticação JWT**: Login, logout, proteção de rotas com Laravel Sanctum
+- ✅ **Layout**: Sidebar com navegação, Header com usuário e logout
+- ✅ **Dashboard**: Métricas em tempo real, gráficos de vendas e pipeline, timeline de atividades
+- ✅ **CRUD de Clientes**: Listagem com filtros, criação, edição, exclusão com confirmação moderna, validação profissional e paginação
+- ✅ **Validação Profissional**: react-hook-form + Zod + react-imask com máscaras dinâmicas (CPF↔CNPJ, telefone fixo↔celular)
+- ✅ **Validação de CPF/CNPJ**: Algoritmo completo com dígitos verificadores (Receita Federal)
+- ✅ **Feedback em Tempo Real**: Erros exibidos enquanto usuário digita com mensagens em português
+- ✅ **Auto-atribuição de Responsável**: Cliente automaticamente vinculado ao usuário que criou
+- ✅ **Proteção de Dados**: Campo responsible protegido contra alteração (regra de negócio)
+- ✅ **Seeders com Dados Válidos**: CNPJs matematicamente corretos (11.222.333/0001-81, 11.444.777/0001-61, etc)
+- ✅ **Segmentação**: 6 segmentos por setor (Indústria, Financeiro, Varejo, Saúde, Logística, Educação)
+- ✅ **Validação Dupla**: Frontend valida antes de enviar, backend valida novamente (defesa em profundidade)
+- ✅ **Formatação de Dados**: Mutators para sanitização automática, formatters para exibição
+- ✅ **Busca Otimizada**: Search funciona com ou sem formatação de CPF/CNPJ
+- ✅ **Swagger/OpenAPI**: Documentação completa de todos os endpoints
+- ✅ **DDD Architecture**: Backend organizado em Domain, Application, Infrastructure e Presentation
+- ✅ **Type Safety**: TypeScript com inferência automática de tipos via Zod schemas
+- ✅ **Documentação Padronizada**: PHPDoc e JSDoc/TSDoc seguindo padrões oficiais
+- ✅ **Componentes UI Reutilizáveis**: ConfirmDialog moderno com 3 variantes (danger, warning, info)
+- ✅ **Código Limpo**: Sem comentários redundantes, documentação concisa e informativa
 
 ### 🚧 Em Desenvolvimento
-- 🚧 Autenticação JWT
-- 🚧 CRUD de Clientes
-- 🚧 Pipeline de Vendas (Kanban)
-- 🚧 Gestão de Propostas
-- 🚧 Dashboard com gráficos
+- 🚧 Pipeline de Vendas com Kanban drag-and-drop
+- 🚧 Gestão de Oportunidades
+- 🚧 Gestão de Produtos/Serviços
 
 ### 📋 Próximas Features
-- Cálculo de comissões
+- Gestão de Propostas Técnicas com PDF
+- Cálculo de comissões por serviço
 - Scoring RFM de clientes
-- Automação de vendas
+- Automação de follow-ups
 - Previsão de vendas (forecast)
 - Sistema de notificações
-- Relatórios exportáveis
+- Relatórios exportáveis (Excel/PDF)
 
 ---
 
@@ -252,7 +390,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 📚 Documentação Adicional
 
-- [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) - Guia completo de desenvolvimento
+- [PROJECT_STATUS.md](PROJECT_STATUS.md) - Status atual detalhado do projeto
 - [PORTFOLIO_PROJECTS_PLAN.md](PORTFOLIO_PROJECTS_PLAN.md) - Planejamento do portfólio
 
 ---

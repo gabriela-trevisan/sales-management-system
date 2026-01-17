@@ -7,30 +7,37 @@ use Illuminate\Foundation\Http\FormRequest;
 class CreateCustomerRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Autoriza a requisição.
+     * 
+     * Todos os usuários autenticados podem criar clientes.
      */
     public function authorize(): bool
     {
-        return true; // TODO: Add authorization logic
+        return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Regras de validação para criação de cliente.
+     * 
+     * @return array<string, array<int, string>>
      */
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
             'document' => ['required', 'string', 'max:20', 'unique:customers,document'],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
             'phone' => ['nullable', 'string', 'max:20'],
             'status' => ['in:active,inactive,prospect,churned'],
+            'segment_id' => ['nullable', 'exists:customer_segments,id'],
             'assigned_to' => ['nullable', 'exists:users,id'],
         ];
     }
 
     /**
-     * Get custom messages for validator errors.
+     * Mensagens customizadas de erro de validação.
+     * 
+     * @return array<string, string>
      */
     public function messages(): array
     {

@@ -26,7 +26,17 @@ class CustomerAddress extends Model
     ];
 
     /**
-     * Relacionamento com Customer
+     * Remove formatação do CEP antes de salvar.
+     * 
+     * Armazena apenas números (8 dígitos).
+     */
+    public function setZipCodeAttribute($value): void
+    {
+        $this->attributes['zip_code'] = preg_replace('/[^0-9]/', '', $value);
+    }
+
+    /**
+     * Cliente proprietário do endereço.
      */
     public function customer(): BelongsTo
     {

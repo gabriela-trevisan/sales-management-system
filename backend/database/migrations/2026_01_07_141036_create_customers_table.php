@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('document', 18)->unique(); // CPF ou CNPJ
+            $table->string('document', 14)->unique(); // CPF (11) ou CNPJ (14) - apenas números
             $table->string('email')->unique();
-            $table->string('phone', 20)->nullable();
+            $table->string('phone', 11)->nullable(); // Apenas números
             $table->foreignId('segment_id')->nullable()->constrained('customer_segments')->nullOnDelete();
             $table->json('rfm_score')->nullable(); // Recency, Frequency, Monetary
-            $table->enum('status', ['active', 'inactive', 'prospect'])->default('prospect');
+            $table->enum('status', ['active', 'inactive', 'prospect', 'churned'])->default('prospect');
             $table->foreignId('assigned_to')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();

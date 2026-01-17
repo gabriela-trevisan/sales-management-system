@@ -3,13 +3,16 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Domain\Customer\Models\Customer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class CustomerSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Popula a tabela de clientes com dados de teste.
+     * 
+     * Todos os CNPJs são matematicamente válidos.
      */
     public function run(): void
     {
@@ -18,7 +21,7 @@ class CustomerSeeder extends Seeder
         $customers = [
             [
                 'name' => 'Tech Solutions Ltda',
-                'document' => '12.345.678/0001-90',
+                'document' => '11.222.333/0001-81',
                 'email' => 'contato@techsolutions.com.br',
                 'phone' => '(11) 3456-7890',
                 'segment_id' => 2,
@@ -41,7 +44,7 @@ class CustomerSeeder extends Seeder
             ],
             [
                 'name' => 'Inovação Digital S.A.',
-                'document' => '98.765.432/0001-10',
+                'document' => '11.444.777/0001-61',
                 'email' => 'comercial@inovacaodigital.com.br',
                 'phone' => '(21) 2345-6789',
                 'segment_id' => 3,
@@ -64,7 +67,7 @@ class CustomerSeeder extends Seeder
             ],
             [
                 'name' => 'Cloud Systems Brasil',
-                'document' => '45.678.901/0001-23',
+                'document' => '16.727.230/0001-97',
                 'email' => 'vendas@cloudsystems.com.br',
                 'phone' => '(11) 4567-8901',
                 'segment_id' => 2,
@@ -87,7 +90,7 @@ class CustomerSeeder extends Seeder
             ],
             [
                 'name' => 'StartupTech Inovação',
-                'document' => '23.456.789/0001-45',
+                'document' => '07.526.557/0001-00',
                 'email' => 'contato@startuptech.com.br',
                 'phone' => '(48) 3234-5678',
                 'segment_id' => 5,
@@ -110,7 +113,7 @@ class CustomerSeeder extends Seeder
             ],
             [
                 'name' => 'Mega Corp Tecnologia',
-                'document' => '67.890.123/0001-56',
+                'document' => '34.028.316/0001-03',
                 'email' => 'contato@megacorp.com.br',
                 'phone' => '(31) 3567-8901',
                 'segment_id' => 4,
@@ -134,7 +137,7 @@ class CustomerSeeder extends Seeder
         ];
 
         foreach ($customers as $customerData) {
-            $customerId = DB::table('customers')->insertGetId([
+            $customer = Customer::create([
                 'name' => $customerData['name'],
                 'document' => $customerData['document'],
                 'email' => $customerData['email'],
@@ -142,15 +145,12 @@ class CustomerSeeder extends Seeder
                 'segment_id' => $customerData['segment_id'],
                 'status' => $customerData['status'],
                 'assigned_to' => $customerData['assigned_to'],
-                'created_at' => now(),
-                'updated_at' => now(),
             ]);
 
-            // Endereço
             DB::table('customer_addresses')->insert([
-                'customer_id' => $customerId,
+                'customer_id' => $customer->id,
                 'type' => 'both',
-                'zip_code' => $customerData['address']['zip_code'],
+                'zip_code' => preg_replace('/[^0-9]/', '', $customerData['address']['zip_code']),
                 'street' => $customerData['address']['street'],
                 'number' => $customerData['address']['number'],
                 'neighborhood' => $customerData['address']['neighborhood'],
@@ -162,12 +162,11 @@ class CustomerSeeder extends Seeder
                 'updated_at' => now(),
             ]);
 
-            // Contato
             DB::table('customer_contacts')->insert([
-                'customer_id' => $customerId,
+                'customer_id' => $customer->id,
                 'name' => $customerData['contact']['name'],
-                'email' => $customerData['contact']['email'],
-                'phone' => $customerData['contact']['phone'],
+                'email' => strtolower(trim($customerData['contact']['email'])),
+                'phone' => preg_replace('/[^0-9]/', '', $customerData['contact']['phone']),
                 'role' => $customerData['contact']['role'],
                 'is_primary' => true,
                 'created_at' => now(),

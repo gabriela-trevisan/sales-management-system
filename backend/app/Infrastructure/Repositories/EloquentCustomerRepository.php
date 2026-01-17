@@ -19,7 +19,7 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
 
     public function getAll(array $filters = [], int $perPage = 15)
     {
-        $query = Customer::with(['assignedUser']);
+        $query = Customer::with(['assignedUser', 'segment']);
 
         if (isset($filters['status'])) {
             $query->where('status', $filters['status']);
@@ -30,14 +30,22 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
         }
 
         if (isset($filters['search'])) {
-            $query->where(function ($q) use ($filters) {
-                $q->where('name', 'like', "%{$filters['search']}%")
-                  ->orWhere('email', 'like', "%{$filters['search']}%")
-                  ->orWhere('document', 'like', "%{$filters['search']}%");
+            $search = $filters['search'];
+            // Remove formatação para buscar documento
+            $searchClean = preg_replace('/[^0-9]/', '', $search);
+            
+            $query->where(function ($q) use ($search, $searchClean) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+                
+                // Busca por documento (já armazenado sem formatação)
+                if ($searchClean) {
+                    $q->orWhere('document', 'like', "%{$searchClean}%");
+                }
             });
         }
 
-        return $query->paginate($perPage);
+        return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function create(array $data): Customer

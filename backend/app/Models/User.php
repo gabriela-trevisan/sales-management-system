@@ -46,4 +46,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Mutator: Converte email para lowercase antes de salvar
+     */
+    public function setEmailAttribute($value): void
+    {
+        $this->attributes['email'] = strtolower(trim($value));
+    }
 }

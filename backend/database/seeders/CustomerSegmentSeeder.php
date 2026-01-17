@@ -14,44 +14,51 @@ class CustomerSegmentSeeder extends Seeder
     {
         $segments = [
             [
-                'name' => 'Pequenas Empresas',
-                'description' => 'Empresas com faturamento até R$ 360 mil/ano',
+                'name' => 'Indústria e Manufatura',
+                'description' => 'Empresas do setor industrial com necessidade de automação e sistemas customizados',
                 'criteria' => json_encode([
-                    'revenue_max' => 360000,
-                    'employees_max' => 10,
+                    'sector' => 'industry',
+                    'typical_projects' => ['ERP', 'MES', 'IoT', 'Integração'],
                 ]),
             ],
             [
-                'name' => 'Médias Empresas',
-                'description' => 'Empresas com faturamento entre R$ 360 mil e R$ 4,8 milhões/ano',
+                'name' => 'Serviços Financeiros',
+                'description' => 'Bancos, fintechs, seguradoras com alta necessidade de segurança e compliance',
                 'criteria' => json_encode([
-                    'revenue_min' => 360000,
-                    'revenue_max' => 4800000,
-                    'employees_max' => 50,
+                    'sector' => 'financial',
+                    'typical_projects' => ['Core Banking', 'Open Banking', 'API Gateway', 'Segurança'],
                 ]),
             ],
             [
-                'name' => 'Grandes Empresas',
-                'description' => 'Empresas com faturamento acima de R$ 4,8 milhões/ano',
+                'name' => 'Varejo e E-commerce',
+                'description' => 'Redes de varejo e comércio eletrônico',
                 'criteria' => json_encode([
-                    'revenue_min' => 4800000,
-                    'employees_min' => 50,
+                    'sector' => 'retail',
+                    'typical_projects' => ['E-commerce', 'PDV', 'Omnichannel', 'Integração Marketplace'],
                 ]),
             ],
             [
-                'name' => 'Enterprise',
-                'description' => 'Grandes corporações com operações complexas',
+                'name' => 'Saúde e Hospitais',
+                'description' => 'Hospitais, clínicas, laboratórios com foco em prontuário e gestão',
                 'criteria' => json_encode([
-                    'revenue_min' => 50000000,
-                    'employees_min' => 500,
+                    'sector' => 'healthcare',
+                    'typical_projects' => ['Prontuário Eletrônico', 'TISS', 'Telemedicina', 'BI Saúde'],
                 ]),
             ],
             [
-                'name' => 'Startups',
-                'description' => 'Empresas em estágio inicial de crescimento',
+                'name' => 'Logística e Transporte',
+                'description' => 'Transportadoras, operadores logísticos com foco em rastreamento e gestão de frotas',
                 'criteria' => json_encode([
-                    'age_max' => 3,
-                    'revenue_max' => 1000000,
+                    'sector' => 'logistics',
+                    'typical_projects' => ['TMS', 'Rastreamento', 'Roteirização', 'Last Mile'],
+                ]),
+            ],
+            [
+                'name' => 'Educação',
+                'description' => 'Instituições de ensino, EdTechs com necessidade de plataformas educacionais',
+                'criteria' => json_encode([
+                    'sector' => 'education',
+                    'typical_projects' => ['LMS', 'Portal do Aluno', 'EAD', 'Gestão Acadêmica'],
                 ]),
             ],
         ];

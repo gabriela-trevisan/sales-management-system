@@ -26,7 +26,37 @@ class Customer extends Model
     ];
 
     /**
-     * Get the user assigned to this customer
+     * Remove formatação do documento antes de salvar.
+     * 
+     * Armazena apenas números (CPF: 11 dígitos, CNPJ: 14 dígitos).
+     */
+    public function setDocumentAttribute($value): void
+    {
+        $this->attributes['document'] = preg_replace('/[^0-9]/', '', $value);
+    }
+
+    /**
+     * Normaliza email antes de salvar.
+     * 
+     * Converte para minúsculas e remove espaços.
+     */
+    public function setEmailAttribute($value): void
+    {
+        $this->attributes['email'] = strtolower(trim($value));
+    }
+
+    /**
+     * Remove formatação do telefone antes de salvar.
+     * 
+     * Armazena apenas números (fixo: 10 dígitos, celular: 11 dígitos).
+     */
+    public function setPhoneAttribute($value): void
+    {
+        $this->attributes['phone'] = $value ? preg_replace('/[^0-9]/', '', $value) : null;
+    }
+
+    /**
+     * Usuário responsável pelo cliente.
      */
     public function assignedUser()
     {
@@ -34,7 +64,7 @@ class Customer extends Model
     }
 
     /**
-     * Get the customer segment
+     * Segmento do cliente.
      */
     public function segment()
     {
@@ -42,7 +72,7 @@ class Customer extends Model
     }
 
     /**
-     * Get the addresses for the customer
+     * Endereços do cliente.
      */
     public function addresses()
     {
@@ -50,7 +80,7 @@ class Customer extends Model
     }
 
     /**
-     * Get the contacts for the customer
+     * Contatos do cliente.
      */
     public function contacts()
     {

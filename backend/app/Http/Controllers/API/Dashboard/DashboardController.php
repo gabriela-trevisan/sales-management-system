@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OA;
 
@@ -55,6 +56,18 @@ class DashboardController extends Controller
         ]
     )]
     public function metrics(): JsonResponse
+    {
+        // Cache por 5 minutos (300 segundos)
+        return Cache::remember('dashboard.metrics', 300, function () {
+            return $this->calculateMetrics();
+        });
+    }
+
+    /**
+     * Calcula as métricas do dashboard.
+     * Método separado para facilitar testes e invalidação de cache.
+     */
+    private function calculateMetrics(): JsonResponse
     {
         // Total de clientes
         $totalCustomers = DB::table('customers')->count();

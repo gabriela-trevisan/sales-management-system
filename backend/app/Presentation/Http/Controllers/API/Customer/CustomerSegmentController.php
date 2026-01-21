@@ -5,6 +5,7 @@ namespace App\Presentation\Http\Controllers\API\Customer;
 use App\Domain\Customer\Models\CustomerSegment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use OpenApi\Attributes as OA;
 
 class CustomerSegmentController extends Controller
@@ -41,7 +42,11 @@ class CustomerSegmentController extends Controller
     )]
     public function index(): JsonResponse
     {
-        $segments = CustomerSegment::orderBy('name')->get(['id', 'name', 'description']);
+        // Cache por 15 minutos (900 segundos)
+        // Segmentos são dados mestres que raramente mudam
+        $segments = Cache::remember('customer.segments', 900, function () {
+            return CustomerSegment::orderBy('name')->get(['id', 'name', 'description']);
+        });
 
         return response()->json([
             'data' => $segments,

@@ -5,10 +5,32 @@ namespace App\Domain\Customer\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Customer extends Model
+class Customer extends Model implements Auditable
 {
     use HasFactory, SoftDeletes;
+    use \OwenIt\Auditing\Auditable;
+
+    /**
+     * Atributos auditados (LGPD compliance).
+     * 
+     * Registra mudanças em dados pessoais conforme Art. 46 LGPD.
+     */
+    protected $auditInclude = [
+        'name',
+        'document',
+        'email',
+        'phone',
+        'segment_id',
+        'status',
+        'assigned_to',
+    ];
+
+    /**
+     * Apenas campos modificados são auditados (performance).
+     */
+    protected $auditTimestamps = false;
 
     protected $fillable = [
         'name',

@@ -8,7 +8,7 @@ Sistema completo de gestão de vendas e CRM desenvolvido com Laravel 11, React 1
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
-[![Zod](https://img.shields.io/badge/Zod-3-3E67B1?logo=zod&logoColor=white)](https://zod.dev)
+[![Zod](https://img.shields.io/badge/Zod-4-3E67B1?logo=zod&logoColor=white)](https://zod.dev)
 [![Documentation](https://img.shields.io/badge/Docs-PHPDoc%20%2B%20JSDoc-blue)](https://github.com)
 
 ---
@@ -19,20 +19,23 @@ Sistema de gestão de vendas e CRM especializado para empresas de **consultoria 
 Focado em gerenciar projetos customizados, alocação de equipes, propostas técnicas e comissões de equipe comercial.
 
 - 📊 **Pipeline de Vendas Consultivo**: Prospecção → Discovery → Proposta Técnica → Negociação → Contrato → Ganho
-- 👥 **CRUD Completo de Clientes B2B**: Segmentação por setor com filtros, paginação e **validação profissional**
+- 👥 **CRUD Completo de Clientes B2B**: Segmentação por setor com filtros, paginação e validação
 - ✨ **Validação de Formulários**: react-hook-form + Zod + react-imask com máscaras dinâmicas
-- 🛡️ **Validação de CPF/CNPJ**: Algoritmo completo com dígitos verificadores
+- 🛡️ **Validação de CPF/CNPJ**: Algoritmo com dígitos verificadores
 - 🏢 **Segmentação por Setor**: Indústria, Financeiro, Varejo, Saúde, Logística, Educação
 - 💼 **Catálogo de Serviços**: Horas técnicas (Arquiteto, Dev Sênior/Pleno/Júnior, QA, DevOps, UX/UI)
 - 📦 **Pacotes de Projeto**: Discovery (40h), MVP (320h), Squad Dedicado (160h/mês)
 - 💰 **Propostas Técnicas**: Geração e acompanhamento com escopo detalhado
 - 💵 **Cálculo de Comissões**: Regras por tipo de serviço e valor de projeto
 - 📈 **Dashboard Analítico**: Métricas reais, gráficos de vendas mensais e pipeline
-- 📚 **API Documentada**: Swagger/OpenAPI completo
-- � **Código Documentado**: PHPDoc e JSDoc/TSDoc completos seguindo padrões oficiais
-- �🔒 **Segurança de Dados**: CPF/CNPJ, telefones e CEPs armazenados sem formatação (apenas números)
-- 🛡️ **LGPD Compliance**: Soft deletes, sanitização automática via mutators, validação robusta
+- 📚 **API Documentada**: Swagger/OpenAPI
+- 📝 **Código Documentado**: PHPDoc e JSDoc/TSDoc completos seguindo padrões oficiais
+- 🔒 **Segurança de Dados**: CPF/CNPJ, telefones e CEPs armazenados sem formatação (apenas números)
+- 🛡️ **LGPD Compliance**: Laravel Auditing automático (owen-it/laravel-auditing v14.0.0)
 - 👥 **Responsabilidade de Clientes**: Auto-atribuição ao criador, campo protegido contra alteração
+- ⚡ **Performance**: Redis cache, 13 índices de banco, queries 10-100x mais rápidas
+- 🔐 **Segurança**: Rate limiting, token expiration (24h), 6 security headers (OWASP)
+- 🎯 **Qualidade**: PHPStan Level 6, RFC 7807 error handling
 
 ---
 
@@ -41,10 +44,12 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 ### Backend
 - **PHP** 8.3
 - **Laravel** 11.47 (DDD Architecture)
-- **Laravel Sanctum** 4.2 (JWT Authentication)
+- **Laravel Sanctum** 4.2 (JWT Authentication - Token 24h)
+- **Laravel Auditing** 14.0.0 (Audit automático LGPD)
 - **l5-swagger** 10.1 (OpenAPI Documentation)
-- **MySQL** 9.0
-- **Redis** 7.2
+- **PHPStan** 2.1.33 (Static Analysis Level 6)
+- **MySQL** 9.0 (13 índices de performance)
+- **Redis** 7.2 (Cache de queries)
 - **PHPUnit** 11.x
 
 ### Frontend
@@ -53,7 +58,7 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 - **Vite** 7.3
 - **Tailwind CSS** 3.4
 - **React Hook Form** 7.x (Form Management)
-- **Zod** 3.x (Schema Validation)
+- **Zod** 4.x (Schema Validation)
 - **React IMask** 7.x (Input Masks)
 - **Recharts** (Dashboard Charts)
 - **Lucide React** (Icons)
@@ -183,7 +188,10 @@ sales-management-system/
 │   └── Dockerfile
 ├── frontend/               # React SPA
 │   ├── src/
-│   │   ├── components/    # Componentes reutilizáveis (Layout, Sidebar, Header)
+│   │   ├── components/    # Componentes reutilizáveis
+│   │   │   ├── layout/         # Layout, Sidebar, Header
+│   │   │   ├── common/         # Button, Input, Alert
+│   │   │   └── ConfirmDialog   # Modal de confirmação moderno
 │   │   ├── contexts/      # AuthContext para gerenciamento de autenticação
 │   │   ├── features/      # Features por módulo
 │   │   │   ├── auth/      # LoginPage
@@ -332,22 +340,23 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 - ✅ **Infraestrutura**: Docker com 6 containers (Nginx, Laravel, React, MySQL, Redis, Mailhog)
 - ✅ **Autenticação JWT**: Login, logout, proteção de rotas com Laravel Sanctum
 - ✅ **Layout**: Sidebar com navegação, Header com usuário e logout
-- ✅ **Dashboard**: Métricas em tempo real, gráficos de vendas e pipeline, timeline de atividades
+- ✅ **LoginPage Redesenhado**: Layout split screen moderno com features showcase
+- ✅ **Dashboard Completo**: 4 cards de métricas, LineChart de vendas mensais (Recharts), BarChart de pipeline por estágio, timeline de atividades recentes
 - ✅ **CRUD de Clientes**: Listagem com filtros, criação, edição, exclusão com confirmação moderna, validação profissional e paginação
 - ✅ **Validação Profissional**: react-hook-form + Zod + react-imask com máscaras dinâmicas (CPF↔CNPJ, telefone fixo↔celular)
-- ✅ **Validação de CPF/CNPJ**: Algoritmo completo com dígitos verificadores (Receita Federal)
+- ✅ **Validação de CPF/CNPJ**: Algoritmo com dígitos verificadores (Receita Federal)
 - ✅ **Feedback em Tempo Real**: Erros exibidos enquanto usuário digita com mensagens em português
 - ✅ **Auto-atribuição de Responsável**: Cliente automaticamente vinculado ao usuário que criou
 - ✅ **Proteção de Dados**: Campo responsible protegido contra alteração (regra de negócio)
 - ✅ **Seeders com Dados Válidos**: CNPJs matematicamente corretos (11.222.333/0001-81, 11.444.777/0001-61, etc)
 - ✅ **Segmentação**: 6 segmentos por setor (Indústria, Financeiro, Varejo, Saúde, Logística, Educação)
-- ✅ **Validação Dupla**: Frontend valida antes de enviar, backend valida novamente (defesa em profundidade)
+- ✅ **Validação Dupla**: Frontend valida antes de enviar, backend valida novamente
 - ✅ **Formatação de Dados**: Mutators para sanitização automática, formatters para exibição
 - ✅ **Busca Otimizada**: Search funciona com ou sem formatação de CPF/CNPJ
 - ✅ **Swagger/OpenAPI**: Documentação completa de todos os endpoints
 - ✅ **DDD Architecture**: Backend organizado em Domain, Application, Infrastructure e Presentation
 - ✅ **Type Safety**: TypeScript com inferência automática de tipos via Zod schemas
-- ✅ **Documentação Padronizada**: PHPDoc e JSDoc/TSDoc seguindo padrões oficiais
+- ✅ **Documentação Padronizada**: PHPDoc e JSDoc/TSDoc
 - ✅ **Componentes UI Reutilizáveis**: ConfirmDialog moderno com 3 variantes (danger, warning, info)
 - ✅ **Código Limpo**: Sem comentários redundantes, documentação concisa e informativa
 

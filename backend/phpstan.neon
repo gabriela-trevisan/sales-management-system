@@ -1,0 +1,16 @@
+parameters:
+    level: 6
+    paths:
+        - app
+    excludePaths:
+        - vendor
+        - database/migrations
+        - database/seeders
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Unsafe usage of new static#'
+        - '#Call to an undefined (static )?method (.*)::(where|create|orderBy|find|first)#'
+        - '#Access to an undefined property (.*)::(\$\w+)#'
+        - '#Property (.*)::\$casts type has no value type specified#'
+        - '#has no return type specified#'
+        - '#uses generic trait (.*)HasFactory but does not specify its types#'

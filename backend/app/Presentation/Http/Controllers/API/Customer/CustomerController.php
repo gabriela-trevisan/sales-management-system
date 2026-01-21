@@ -11,6 +11,7 @@ use App\Presentation\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Presentation\Http\Resources\Customer\CustomerResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use OpenApi\Attributes as OA;
 
 class CustomerController extends Controller
@@ -156,6 +157,9 @@ class CustomerController extends Controller
 
         $customer = $this->createCustomerHandler->handle($command);
 
+        // Invalida cache do dashboard pois o total de clientes mudou
+        Cache::forget('dashboard.metrics');
+
         return response()->json([
             'message' => 'Cliente criado com sucesso',
             'data' => new CustomerResource($customer),
@@ -260,11 +264,22 @@ class CustomerController extends Controller
     )]
     public function update(UpdateCustomerRequest $request, int $id): JsonResponse
     {
+        $oldCustomer = $this->customerRepository->findById($id);
+        $oldValues = [
+            'name' => $oldCustomer->name,
+            'email' => $oldCustomer->email,
+            'phone' => $oldCustomer->phone,
+            'status' => $oldCustomer->status,
+        ];
+
         $data = $request->validated();
         
         unset($data['assigned_to']);
         
         $customer = $this->customerRepository->update($id, $data);
+
+        // Invalida cache do dashboard
+        Cache::forget('dashboard.metrics');
 
         return response()->json([
             'message' => 'Cliente atualizado com sucesso',
@@ -303,7 +318,12 @@ class CustomerController extends Controller
     )]
     public function destroy(int $id): JsonResponse
     {
+        $customer = $this->customerRepository->findById($id);
+
         $this->customerRepository->delete($id);
+
+        // Invalida cache do dashboard pois o total de clientes mudou
+        Cache::forget('dashboard.metrics');
 
         return response()->json([
             'message' => 'Cliente removido com sucesso',

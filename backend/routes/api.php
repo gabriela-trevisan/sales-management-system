@@ -3,6 +3,11 @@
 /**
  * Rotas da API.
  * 
+ * Rate Limiting:
+ * - Login: 5 tentativas por minuto (proteção contra brute force)
+ * - API autenticada: 60 requisições por minuto por usuário
+ * - Geral: 100 requisições por minuto por IP (fallback)
+ * 
  * Todas as rotas exceto login requerem autenticação via Sanctum.
  */
 
@@ -13,9 +18,13 @@ use App\Presentation\Http\Controllers\API\Customer\CustomerSegmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/auth/login', [AuthController::class, 'login']);
+// Login com rate limiting restrito (5 tentativas/minuto)
+Route::post('/auth/login', [AuthController::class, 'login'])
+    ->middleware('throttle:5,1')
+    ->name('login');
 
-Route::middleware('auth:sanctum')->group(function () {
+// Rotas autenticadas com rate limiting (60 req/minuto por usuário)
+Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
 

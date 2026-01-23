@@ -56,6 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Frontend URL
+    |--------------------------------------------------------------------------
+    |
+    | URL do frontend (React/Vite) usado para CORS, CSP e configurações de
+    | segurança. Permite que o backend saiba qual origem do frontend é confiável.
+    |
+    */
+
+    'frontend_url' => env('APP_FRONTEND_URL', 'http://localhost:5173'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

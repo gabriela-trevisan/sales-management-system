@@ -168,4 +168,46 @@ class AuthController extends Controller
             ],
         ]);
     }
+
+    #[OA\Post(
+        path: "/api/auth/refresh",
+        summary: "Atualizar token de autenticação",
+        description: "Gera um novo token JWT e revoga o token atual",
+        security: [["bearerAuth" => []]],
+        tags: ["Authentication"],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Token renovado com sucesso",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "token", type: "string", example: "2|xyz789...")
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Não autenticado",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "message", type: "string", example: "Unauthenticated.")
+                    ]
+                )
+            )
+        ]
+    )]
+    public function refresh(Request $request)
+    {
+        $user = $request->user();
+        
+        // Revoga o token atual
+        $request->user()->currentAccessToken()->delete();
+        
+        // Cria um novo token
+        $newToken = $user->createToken('auth-token')->plainTextToken;
+
+        return response()->json([
+            'token' => $newToken,
+        ]);
+    }
 }

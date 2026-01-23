@@ -44,10 +44,10 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 ### Backend
 - **PHP** 8.3
 - **Laravel** 11.47 (DDD Architecture)
-- **Laravel Sanctum** 4.2 (JWT Authentication - Token 24h)
+- **Laravel Sanctum** 4.2.4 (JWT Authentication - Token 24h + Refresh)
 - **Laravel Auditing** 14.0.0 (Audit automático LGPD)
 - **l5-swagger** 10.1 (OpenAPI Documentation)
-- **PHPStan** 2.1.33 (Static Analysis Level 6)
+- **PHPStan** 2.1.36 (Static Analysis Level 6)
 - **MySQL** 9.0 (13 índices de performance)
 - **Redis** 7.2 (Cache de queries)
 - **PHPUnit** 11.x
@@ -56,13 +56,14 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 - **React** 19.x
 - **TypeScript** 5.x
 - **Vite** 7.3
-- **Tailwind CSS** 3.4
+- **Tailwind CSS** 4.1.18 (v4 com @tailwindcss/postcss)
+- **TanStack Query** 5.x (State Management + Cache)
 - **React Hook Form** 7.x (Form Management)
 - **Zod** 4.x (Schema Validation)
 - **React IMask** 7.x (Input Masks)
 - **Recharts** (Dashboard Charts)
 - **Lucide React** (Icons)
-- **Axios** (HTTP Client)
+- **Axios** (HTTP Client + Auto Refresh Interceptor)
 
 ### Infraestrutura
 - **Docker** & **Docker Compose**

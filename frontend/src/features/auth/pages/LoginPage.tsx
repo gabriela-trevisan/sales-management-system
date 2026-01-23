@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/common/Button';
@@ -23,8 +23,9 @@ export function LoginPage() {
     try {
       await login({ email, password });
       navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao fazer login. Verifique suas credenciais.');
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      setError(error.response?.data?.message || 'Erro ao fazer login. Verifique suas credenciais.');
     } finally {
       setIsLoading(false);
     }

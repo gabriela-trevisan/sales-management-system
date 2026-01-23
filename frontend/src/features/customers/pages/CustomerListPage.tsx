@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Plus, Search, Filter, Edit, Trash2, Eye, UserCircle } from 'lucide-react';
-import customerService, { Customer, CustomerFilters } from '../services/customerService';
+import { Plus, Search, Edit, Trash2, UserCircle } from 'lucide-react';
+import customerService, { type Customer, type CustomerFilters } from '../services/customerService';
 import CustomerFormModal from '../components/CustomerFormModal';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { formatDocument, formatPhone } from '@/utils/formatters';

@@ -1,32 +1,12 @@
-import { useEffect, useState } from 'react';
 import { Users, TrendingUp, DollarSign, Target, Activity } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { dashboardService, DashboardMetrics, Activity as ActivityType } from '../services/dashboardService';
+import { useDashboardMetrics, useRecentActivities } from '../hooks/useDashboard';
 
 export function DashboardPage() {
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
-  const [activities, setActivities] = useState<ActivityType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: metrics, isLoading: isLoadingMetrics } = useDashboardMetrics();
+  const { data: activities = [], isLoading: isLoadingActivities } = useRecentActivities(8);
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
-
-  const loadDashboardData = async () => {
-    try {
-      setIsLoading(true);
-      const [metricsData, activitiesData] = await Promise.all([
-        dashboardService.getMetrics(),
-        dashboardService.getRecentActivities(8)
-      ]);
-      setMetrics(metricsData);
-      setActivities(activitiesData);
-    } catch (error) {
-      console.error('Erro ao carregar dashboard:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const isLoading = isLoadingMetrics || isLoadingActivities;
 
   if (isLoading || !metrics) {
     return (

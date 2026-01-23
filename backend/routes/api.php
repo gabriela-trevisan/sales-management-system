@@ -26,6 +26,7 @@ Route::post('/auth/login', [AuthController::class, 'login'])
 // Rotas autenticadas com rate limiting (60 req/minuto por usuário)
 Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/refresh', [AuthController::class, 'refresh']);
     Route::get('/auth/me', [AuthController::class, 'me']);
 
     Route::get('/dashboard/metrics', [DashboardController::class, 'metrics']);

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Product\Models\ProductCategory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ProductCategorySeeder extends Seeder
 {
@@ -24,13 +24,13 @@ class ProductCategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            DB::table('product_categories')->insert([
-                'name' => $category['name'],
-                'description' => $category['description'],
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            ProductCategory::firstOrCreate(
+                ['name' => $category['name']],
+                [
+                    'description' => $category['description'],
+                    'is_active' => true,
+                ]
+            );
         }
     }
 }

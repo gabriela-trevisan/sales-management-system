@@ -48,6 +48,14 @@ api.interceptors.response.use(
 
     // Se erro 401 e não é tentativa de retry
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Não tenta refresh se a URL já é de auth (evita loop)
+      if (originalRequest.url?.includes('/auth/')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+        return Promise.reject(error);
+      }
+
       // Se já estiver fazendo refresh, adiciona na fila
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -74,8 +82,14 @@ api.interceptors.response.use(
       }
 
       try {
-        // Tenta refresh
-        const response = await api.post('/auth/refresh');
+        // Tenta refresh (usando axios direto para evitar interceptor recursivo)
+        const response = await axios.post('http://localhost:8000/api/auth/refresh', {}, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+        });
         const newToken = response.data.token;
 
         // Salva novo token

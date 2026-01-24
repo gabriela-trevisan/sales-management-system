@@ -42,29 +42,22 @@ export const customerSchema = z.object({
 
   phone: z
     .string()
-    .nullable()
     .optional()
     .refine(
       (phone) => {
-        if (!phone) return true;
+        if (!phone || phone.trim() === '') return true;
         return validatePhone(phone);
       },
       { message: 'Telefone inválido. Use formato (XX) XXXXX-XXXX ou (XX) XXXX-XXXX' }
     ),
 
-  status: z
-    .enum(['active', 'inactive', 'prospect', 'churned'], {
-      message: 'Status inválido',
-    })
-    .default('prospect'),
+  status: z.enum(['active', 'inactive', 'prospect', 'churned'], {
+    message: 'Status inválido',
+  }),
 
   segment_id: z
-    .union([
-      z.number().positive('Segmento inválido'),
-      z.literal('').transform(() => undefined),
-      z.undefined(),
-      z.null(),
-    ])
+    .number()
+    .positive('Segmento inválido')
     .optional(),
 });
 

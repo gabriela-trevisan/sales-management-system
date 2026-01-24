@@ -30,7 +30,7 @@ class CustomerAddress extends Model
      * 
      * Armazena apenas números (8 dígitos).
      */
-    public function setZipCodeAttribute($value): void
+    public function setZipCodeAttribute(?string $value): void
     {
         $this->attributes['zip_code'] = preg_replace('/[^0-9]/', '', $value);
     }

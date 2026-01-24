@@ -71,8 +71,8 @@ const CustomerFormModal = ({ customer, onClose, onSave }: CustomerFormModalProps
       const dataToSend = {
         ...data,
         document: cleanDocument(data.document),
-        phone: data.phone ? cleanDocument(data.phone) : undefined,
-        segment_id: data.segment_id || null,
+        phone: data.phone && data.phone.trim() ? cleanDocument(data.phone) : undefined,
+        segment_id: data.segment_id || undefined,
       };
 
       if (customer) {

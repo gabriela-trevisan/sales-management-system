@@ -224,6 +224,55 @@
                 ]
             }
         },
+        "/api/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Atualizar token de autenticação",
+                "description": "Gera um novo token JWT e revoga o token atual",
+                "operationId": "8cffcc0179c8e9de50790b9c19e07623",
+                "responses": {
+                    "200": {
+                        "description": "Token renovado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "2|xyz789..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/dashboard/metrics": {
             "get": {
                 "tags": [
@@ -829,6 +878,463 @@
                     }
                 ]
             }
+        },
+        "/api/product-categories": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Listar categorias de produtos",
+                "description": "Retorna lista de todas as categorias de produtos disponíveis",
+                "operationId": "e20346c2551bb89989ddb0281de413d9",
+                "responses": {
+                    "200": {
+                        "description": "Lista de categorias",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Desenvolvimento"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Serviços de desenvolvimento de software",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Listar produtos",
+                "description": "Retorna lista paginada de produtos com filtros opcionais",
+                "operationId": "fc42a5b5141e6f85607354e1b5083caf",
+                "parameters": [
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "description": "Filtrar por status (true/false)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Filtrar por categoria (ID)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Buscar por nome, SKU ou descrição",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de produtos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Criar novo produto",
+                "description": "Cria um novo produto no sistema",
+                "operationId": "a052723c65b2fa38c67191a8f3c0f5f7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "sku",
+                                    "base_price",
+                                    "unit"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Hora de Desenvolvimento Senior"
+                                    },
+                                    "sku": {
+                                        "type": "string",
+                                        "example": "DEV-SENIOR-HOUR"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Hora de desenvolvimento com profissional sênior",
+                                        "nullable": true
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "base_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 250
+                                    },
+                                    "cost_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 150,
+                                        "nullable": true
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "enum": [
+                                            "unit",
+                                            "kg",
+                                            "liter",
+                                            "meter",
+                                            "hour",
+                                            "month"
+                                        ],
+                                        "example": "hour"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "requires_approval": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "specifications": {
+                                        "type": "object",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Produto criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Produto criado com sucesso"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "422": {
+                        "description": "Dados inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Detalhes do produto",
+                "description": "Retorna os detalhes de um produto específico",
+                "operationId": "51a95efc31e34f7530aa0255d40b0cb8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do produto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Atualizar produto",
+                "description": "Atualiza os dados de um produto existente",
+                "operationId": "3ebf8c85dccab899731f71c4203e2fb3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "sku": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "base_price": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "cost_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "nullable": true
+                                    },
+                                    "unit": {
+                                        "type": "string"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    },
+                                    "requires_approval": {
+                                        "type": "boolean"
+                                    },
+                                    "specifications": {
+                                        "type": "object",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Produto atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Produto atualizado com sucesso"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Product"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    },
+                    "422": {
+                        "description": "Dados inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Deletar produto",
+                "description": "Remove um produto do sistema (soft delete)",
+                "operationId": "03d070a3af0e22568213dc041cb5cc84",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produto deletado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Produto deletado com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -914,6 +1420,97 @@
                     }
                 },
                 "type": "object"
+            },
+            "Product": {
+                "title": "Product",
+                "description": "Modelo de Produto",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Hora de Desenvolvimento Senior"
+                    },
+                    "sku": {
+                        "type": "string",
+                        "example": "DEV-SENIOR-HOUR"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Hora de desenvolvimento com profissional sênior",
+                        "nullable": true
+                    },
+                    "category": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Desenvolvimento"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "base_price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 250
+                    },
+                    "cost_price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150,
+                        "nullable": true
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": [
+                            "unit",
+                            "kg",
+                            "liter",
+                            "meter",
+                            "hour",
+                            "month"
+                        ],
+                        "example": "hour"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "requires_approval": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "specifications": {
+                        "type": "object",
+                        "example": {
+                            "skill_level": "senior",
+                            "technologies": [
+                                "PHP",
+                                "Laravel",
+                                "React"
+                            ]
+                        },
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-23T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-23T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -936,6 +1533,10 @@
         {
             "name": "Dashboard",
             "description": "Métricas e dados do dashboard"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
         }
     ]
 }

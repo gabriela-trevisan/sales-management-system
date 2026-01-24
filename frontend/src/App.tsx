@@ -5,6 +5,7 @@ import { PrivateRoute } from '@/features/auth/components/PrivateRoute';
 import { Layout } from '@/components/layout/Layout';
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import CustomerListPage from '@/features/customers/pages/CustomerListPage';
+import ProductListPage from '@/features/products/pages/ProductListPage';
 
 function App() {
   return (
@@ -30,6 +31,17 @@ function App() {
               <PrivateRoute>
                 <Layout>
                   <CustomerListPage />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          
+          <Route
+            path="/products"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <ProductListPage />
                 </Layout>
               </PrivateRoute>
             }

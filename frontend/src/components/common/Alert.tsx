@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface AlertProps {
   type?: 'success' | 'error' | 'warning' | 'info';

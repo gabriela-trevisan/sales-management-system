@@ -25,7 +25,7 @@ class CustomerContact extends Model
      * 
      * Converte para minúsculas e remove espaços.
      */
-    public function setEmailAttribute($value): void
+    public function setEmailAttribute(?string $value): void
     {
         $this->attributes['email'] = strtolower(trim($value));
     }
@@ -35,7 +35,7 @@ class CustomerContact extends Model
      * 
      * Armazena apenas números.
      */
-    public function setPhoneAttribute($value): void
+    public function setPhoneAttribute(?string $value): void
     {
         $this->attributes['phone'] = $value ? preg_replace('/[^0-9]/', '', $value) : null;
     }

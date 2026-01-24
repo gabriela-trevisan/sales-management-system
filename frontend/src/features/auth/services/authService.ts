@@ -1,5 +1,5 @@
 import api from '@/services/api';
-import { LoginCredentials, AuthResponse, User } from '@/types/auth';
+import type { LoginCredentials, AuthResponse, User } from '@/types/auth';
 
 /**
  * Serviço de autenticação.

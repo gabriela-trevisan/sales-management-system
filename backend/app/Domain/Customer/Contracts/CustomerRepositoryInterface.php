@@ -18,16 +18,27 @@ interface CustomerRepositoryInterface
 
     /**
      * Get all customers with optional filters
+     *
+     * @param array<string, mixed> $filters
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, Customer>
      */
     public function getAll(array $filters = [], int $perPage = 15);
 
     /**
      * Create a new customer
+     *
+     * @param array<string, mixed> $data
+     * @return Customer
      */
     public function create(array $data): Customer;
 
     /**
      * Update a customer
+     *
+     * @param int $id
+     * @param array<string, mixed> $data
+     * @return Customer
      */
     public function update(int $id, array $data): Customer;
 

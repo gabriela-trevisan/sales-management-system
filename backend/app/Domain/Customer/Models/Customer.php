@@ -16,6 +16,8 @@ class Customer extends Model implements Auditable
      * Atributos auditados (LGPD compliance).
      * 
      * Registra mudanças em dados pessoais conforme Art. 46 LGPD.
+     *
+     * @var array<int, string>
      */
     protected $auditInclude = [
         'name',
@@ -29,6 +31,8 @@ class Customer extends Model implements Auditable
 
     /**
      * Apenas campos modificados são auditados (performance).
+     *
+     * @var bool
      */
     protected $auditTimestamps = false;
 
@@ -52,7 +56,7 @@ class Customer extends Model implements Auditable
      * 
      * Armazena apenas números (CPF: 11 dígitos, CNPJ: 14 dígitos).
      */
-    public function setDocumentAttribute($value): void
+    public function setDocumentAttribute(string $value): void
     {
         $this->attributes['document'] = preg_replace('/[^0-9]/', '', $value);
     }
@@ -62,7 +66,7 @@ class Customer extends Model implements Auditable
      * 
      * Converte para minúsculas e remove espaços.
      */
-    public function setEmailAttribute($value): void
+    public function setEmailAttribute(string $value): void
     {
         $this->attributes['email'] = strtolower(trim($value));
     }
@@ -72,7 +76,7 @@ class Customer extends Model implements Auditable
      * 
      * Armazena apenas números (fixo: 10 dígitos, celular: 11 dígitos).
      */
-    public function setPhoneAttribute($value): void
+    public function setPhoneAttribute(?string $value): void
     {
         $this->attributes['phone'] = $value ? preg_replace('/[^0-9]/', '', $value) : null;
     }
@@ -110,10 +114,14 @@ class Customer extends Model implements Auditable
     }
 
     /**
-     * Get the opportunities for the customer
+     * Get the opportunities for the customer.
+     * 
+     * TODO: Implementar quando o módulo Opportunities (Module 4) for criado.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function opportunities()
-    {
-        return $this->hasMany(\App\Domain\Sales\Models\Opportunity::class);
-    }
+    // public function opportunities()
+    // {
+    //     return $this->hasMany(\App\Domain\Sales\Models\Opportunity::class);
+    // }
 }

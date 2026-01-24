@@ -19,6 +19,8 @@ class User extends Authenticatable implements Auditable
      * Atributos auditados (segurança).
      * 
      * Audita mudanças em dados de autenticação e perfil.
+     *
+     * @var array<int, string>
      */
     protected $auditInclude = [
         'name',
@@ -28,6 +30,8 @@ class User extends Authenticatable implements Auditable
 
     /**
      * Não auditar timestamps para performance.
+     *
+     * @var bool
      */
     protected $auditTimestamps = false;
 
@@ -68,7 +72,7 @@ class User extends Authenticatable implements Auditable
     /**
      * Mutator: Converte email para lowercase antes de salvar
      */
-    public function setEmailAttribute($value): void
+    public function setEmailAttribute(string $value): void
     {
         $this->attributes['email'] = strtolower(trim($value));
     }

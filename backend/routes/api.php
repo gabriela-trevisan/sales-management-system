@@ -15,6 +15,8 @@ use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\Dashboard\DashboardController;
 use App\Presentation\Http\Controllers\API\Customer\CustomerController;
 use App\Presentation\Http\Controllers\API\Customer\CustomerSegmentController;
+use App\Presentation\Http\Controllers\API\Product\ProductController;
+use App\Presentation\Http\Controllers\API\Product\ProductCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +36,7 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
 
     Route::get('customer-segments', [CustomerSegmentController::class, 'index']);
     Route::apiResource('customers', CustomerController::class);
+    
+    Route::get('product-categories', [ProductCategoryController::class, 'index']);
+    Route::apiResource('products', ProductController::class);
 });

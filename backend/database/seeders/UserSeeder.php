@@ -14,20 +14,24 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Admin
-        User::create([
-            'name' => 'Administrador',
-            'email' => 'admin@salesmanagement.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@salesmanagement.com'],
+            [
+                'name' => 'Administrador',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Gerente de Vendas
-        User::create([
-            'name' => 'Carlos Silva',
-            'email' => 'carlos.silva@salesmanagement.com',
-            'password' => Hash::make('password'),
-            'email_verified_at' => now(),
-        ]);
+        User::firstOrCreate(
+            ['email' => 'carlos.silva@salesmanagement.com'],
+            [
+                'name' => 'Carlos Silva',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // Vendedores
         $vendedores = [
@@ -39,12 +43,14 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($vendedores as $vendedor) {
-            User::create([
-                'name' => $vendedor['name'],
-                'email' => $vendedor['email'],
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]);
+            User::firstOrCreate(
+                ['email' => $vendedor['email']],
+                [
+                    'name' => $vendedor['name'],
+                    'password' => Hash::make('password'),
+                    'email_verified_at' => now(),
+                ]
+            );
         }
     }
 }

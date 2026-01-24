@@ -20,6 +20,7 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 
 - 📊 **Pipeline de Vendas Consultivo**: Prospecção → Discovery → Proposta Técnica → Negociação → Contrato → Ganho
 - 👥 **CRUD Completo de Clientes B2B**: Segmentação por setor com filtros, paginação e validação
+- 📦 **CRUD Completo de Produtos**: Catálogo de serviços com categorias, preços e unidades
 - ✨ **Validação de Formulários**: react-hook-form + Zod + react-imask com máscaras dinâmicas
 - 🛡️ **Validação de CPF/CNPJ**: Algoritmo com dígitos verificadores
 - 🏢 **Segmentação por Setor**: Indústria, Financeiro, Varejo, Saúde, Logística, Educação
@@ -53,17 +54,17 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 - **PHPUnit** 11.x
 
 ### Frontend
-- **React** 19.x
-- **TypeScript** 5.x
-- **Vite** 7.3
+- **React** 19.2.0
+- **TypeScript** 5.9.3
+- **Vite** 7.2.4
 - **Tailwind CSS** 4.1.18 (v4 com @tailwindcss/postcss)
-- **TanStack Query** 5.x (State Management + Cache)
-- **React Hook Form** 7.x (Form Management)
-- **Zod** 4.x (Schema Validation)
-- **React IMask** 7.x (Input Masks)
-- **Recharts** (Dashboard Charts)
-- **Lucide React** (Icons)
-- **Axios** (HTTP Client + Auto Refresh Interceptor)
+- **TanStack Query** 5.90.20 (State Management + Cache)
+- **React Hook Form** 7.71.1 (Form Management)
+- **Zod** 4.3.5 (Schema Validation)
+- **React IMask** 7.6.1 (Input Masks)
+- **Recharts** 3.6.0 (Dashboard Charts)
+- **Lucide React** 0.562.0 (Icons)
+- **Axios** 1.13.2 (HTTP Client + Auto Refresh Interceptor)
 
 ### Infraestrutura
 - **Docker** & **Docker Compose**
@@ -357,6 +358,11 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 - ✅ **Swagger/OpenAPI**: Documentação completa de todos os endpoints
 - ✅ **DDD Architecture**: Backend organizado em Domain, Application, Infrastructure e Presentation
 - ✅ **Type Safety**: TypeScript com inferência automática de tipos via Zod schemas
+- ✅ **CRUD de Produtos**: Listagem com filtros, criação, edição, exclusão, validação dupla e paginação
+- ✅ **Catálogo de Serviços**: 8 categorias, 6 tipos de unidade, SKU validado, preços e specifications
+- ✅ **TypeScript Moderno**: Type-only imports com verbatimModuleSyntax
+- ✅ **Auto Refresh Token**: Interceptor Axios com renovação automática de JWT
+- ✅ **Docker Compose v2+**: Sem warnings, compatível com versões mais recentes
 - ✅ **Documentação Padronizada**: PHPDoc e JSDoc/TSDoc
 - ✅ **Componentes UI Reutilizáveis**: ConfirmDialog moderno com 3 variantes (danger, warning, info)
 - ✅ **Código Limpo**: Sem comentários redundantes, documentação concisa e informativa

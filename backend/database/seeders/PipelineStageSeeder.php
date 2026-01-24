@@ -58,16 +58,23 @@ class PipelineStageSeeder extends Seeder
         ];
 
         foreach ($stages as $stage) {
-            DB::table('pipeline_stages')->insert([
-                'name' => $stage['name'],
-                'description' => $stage['description'],
-                'order' => $stage['order'],
-                'probability' => $stage['probability'],
-                'color' => $stage['color'],
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            // Verifica se já existe antes de inserir
+            $exists = DB::table('pipeline_stages')
+                ->where('name', $stage['name'])
+                ->exists();
+
+            if (!$exists) {
+                DB::table('pipeline_stages')->insert([
+                    'name' => $stage['name'],
+                    'description' => $stage['description'],
+                    'order' => $stage['order'],
+                    'probability' => $stage['probability'],
+                    'color' => $stage['color'],
+                    'is_active' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
     }
 }

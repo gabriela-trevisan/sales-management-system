@@ -49,6 +49,8 @@ class AuditLog extends Model
 
     /**
      * Relacionamento com usuário que executou a ação
+     *
+     * @return BelongsTo<User, AuditLog>
      */
     public function user(): BelongsTo
     {
@@ -57,6 +59,8 @@ class AuditLog extends Model
 
     /**
      * Relacionamento polimórfico com o modelo auditado
+     *
+     * @return MorphTo<Model, AuditLog>
      */
     public function auditable(): MorphTo
     {
@@ -65,6 +69,12 @@ class AuditLog extends Model
 
     /**
      * Helper: Criar log de auditoria
+     *
+     * @param string $event
+     * @param Model|null $model
+     * @param array<string, mixed>|null $oldValues
+     * @param array<string, mixed>|null $newValues
+     * @return void
      */
     public static function log(
         string $event,
@@ -78,7 +88,7 @@ class AuditLog extends Model
             'event' => $event,
             'auditable_type' => $model ? get_class($model) : null,
             'auditable_id' => $model?->id,
-            'user_id' => auth()->id(),
+            'user_id' => auth()->check() ? auth()->id() : null,
             'old_values' => $oldValues,
             'new_values' => $newValues,
             'ip_address' => $request->ip(),

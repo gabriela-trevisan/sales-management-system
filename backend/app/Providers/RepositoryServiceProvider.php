@@ -8,22 +8,26 @@ use Illuminate\Support\ServiceProvider;
 use App\Domain\Customer\Contracts\CustomerRepositoryInterface;
 use App\Infrastructure\Repositories\EloquentCustomerRepository;
 
+// Product
+use App\Domain\Product\Contracts\ProductRepositoryInterface;
+use App\Infrastructure\Repositories\EloquentProductRepository;
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     /**
      * All of the container bindings that should be registered.
      *
-     * @var array
+     * @var array<class-string, class-string>
      */
     public $bindings = [
         // Customer Domain
         CustomerRepositoryInterface::class => EloquentCustomerRepository::class,
         
+        // Product Domain
+        ProductRepositoryInterface::class => EloquentProductRepository::class,
+        
         // Sales Domain (to be added)
         // OpportunityRepositoryInterface::class => EloquentOpportunityRepository::class,
-        
-        // Product Domain (to be added)
-        // ProductRepositoryInterface::class => EloquentProductRepository::class,
     ];
 
     /**

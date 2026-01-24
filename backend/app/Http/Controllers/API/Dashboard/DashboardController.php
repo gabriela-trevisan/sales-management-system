@@ -193,7 +193,7 @@ class DashboardController extends Controller
             )
             ->whereNotNull('opportunities.assigned_to')
             ->orderBy('opportunities.created_at', 'desc')
-            ->limit(ceil($limit / 2))
+            ->limit((int) ceil($limit / 2))
             ->get();
 
         // Buscar últimos clientes cadastrados
@@ -206,7 +206,7 @@ class DashboardController extends Controller
                 'customers.created_at'
             )
             ->orderBy('customers.created_at', 'desc')
-            ->limit(ceil($limit / 2))
+            ->limit((int) ceil($limit / 2))
             ->get();
 
         // Combinar e ordenar por data

@@ -17,6 +17,11 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
         return Customer::where('document', $document)->first();
     }
 
+    /**
+     * @param array<string, mixed> $filters
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, Customer>
+     */
     public function getAll(array $filters = [], int $perPage = 15)
     {
         $query = Customer::with(['assignedUser', 'segment']);
@@ -48,11 +53,20 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
         return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @return Customer
+     */
     public function create(array $data): Customer
     {
         return Customer::create($data);
     }
 
+    /**
+     * @param int $id
+     * @param array<string, mixed> $data
+     * @return Customer
+     */
     public function update(int $id, array $data): Customer
     {
         $customer = $this->findById($id);

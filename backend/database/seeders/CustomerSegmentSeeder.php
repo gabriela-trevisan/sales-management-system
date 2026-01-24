@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Customer\Models\CustomerSegment;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class CustomerSegmentSeeder extends Seeder
 {
@@ -63,6 +63,14 @@ class CustomerSegmentSeeder extends Seeder
             ],
         ];
 
-        DB::table('customer_segments')->insert($segments);
+        foreach ($segments as $segment) {
+            CustomerSegment::firstOrCreate(
+                ['name' => $segment['name']],
+                [
+                    'description' => $segment['description'],
+                    'criteria' => $segment['criteria'],
+                ]
+            );
+        }
     }
 }

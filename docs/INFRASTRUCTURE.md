@@ -1,7 +1,5 @@
 # Infraestrutura Técnica - Sales Management System
 
-**Última atualização:** 24 de Janeiro de 2026
-
 ---
 
 ## 🐳 Docker Compose

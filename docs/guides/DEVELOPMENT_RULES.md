@@ -1,7 +1,5 @@
 # Regras e Objetivos do Projeto
 
-**Última atualização:** 24 de Janeiro de 2026
-
 ---
 
 ## 📝 Regras de Desenvolvimento
@@ -120,8 +118,6 @@
 - ✅ Boas práticas (documentação, segurança)
 - ✅ Entendimento de negócio (nicho real)
 - ✅ UI/UX moderna e responsiva
-
-**Target:** Impressionar recrutadores tech leads/sêniors
 
 ---
 

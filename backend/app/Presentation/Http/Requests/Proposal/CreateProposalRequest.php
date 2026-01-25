@@ -29,7 +29,7 @@ class CreateProposalRequest extends FormRequest
     {
         return [
             'customer_id' => ['required', 'integer', 'exists:customers,id'],
-            'opportunity_id' => ['nullable', 'integer', 'exists:opportunities,id'],
+            'opportunity_id' => ['nullable', 'integer'], // TODO: Adicionar 'exists:opportunities,id' quando Module 4 implementado
             'issue_date' => ['required', 'date', 'date_format:Y-m-d'],
             'expiration_date' => ['required', 'date', 'date_format:Y-m-d', 'after:issue_date'],
             'notes' => ['nullable', 'string', 'max:5000'],

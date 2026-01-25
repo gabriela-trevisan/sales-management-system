@@ -1,7 +1,6 @@
 # Module 0: Infraestrutura Base
 
-**Status:** ✅ 100% Completo  
-**Última atualização:** 24 de Janeiro de 2026
+**Status:** ✅ 100% Completo
 
 ---
 

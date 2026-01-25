@@ -1,8 +1,6 @@
 # Module 6: Proposals (Propostas Técnicas)
 
-**Status:** ✅ Completo - 100%  
-**Data de Início:** 24 de Janeiro de 2026  
-**Última atualização:** 25 de Janeiro de 2026
+**Status:** ✅ Completo - 100%
 
 ---
 
@@ -134,7 +132,7 @@ Sistema de gerenciamento de propostas técnicas/comerciais com:
 - Form Request de criação
 - **Regras:**
   - `customer_id`: required, exists:customers
-  - `opportunity_id`: nullable, exists:opportunities (futuro)
+  - `opportunity_id`: nullable, integer (validação `exists:opportunities` comentada até Module 4)
   - `title`: required, string, max:255
   - `description`: nullable, string
   - `status`: required, enum (draft, sent, accepted, rejected, expired)
@@ -577,30 +575,4 @@ DELETE /api/proposals/{id}
 
 ---
 
-## 🎯 Próximos Passos
-
-1. **Implementar ProposalViewPage** (10% do módulo)
-   - Criar componente de visualização
-   - Formatação profissional
-   - Botões de ação
-
-2. **Geração de PDF** (10% do módulo)
-   - Instalar dompdf
-   - Criar template Blade
-   - Endpoint para download   - Botão "Baixar PDF" funcional
-3. **Email Sending** (5% do módulo)
-   - Configure mail service
-   - Template de email
-   - Endpoint para envio
-   - Botão "Enviar por Email" funcional
-
-3. **Versioning** (5% do módulo)
-   - Migration para versions
-   - Lógica de versionamento
-   - Interface de comparação
-
-**Completude Estimada:** 100% em 3-4 horas de desenvolvimento.
-
----
-
-_Module 6 está 80% completo e funcional para uso completo de CRUD + visualização. As features pendentes (PDF, Email, Versionamento) são melhorias para torná-lo production-ready._
+_Module 6 implementa CRUD completo de propostas com PDF e Email integrados._

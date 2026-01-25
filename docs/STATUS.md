@@ -1,6 +1,5 @@
 # Status do Projeto - Sales Management System
 
-**Última atualização:** 25 de Janeiro de 2026  
 **Versão:** 0.6.0  
 **Nicho:** Consultoria e Desenvolvimento de Software Customizado
 
@@ -105,4 +104,4 @@ Sistema completo de CRM para **portfólio profissional no GitHub**, demonstrando
 - ✅ LGPD compliance com auditoria automática
 - ✅ UI/UX profissional e responsiva
 
-**Target:** Impressionar recrutadores com código production-ready.
+---

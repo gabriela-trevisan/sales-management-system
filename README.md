@@ -1,6 +1,6 @@
 # 🚀 Sales Management System
 
-> **Portfolio Project** | Desenvolvido por **Gabriela Trevisan**  
+> **Portfolio Project** | Desenvolvido por **Gabriela Trevisan Leturiondo**  
 > Sistema completo de gestão de vendas e CRM para demonstração de habilidades em arquitetura de software, boas práticas e tecnologias modernas.
 
 Sistema completo de gestão de vendas e CRM desenvolvido com Laravel 11, React 19 e TypeScript.  

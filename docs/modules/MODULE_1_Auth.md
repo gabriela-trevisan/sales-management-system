@@ -1,7 +1,6 @@
 # Module 1: Autenticação e Layout
 
-**Status:** ✅ 100% Completo  
-**Última atualização:** 24 de Janeiro de 2026
+**Status:** ✅ 100% Completo
 
 ---
 

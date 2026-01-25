@@ -1,6 +1,5 @@
 # Segurança - OWASP + LGPD Compliance
 
-**Última atualização:** 24 de Janeiro de 2026  
 **Conformidade:** OWASP Top 10 2021 + LGPD
 
 ---

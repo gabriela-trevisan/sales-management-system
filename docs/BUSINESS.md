@@ -1,7 +1,5 @@
 # Modelo de Negócio - Sales Management System
 
-**Última atualização:** 24 de Janeiro de 2026
-
 ---
 
 ## 🎯 Definição do Negócio

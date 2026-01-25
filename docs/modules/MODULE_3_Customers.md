@@ -1,7 +1,6 @@
 # Module 3: CRUD de Clientes
 
-**Status:** ✅ 100% Completo  
-**Última atualização:** 24 de Janeiro de 2026
+**Status:** ✅ 100% Completo
 
 ---
 
@@ -74,8 +73,8 @@ protected function setEmailAttribute($value) {
 ```
 
 **Armazenamento:**
-- CPF/CNPJ: apenas números (11 ou 14 dígitos)
-- Telefone: apenas números (10 ou 11 dígitos)
+- CPF/CNPJ: apenas números (11 ou 14 dígitos) - campo `document` max:14
+- Telefone: apenas números (10 ou 11 dígitos) - campo `phone` max:11
 - CEP: apenas números (8 dígitos)
 - Email: lowercase automático
 

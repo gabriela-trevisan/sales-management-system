@@ -1,7 +1,6 @@
 # Module 5: CRUD de Produtos
 
-**Status:** ✅ 100% Completo  
-**Data:** 24 de Janeiro de 2026
+**Status:** ✅ 100% Completo
 
 ---
 

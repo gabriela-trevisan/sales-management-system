@@ -1,7 +1,5 @@
 # Comandos Úteis
 
-**Última atualização:** 24 de Janeiro de 2026
-
 ---
 
 ## 🐳 Docker

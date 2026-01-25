@@ -1,7 +1,5 @@
 # Performance - Otimizações e Cache
 
-**Última atualização:** 24 de Janeiro de 2026
-
 ---
 
 ## 📊 Estratégia de Performance

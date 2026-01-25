@@ -25,9 +25,9 @@ class CreateCustomerRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'document' => ['required', 'string', 'max:20', 'unique:customers,document'],
+            'document' => ['required', 'string', 'max:14', 'unique:customers,document'],
             'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'string', 'max:11'],
             'status' => ['in:active,inactive,prospect,churned'],
             'segment_id' => ['nullable', 'exists:customer_segments,id'],
             'assigned_to' => ['nullable', 'exists:users,id'],

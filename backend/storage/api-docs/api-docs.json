@@ -1335,6 +1335,387 @@
                     }
                 ]
             }
+        },
+        "/api/proposals": {
+            "get": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Listar propostas",
+                "description": "List all proposals with optional filters.",
+                "operationId": "8be1f48966f0d6093c72ef42b5ba7f48",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "draft",
+                                "sent",
+                                "approved",
+                                "rejected",
+                                "expired"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "customer_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de propostas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Proposal"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Criar nova proposta",
+                "description": "Create a new proposal.",
+                "operationId": "e2551b592a01b4296bca80a497b96acd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "customer_id",
+                                    "issue_date",
+                                    "expiration_date",
+                                    "status",
+                                    "items"
+                                ],
+                                "properties": {
+                                    "customer_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "opportunity_id": {
+                                        "type": "integer",
+                                        "example": null,
+                                        "nullable": true
+                                    },
+                                    "issue_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-24"
+                                    },
+                                    "expiration_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-02-24"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Proposta para desenvolvimento de sistema",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "draft",
+                                            "sent",
+                                            "approved",
+                                            "rejected",
+                                            "expired"
+                                        ],
+                                        "example": "draft"
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "product_id",
+                                                "quantity",
+                                                "unit_price"
+                                            ],
+                                            "properties": {
+                                                "product_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Customização do módulo",
+                                                    "nullable": true
+                                                },
+                                                "quantity": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "unit_price": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 250
+                                                },
+                                                "discount_percentage": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Proposta criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Proposal"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/proposals/{id}": {
+            "get": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Obter detalhes da proposta",
+                "description": "Show a specific proposal.",
+                "operationId": "1714db4c6a286db46adb6f14ace9b360",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes da proposta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Proposal"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Proposta não encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Atualizar proposta",
+                "description": "Update an existing proposal.",
+                "operationId": "c2470dab4ae8ed90b87df84f2b2711f4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "customer_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "opportunity_id": {
+                                        "type": "integer",
+                                        "example": null,
+                                        "nullable": true
+                                    },
+                                    "issue_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-24"
+                                    },
+                                    "expiration_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-02-24"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "draft",
+                                            "sent",
+                                            "approved",
+                                            "rejected",
+                                            "expired"
+                                        ]
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "product_id": {
+                                                    "type": "integer"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "quantity": {
+                                                    "type": "integer"
+                                                },
+                                                "unit_price": {
+                                                    "type": "number",
+                                                    "format": "float"
+                                                },
+                                                "discount_percentage": {
+                                                    "type": "number",
+                                                    "format": "float"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Proposta atualizada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Proposal"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Proposta não encontrada"
+                    },
+                    "422": {
+                        "description": "Erro de validação"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Excluir proposta",
+                "description": "Delete a proposal.",
+                "operationId": "789436d6d1550cc4356bd0fc7a7f5e27",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Proposta excluída com sucesso"
+                    },
+                    "404": {
+                        "description": "Proposta não encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1511,6 +1892,211 @@
                     }
                 },
                 "type": "object"
+            },
+            "Proposal": {
+                "title": "Proposal",
+                "description": "Proposta comercial",
+                "required": [
+                    "id",
+                    "number",
+                    "customer_id",
+                    "issue_date",
+                    "expiration_date",
+                    "status",
+                    "subtotal",
+                    "discount",
+                    "total",
+                    "created_by"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Proposal Schema for OpenAPI/Swagger documentation.",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "number": {
+                        "type": "string",
+                        "example": "PROP-2026-0001"
+                    },
+                    "customer_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "customer": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Empresa XYZ Ltda"
+                            },
+                            "document": {
+                                "type": "string",
+                                "example": "12345678000190"
+                            },
+                            "email": {
+                                "type": "string",
+                                "example": "contato@empresa.com"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "opportunity_id": {
+                        "type": "integer",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "issue_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-01-24"
+                    },
+                    "expiration_date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2026-02-24"
+                    },
+                    "notes": {
+                        "type": "string",
+                        "example": "Proposta para desenvolvimento de sistema customizado",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "sent",
+                            "approved",
+                            "rejected",
+                            "expired"
+                        ],
+                        "example": "draft"
+                    },
+                    "subtotal": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 10000
+                    },
+                    "discount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1000
+                    },
+                    "total": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 9000
+                    },
+                    "created_by": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "creator": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Admin User"
+                            },
+                            "email": {
+                                "type": "string",
+                                "example": "admin@salesmanagement.com"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "proposal_id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "product_id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "product": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Desenvolvedor Sênior"
+                                        },
+                                        "sku": {
+                                            "type": "string",
+                                            "example": "DEV-SENIOR"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "example": "Customização do módulo de vendas",
+                                    "nullable": true
+                                },
+                                "quantity": {
+                                    "type": "integer",
+                                    "example": 40
+                                },
+                                "unit_price": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 250
+                                },
+                                "discount_percentage": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 10
+                                },
+                                "total": {
+                                    "type": "number",
+                                    "format": "float",
+                                    "example": 9000
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "is_expired": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "can_be_edited": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-24T10:30:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-01-24T10:30:00.000000Z"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -1533,6 +2119,10 @@
         {
             "name": "Dashboard",
             "description": "Métricas e dados do dashboard"
+        },
+        {
+            "name": "Proposals",
+            "description": "Gerenciamento de propostas comerciais"
         },
         {
             "name": "Products",

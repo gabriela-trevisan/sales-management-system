@@ -6,6 +6,8 @@ import { Layout } from '@/components/layout/Layout';
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage';
 import CustomerListPage from '@/features/customers/pages/CustomerListPage';
 import ProductListPage from '@/features/products/pages/ProductListPage';
+import ProposalListPage from '@/features/proposals/pages/ProposalListPage';
+import ProposalViewPage from '@/features/proposals/pages/ProposalViewPage';
 
 function App() {
   return (
@@ -42,6 +44,28 @@ function App() {
               <PrivateRoute>
                 <Layout>
                   <ProductListPage />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          
+          <Route
+            path="/proposals"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <ProposalListPage />
+                </Layout>
+              </PrivateRoute>
+            }
+          />
+          
+          <Route
+            path="/proposals/:id"
+            element={
+              <PrivateRoute>
+                <Layout>
+                  <ProposalViewPage />
                 </Layout>
               </PrivateRoute>
             }

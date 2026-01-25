@@ -17,6 +17,7 @@ use App\Presentation\Http\Controllers\API\Customer\CustomerController;
 use App\Presentation\Http\Controllers\API\Customer\CustomerSegmentController;
 use App\Presentation\Http\Controllers\API\Product\ProductController;
 use App\Presentation\Http\Controllers\API\Product\ProductCategoryController;
+use App\Presentation\Http\Controllers\API\Proposal\ProposalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,4 +40,8 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     
     Route::get('product-categories', [ProductCategoryController::class, 'index']);
     Route::apiResource('products', ProductController::class);
+    
+    Route::apiResource('proposals', ProposalController::class);
+    Route::get('proposals/{id}/pdf', [ProposalController::class, 'downloadPdf']);
+    Route::post('proposals/{id}/send-email', [ProposalController::class, 'sendEmail']);
 });

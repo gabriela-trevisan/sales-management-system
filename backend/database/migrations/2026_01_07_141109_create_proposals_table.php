@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('proposals', function (Blueprint $table) {
             $table->id();
             $table->string('number')->unique(); // Número da proposta
-            $table->foreignId('opportunity_id')->nullable()->constrained()->nullOnDelete();
+            $table->unsignedBigInteger('opportunity_id')->nullable(); // Sem FK constraint - tabela ainda não existe
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->date('issue_date');
             $table->date('expiration_date');
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
+            $table->index('opportunity_id'); // Índice para pesquisas
             $table->index(['customer_id', 'status']);
             $table->index('issue_date');
         });

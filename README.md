@@ -1,5 +1,8 @@
 # 🚀 Sales Management System
 
+> **Portfolio Project** | Desenvolvido por **Gabriela Trevisan**  
+> Sistema completo de gestão de vendas e CRM para demonstração de habilidades em arquitetura de software, boas práticas e tecnologias modernas.
+
 Sistema completo de gestão de vendas e CRM desenvolvido com Laravel 11, React 19 e TypeScript.  
 **Nicho:** Consultoria e Desenvolvimento de Software Customizado
 
@@ -10,6 +13,8 @@ Sistema completo de gestão de vendas e CRM desenvolvido com Laravel 11, React 1
 [![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](https://vitejs.dev)
 [![Zod](https://img.shields.io/badge/Zod-4-3E67B1?logo=zod&logoColor=white)](https://zod.dev)
 [![Documentation](https://img.shields.io/badge/Docs-PHPDoc%20%2B%20JSDoc-blue)](https://github.com)
+
+> 📚 **Documentação Completa:** Veja [docs/STATUS.md](docs/STATUS.md) para status detalhado do projeto e navegação para módulos específicos.
 
 ---
 
@@ -209,7 +214,7 @@ sales-management-system/
 ├── docker/
 │   └── nginx/             # Configurações Nginx
 ├── docker-compose.yml     # Orquestração de 6 containers
-├── PROJECT_STATUS.md      # Status detalhado e atualizado do projeto
+├── docs/                  # Documentação modular do projeto
 ├── PORTFOLIO_PROJECTS_PLAN.md  # Planejamento de todos os projetos do portfólio
 └── README.md              # Este arquivo
 ```
@@ -330,6 +335,21 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 - `DELETE /api/customers/{id}` - Remover cliente
 - `GET /api/customer-segments` - Listar segmentos disponíveis
 
+**Produtos:**
+- `GET /api/products` - Listar produtos com filtros e paginação
+- `POST /api/products` - Criar novo produto
+- `GET /api/products/{id}` - Buscar produto por ID
+- `PUT /api/products/{id}` - Atualizar produto
+- `DELETE /api/products/{id}` - Remover produto
+- `GET /api/product-categories` - Listar categorias disponíveis
+
+**Propostas:**
+- `GET /api/proposals` - Listar propostas com filtros e paginação
+- `POST /api/proposals` - Criar nova proposta
+- `GET /api/proposals/{id}` - Buscar proposta por ID
+- `PUT /api/proposals/{id}` - Atualizar proposta
+- `DELETE /api/proposals/{id}` - Remover proposta
+
 **Credenciais de Teste:**
 - Email: `admin@salesmanagement.com`
 - Senha: `password`
@@ -345,41 +365,71 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 - ✅ **LoginPage Redesenhado**: Layout split screen moderno com features showcase
 - ✅ **Dashboard Completo**: 4 cards de métricas, LineChart de vendas mensais (Recharts), BarChart de pipeline por estágio, timeline de atividades recentes
 - ✅ **CRUD de Clientes**: Listagem com filtros, criação, edição, exclusão com confirmação moderna, validação profissional e paginação
+- ✅ **CRUD de Produtos**: Listagem com filtros, criação, edição, exclusão, validação dupla e paginação
+- ✅ **CRUD de Propostas** (70%): Listagem, criação, edição com modal completo, gestão dinâmica de itens
+- ✅ **ProposalFormModal**: Modal profissional com useFieldArray, cálculos em tempo real, auto-preenchimento de preço
+- ✅ **Gestão Dinâmica de Itens**: Add/remove produtos, cálculo automático de subtotal/desconto/total
 - ✅ **Validação Profissional**: react-hook-form + Zod + react-imask com máscaras dinâmicas (CPF↔CNPJ, telefone fixo↔celular)
 - ✅ **Validação de CPF/CNPJ**: Algoritmo com dígitos verificadores (Receita Federal)
-- ✅ **Feedback em Tempo Real**: Erros exibidos enquanto usuário digita com mensagens em português
 - ✅ **Auto-atribuição de Responsável**: Cliente automaticamente vinculado ao usuário que criou
-- ✅ **Proteção de Dados**: Campo responsible protegido contra alteração (regra de negócio)
-- ✅ **Seeders com Dados Válidos**: CNPJs matematicamente corretos (11.222.333/0001-81, 11.444.777/0001-61, etc)
 - ✅ **Segmentação**: 6 segmentos por setor (Indústria, Financeiro, Varejo, Saúde, Logística, Educação)
-- ✅ **Validação Dupla**: Frontend valida antes de enviar, backend valida novamente
-- ✅ **Formatação de Dados**: Mutators para sanitização automática, formatters para exibição
-- ✅ **Busca Otimizada**: Search funciona com ou sem formatação de CPF/CNPJ
-- ✅ **Swagger/OpenAPI**: Documentação completa de todos os endpoints
+- ✅ **Catálogo de Serviços**: 8 categorias, 6 tipos de unidade, SKU validado, preços e specifications
+- ✅ **TypeScript Moderno**: Type-only imports com verbatimModuleSyntax, React Compiler compatible
+- ✅ **Auto Refresh Token**: Interceptor Axios com renovação automática de JWT
 - ✅ **DDD Architecture**: Backend organizado em Domain, Application, Infrastructure e Presentation
 - ✅ **Type Safety**: TypeScript com inferência automática de tipos via Zod schemas
-- ✅ **CRUD de Produtos**: Listagem com filtros, criação, edição, exclusão, validação dupla e paginação
-- ✅ **Catálogo de Serviços**: 8 categorias, 6 tipos de unidade, SKU validado, preços e specifications
-- ✅ **TypeScript Moderno**: Type-only imports com verbatimModuleSyntax
-- ✅ **Auto Refresh Token**: Interceptor Axios com renovação automática de JWT
-- ✅ **Docker Compose v2+**: Sem warnings, compatível com versões mais recentes
 - ✅ **Documentação Padronizada**: PHPDoc e JSDoc/TSDoc
+- ✅ **Swagger/OpenAPI**: Documentação completa de todos os endpoints
+- ✅ **Performance**: Redis cache, 13 índices de banco, queries 10-100x mais rápidas
+- ✅ **LGPD Compliance**: Laravel Auditing automático (owen-it/laravel-auditing v14.0.0)
 - ✅ **Componentes UI Reutilizáveis**: ConfirmDialog moderno com 3 variantes (danger, warning, info)
-- ✅ **Código Limpo**: Sem comentários redundantes, documentação concisa e informativa
 
 ### 🚧 Em Desenvolvimento
-- 🚧 Pipeline de Vendas com Kanban drag-and-drop
-- 🚧 Gestão de Oportunidades
-- 🚧 Gestão de Produtos/Serviços
+- 🚧 Propostas: PDF generation, email sending, versioning (30% restante)
+- 🚧 Pipeline de Vendas com Kanban drag-and-drop (Module 4)
 
 ### 📋 Próximas Features
-- Gestão de Propostas Técnicas com PDF
+- Gestão de Oportunidades completa
 - Cálculo de comissões por serviço
 - Scoring RFM de clientes
 - Automação de follow-ups
 - Previsão de vendas (forecast)
 - Sistema de notificações
 - Relatórios exportáveis (Excel/PDF)
+
+---
+
+## 📚 Documentação
+
+### Documentação Modular
+
+A documentação completa do projeto está organizada em módulos para facilitar a navegação:
+
+#### Dashboard Executivo
+- **[📊 Status Geral do Projeto](docs/STATUS.md)** - Dashboard com progresso, métricas e links para documentação detalhada
+
+#### Negócio
+- **[🎯 Modelo de Negócio](docs/BUSINESS.md)** - Definição do nicho, clientes-alvo e catálogo de serviços
+
+#### Infraestrutura
+- **[🏗️ Setup Técnico](docs/INFRASTRUCTURE.md)** - Docker, stack, estrutura de pastas e configurações
+
+#### Módulos do Sistema
+- **[Module 0: Infraestrutura](docs/modules/MODULE_0_Infrastructure.md)** - Docker Compose, migrations, seeders
+- **[Module 1: Autenticação](docs/modules/MODULE_1_Auth.md)** - JWT, LoginPage, Layout, PrivateRoute
+- **[Module 2: Dashboard](docs/modules/MODULE_2_Dashboard.md)** - Métricas, gráficos, atividades recentes
+- **[Module 3: Customers](docs/modules/MODULE_3_Customers.md)** - CRUD completo, validação CPF/CNPJ, máscaras
+- **[Module 5: Products](docs/modules/MODULE_5_Products.md)** - CRUD completo, categorias, SKU unique
+- **[Module 6: Proposals](docs/modules/MODULE_6_Proposals.md)** - 🆕 CRUD 70% completo, modal 573 linhas, cálculos automáticos
+
+#### Qualidade
+- **[⚡ Performance](docs/quality/PERFORMANCE.md)** - Cache Redis, índices DB, PHPStan, eager loading
+- **[🔒 Segurança](docs/quality/SECURITY.md)** - OWASP, LGPD, rate limiting, headers HTTP, audit logs
+- **[✨ Code Quality](docs/quality/CODE_QUALITY.md)** - PHPDoc/JSDoc, padrões, componentes reutilizáveis
+
+#### Guias
+- **[🔧 Comandos Úteis](docs/guides/COMMANDS.md)** - Docker, Artisan, NPM, MySQL, Redis, troubleshooting
+- **[📖 Regras de Desenvolvimento](docs/guides/DEVELOPMENT_RULES.md)** - Convenções, objetivos, roadmap, métricas
 
 ---
 
@@ -401,13 +451,6 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 - GitHub: [@gabriela-trevisan](https://github.com/gabriela-trevisan)
 - LinkedIn: [Seu LinkedIn](https://linkedin.com/in/seu-perfil)
-
----
-
-## 📚 Documentação Adicional
-
-- [PROJECT_STATUS.md](PROJECT_STATUS.md) - Status atual detalhado do projeto
-- [PORTFOLIO_PROJECTS_PLAN.md](PORTFOLIO_PROJECTS_PLAN.md) - Planejamento do portfólio
 
 ---
 

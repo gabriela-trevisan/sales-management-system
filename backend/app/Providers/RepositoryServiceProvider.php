@@ -12,6 +12,10 @@ use App\Infrastructure\Repositories\EloquentCustomerRepository;
 use App\Domain\Product\Contracts\ProductRepositoryInterface;
 use App\Infrastructure\Repositories\EloquentProductRepository;
 
+// Proposal
+use App\Domain\Proposal\Contracts\ProposalRepositoryInterface;
+use App\Infrastructure\Repositories\EloquentProposalRepository;
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     /**
@@ -25,6 +29,9 @@ class RepositoryServiceProvider extends ServiceProvider
         
         // Product Domain
         ProductRepositoryInterface::class => EloquentProductRepository::class,
+        
+        // Proposal Domain
+        ProposalRepositoryInterface::class => EloquentProposalRepository::class,
         
         // Sales Domain (to be added)
         // OpportunityRepositoryInterface::class => EloquentOpportunityRepository::class,

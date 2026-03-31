@@ -20,14 +20,17 @@
 
 ### Métricas de Qualidade
 - **Backend:** 0 erros PHP, PHPStan Level 6 ✅
-- **Frontend:** 0 erros TypeScript, Build 8.52s ✅
+- **Frontend:** 0 erros TypeScript, Build 14.22s ✅
+- **Design System:** shadcn/ui + Material Design theme (OKLCH) ✅
+- **Tema Adaptado:** Login, Dashboard, Customers, Products ✅
 - **Segurança:** OWASP Top 10 + LGPD ✅
 - **Performance:** Cache Redis + 11 índices DB ✅
 - **Documentação:** Swagger 100% atualizado ✅
 
 ### Stack Tecnológica
 - **Backend:** Laravel 11.47, PHP 8.3, MySQL 9.0, Redis 7.2
-- **Frontend:** React 19, TypeScript 5.9, Vite 6.0, Tailwind CSS 4.1
+- **Frontend:** React 19, TypeScript 5.9, Vite 7.0, Tailwind CSS 4.1, shadcn/ui
+- **Design System:** Material Design theme (OKLCH color space)
 - **Infraestrutura:** Docker Compose, Nginx 1.27, Node 22
 
 ---
@@ -52,6 +55,10 @@
 - [Performance: Cache, Índices e Otimizações](quality/PERFORMANCE.md)
 - [Segurança: OWASP + LGPD Compliance](quality/SECURITY.md)
 - [Code Quality: PHPStan, Documentação, Padrões](quality/CODE_QUALITY.md)
+- [Design System: Material Design + shadcn/ui + OKLCH](quality/DESIGN_SYSTEM.md)
+- [Dashboard Improvements: Roadmap de Melhorias](quality/DASHBOARD_IMPROVEMENTS.md) 🆕
+- [Dashboard Checklist: Acompanhamento](quality/DASHBOARD_IMPROVEMENTS_CHECKLIST.md) 🆕
+- [Dashboard Charts Analysis: Análise de Gráficos](quality/DASHBOARD_CHARTS_ANALYSIS.md) 🆕
 
 ### Guias de Desenvolvimento
 - [Comandos Úteis (Docker, Artisan, NPM)](guides/COMMANDS.md)
@@ -62,25 +69,38 @@
 ## 🚀 Próximos Passos
 
 ### Curto Prazo (Próxima Sprint)
-1. **Module 4: Pipeline Kanban (Feature Estrela)**
+1. **Dashboard Improvements - Fase 1 (1-2 dias)**
+   - Micro-indicadores de tendência nos cards
+   - Gráfico de Pizza/Donut (segmentos)
+   - Seletor de período global
+   - Animações CountUp
+   - Ver: [Dashboard Improvements Roadmap](quality/DASHBOARD_IMPROVEMENTS.md)
+
+### Médio Prazo
+2. **Dashboard Improvements - Fase 2 (3-4 dias)**
+   - Gráfico de Funil (pipeline)
+   - Widgets: Top Performers, Metas, Alertas
+   - Novos endpoints backend
+
+3. **Module 4: Pipeline Kanban (Feature Estrela)**
    - Quadro Kanban drag & drop com 6 estágios
    - Visualização do funil de vendas
    - Atualização em tempo real
    - CRUD de oportunidades
 
-### Médio Prazo
-2. **Module 4: Pipeline Kanban (Feature Estrela)**
-   - Quadro Kanban drag & drop com 6 estágios
-   - Visualização do funil de vendas
-   - Atualização em tempo real
-
-3. **Module 7: Comissões**
+4. **Module 7: Comissões**
    - Regras de comissão configuráveis
    - Cálculo automático
    - Dashboard de comissões
 
 ### Longo Prazo
-4. **Modules 8-10:** Analytics, Settings, Advanced Features
+5. **Dashboard Improvements - Fase 3 (5-7 dias)**
+   - Dashboard personalizável (drag-and-drop)
+   - Gráfico Radar e Heatmap
+   - Exportação completa
+   - Real-time updates
+
+6. **Modules 8-10:** Analytics, Settings, Advanced Features
 
 ---
 

@@ -163,7 +163,7 @@ export default function ProposalFormModal({
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-lg p-1 text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
             disabled={isLoading}
           >
             <X className="h-5 w-5" />
@@ -325,7 +325,7 @@ export default function ProposalFormModal({
               {/* Items Table */}
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-muted/50">
                     <tr>
                       <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Produto
@@ -350,7 +350,7 @@ export default function ProposalFormModal({
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200 bg-white">
+                  <tbody className="divide-y divide-border bg-card">
                     {fields.map((field, index) => {
                       const item = watchedItems?.[index] || field;
                       const quantity = Number(item.quantity) || 0;
@@ -522,7 +522,7 @@ export default function ProposalFormModal({
             <button
               type="button"
               onClick={handleClose}
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               disabled={isLoading}
             >
               Cancelar

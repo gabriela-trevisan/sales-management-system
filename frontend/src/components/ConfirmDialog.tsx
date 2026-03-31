@@ -41,16 +41,16 @@ const ConfirmDialog = ({
 
   const variants = {
     danger: {
-      icon: 'bg-red-100 text-red-600',
-      button: 'bg-red-600 hover:bg-red-700 focus:ring-red-500',
+      icon: 'bg-destructive/10 text-destructive',
+      button: 'bg-destructive hover:bg-destructive/90 focus:ring-destructive',
     },
     warning: {
-      icon: 'bg-yellow-100 text-yellow-600',
-      button: 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500',
+      icon: 'bg-warning/10 text-warning',
+      button: 'bg-warning hover:bg-warning/90 focus:ring-warning text-warning-foreground',
     },
     info: {
-      icon: 'bg-blue-100 text-blue-600',
-      button: 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500',
+      icon: 'bg-primary/10 text-primary',
+      button: 'bg-primary hover:bg-primary/90 focus:ring-primary text-primary-foreground',
     },
   };
 
@@ -60,17 +60,17 @@ const ConfirmDialog = ({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={onCancel}
       />
 
       {/* Dialog */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+        <div className="relative bg-card border border-border rounded-lg shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
           {/* Close button */}
           <button
             onClick={onCancel}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
           >
             <X size={20} />
           </button>
@@ -82,10 +82,10 @@ const ConfirmDialog = ({
 
           {/* Content */}
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-card-foreground mb-2">
               {title}
             </h3>
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
               {message}
             </p>
           </div>
@@ -94,13 +94,13 @@ const ConfirmDialog = ({
           <div className="flex gap-3">
             <button
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              className="flex-1 px-4 py-2 border border-input rounded-lg text-foreground hover:bg-accent transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring"
             >
               {cancelLabel}
             </button>
             <button
               onClick={onConfirm}
-              className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${variantStyles.button}`}
+              className={`flex-1 px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${variantStyles.button}`}
             >
               {confirmLabel}
             </button>

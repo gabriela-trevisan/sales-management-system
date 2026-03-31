@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { Toaster } from '@/components/ui/toaster';
 import { LoginPage } from '@/features/auth/pages/LoginPage';
 import { PrivateRoute } from '@/features/auth/components/PrivateRoute';
 import { Layout } from '@/components/layout/Layout';
@@ -11,8 +13,9 @@ import ProposalViewPage from '@/features/proposals/pages/ProposalViewPage';
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
+    <ThemeProvider defaultTheme="light" storageKey="sales-management-theme">
+      <BrowserRouter>
+        <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           
@@ -73,8 +76,10 @@ function App() {
           
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        <Toaster />
       </AuthProvider>
     </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

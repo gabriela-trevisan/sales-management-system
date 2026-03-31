@@ -6,9 +6,13 @@ interface LayoutProps {
   children: ReactNode;
 }
 
+/**
+ * Main layout component with sidebar and header
+ * Implements responsive design with proper color theming
+ */
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-background transition-colors">
       <Sidebar />
       
       <div className="flex-1 flex flex-col overflow-hidden">

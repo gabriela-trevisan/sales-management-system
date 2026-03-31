@@ -4,19 +4,19 @@ import { dashboardService, type DashboardMetrics, type Activity } from '@/featur
 /**
  * Hook para buscar métricas do dashboard usando TanStack Query.
  */
-export function useDashboardMetrics(): UseQueryResult<DashboardMetrics, Error> {
+export function useDashboardMetrics(month?: string, year?: string): UseQueryResult<DashboardMetrics, Error> {
   return useQuery({
-    queryKey: ['dashboard', 'metrics'],
-    queryFn: () => dashboardService.getMetrics(),
+    queryKey: ['dashboard', 'metrics', month, year],
+    queryFn: () => dashboardService.getMetrics(month, year),
   });
 }
 
 /**
  * Hook para buscar atividades recentes usando TanStack Query.
  */
-export function useRecentActivities(limit: number = 10): UseQueryResult<Activity[], Error> {
+export function useRecentActivities(limit: number = 10, month?: string, year?: string): UseQueryResult<Activity[], Error> {
   return useQuery({
-    queryKey: ['dashboard', 'activities', limit],
-    queryFn: () => dashboardService.getRecentActivities(limit),
+    queryKey: ['dashboard', 'activities', limit, month, year],
+    queryFn: () => dashboardService.getRecentActivities(limit, month, year),
   });
 }

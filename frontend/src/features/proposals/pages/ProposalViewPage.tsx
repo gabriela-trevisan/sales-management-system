@@ -10,11 +10,11 @@ import { useState } from 'react';
  * Status badge color mapping
  */
 const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-800',
-  sent: 'bg-blue-100 text-blue-800',
-  approved: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-800',
-  expired: 'bg-orange-100 text-orange-800',
+  draft: 'bg-muted text-muted-foreground',
+  sent: 'bg-blue-100/80 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300',
+  approved: 'bg-green-100/80 dark:bg-green-900/40 text-green-800 dark:text-green-300',
+  rejected: 'bg-red-100/80 dark:bg-red-900/40 text-red-800 dark:text-red-300',
+  expired: 'bg-orange-100/80 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300',
 };
 
 /**
@@ -107,10 +107,16 @@ export default function ProposalViewPage() {
     }
   };
 
+  // Calculate subtotal from items
+  const calculateSubtotal = () => {
+    if (!proposal?.items) return 0;
+    return proposal.items.reduce((sum: number, item: ProposalItem) => sum + (item.quantity * item.unit_price), 0);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Carregando proposta...</div>
+        <div className="text-muted-foreground">Carregando proposta...</div>
       </div>
     );
   }
@@ -153,10 +159,10 @@ export default function ProposalViewPage() {
             Voltar
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Proposta {proposal.number}
+            <h1 className="text-2xl font-bold text-foreground">
+              Proposta #{proposal.id}
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Criada por {proposal.creator.name} em {formatDate(proposal.created_at)}
             </p>
           </div>
@@ -219,84 +225,84 @@ export default function ProposalViewPage() {
         {/* Left Column - Details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Customer Information */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-card rounded-lg border border-border p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Informações do Cliente
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-500">Nome</label>
-                <p className="mt-1 text-gray-900">{proposal.customer.name}</p>
+                <label className="text-sm font-medium text-muted-foreground">Nome</label>
+                <p className="mt-1 text-foreground">{proposal.customer.name}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Documento</label>
-                <p className="mt-1 text-gray-900">{proposal.customer.document}</p>
+                <label className="text-sm font-medium text-muted-foreground">Documento</label>
+                <p className="mt-1 text-foreground">{proposal.customer.document}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Email</label>
-                <p className="mt-1 text-gray-900">{proposal.customer.email}</p>
+                <label className="text-sm font-medium text-muted-foreground">Email</label>
+                <p className="mt-1 text-foreground">{proposal.customer.email}</p>
               </div>
             </div>
           </div>
 
           {/* Items Table */}
-          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Itens da Proposta</h2>
+          <div className="bg-card rounded-lg border border-border overflow-hidden">
+            <div className="p-6 border-b border-border">
+              <h2 className="text-lg font-semibold text-foreground">Itens da Proposta</h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-border">
+                <thead className="bg-muted/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">
                       Produto
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">
                       Qtd
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">
                       Preço Unit.
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">
                       Desconto
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase">
                       Total
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-card divide-y divide-border">
                   {proposal.items.map((item: ProposalItem) => (
                       <tr key={item.id}>
                         <td className="px-6 py-4">
                           <div>
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-foreground">
                               {item.product?.name || item.description}
                             </div>
                             {item.product?.sku && (
-                              <div className="text-sm text-gray-500">
+                              <div className="text-sm text-muted-foreground">
                                 SKU: {item.product.sku}
                               </div>
                             )}
                           {item.description && item.product?.name !== item.description && (
-                            <div className="text-sm text-gray-500 mt-1">
+                            <div className="text-sm text-muted-foreground mt-1">
                               {item.description}
                             </div>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right text-sm text-gray-900">
+                      <td className="px-6 py-4 text-right text-sm text-foreground">
                         {item.quantity}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm text-gray-900">
+                      <td className="px-6 py-4 text-right text-sm text-foreground">
                         {formatCurrency(item.unit_price)}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm text-gray-900">
+                      <td className="px-6 py-4 text-right text-sm text-foreground">
                         {item.discount_percentage > 0
                           ? `${item.discount_percentage}%`
                           : '-'}
                       </td>
-                      <td className="px-6 py-4 text-right text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 text-right text-sm font-medium text-foreground">
                         {formatCurrency(item.total)}
                       </td>
                     </tr>
@@ -308,11 +314,11 @@ export default function ProposalViewPage() {
 
           {/* Notes */}
           {proposal.notes && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-card rounded-lg border border-border p-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4">
                 Observações
               </h2>
-              <p className="text-gray-700 whitespace-pre-wrap">{proposal.notes}</p>
+              <p className="text-foreground whitespace-pre-wrap">{proposal.notes}</p>
             </div>
           )}
         </div>
@@ -320,16 +326,16 @@ export default function ProposalViewPage() {
         {/* Right Column - Summary */}
         <div className="space-y-6">
           {/* Dates */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Datas</h2>
-            <div className="space-y-3">
+          <div className="bg-card rounded-lg border border-border p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4">Datas</h2>
+            <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-500">Emissão</label>
-                <p className="mt-1 text-gray-900">{formatDate(proposal.issue_date)}</p>
+                <label className="text-sm font-medium text-muted-foreground">Emissão</label>
+                <p className="mt-1 text-foreground">{formatDate(proposal.issue_date)}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Validade</label>
-                <p className={`mt-1 ${proposal.is_expired ? 'text-red-600 font-medium' : 'text-gray-900'}`}>
+                <label className="text-sm font-medium text-muted-foreground">Validade</label>
+                <p className={`mt-1 ${proposal.is_expired ? 'text-destructive font-medium' : 'text-foreground'}`}>
                   {formatDate(proposal.expiration_date)}
                 </p>
               </div>
@@ -337,26 +343,26 @@ export default function ProposalViewPage() {
           </div>
 
           {/* Financial Summary */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <div className="bg-card rounded-lg border border-border p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
               Resumo Financeiro
             </h2>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">Subtotal</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {formatCurrency(proposal.subtotal)}
+                <span className="text-sm text-muted-foreground">Subtotal</span>
+                <span className="text-sm font-medium text-foreground">
+                  {formatCurrency(calculateSubtotal())}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-500">Desconto</span>
+                <span className="text-sm text-muted-foreground">Desconto</span>
                 <span className="text-sm font-medium text-red-600">
                   - {formatCurrency(proposal.discount)}
                 </span>
               </div>
-              <div className="pt-3 border-t border-gray-200">
+              <div className="pt-3 border-t border-border">
                 <div className="flex justify-between">
-                  <span className="text-base font-semibold text-gray-900">Total</span>
+                  <span className="text-base font-semibold text-foreground">Total</span>
                   <span className="text-xl font-bold text-blue-600">
                     {formatCurrency(proposal.total)}
                   </span>
@@ -366,11 +372,11 @@ export default function ProposalViewPage() {
           </div>
 
           {/* Metadata */}
-          <div className="bg-gray-50 rounded-lg border border-gray-200 p-6">
-            <h2 className="text-sm font-semibold text-gray-700 mb-3">
+          <div className="bg-muted/50 rounded-lg border border-border p-6">
+            <h2 className="text-sm font-semibold text-muted-foreground mb-3">
               Informações do Sistema
             </h2>
-            <div className="space-y-2 text-xs text-gray-600">
+            <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex justify-between">
                 <span>Criado em:</span>
                 <span>{formatDate(proposal.created_at)}</span>

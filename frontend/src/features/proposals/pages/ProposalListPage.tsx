@@ -226,7 +226,7 @@ export default function ProposalListPage() {
       ) : (
         <div className="overflow-hidden rounded-lg bg-white shadow">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-muted/50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                   Número
@@ -251,7 +251,7 @@ export default function ProposalListPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-border bg-card">
               {data?.data?.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
@@ -261,7 +261,7 @@ export default function ProposalListPage() {
                 </tr>
               ) : (
                 data?.data?.map((proposal: Proposal) => (
-                  <tr key={proposal.id} className="hover:bg-gray-50">
+                  <tr key={proposal.id} className="hover:bg-muted/50 transition-colors">
                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                       {proposal.number}
                     </td>
@@ -294,7 +294,7 @@ export default function ProposalListPage() {
                         {proposal.can_be_edited && (
                           <button
                             onClick={() => handleEdit(proposal)}
-                            className="text-gray-600 hover:text-gray-900"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
                             title="Editar"
                           >
                             <Edit2 size={18} />

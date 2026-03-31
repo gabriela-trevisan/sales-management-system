@@ -198,6 +198,47 @@ Produtos realistas para consultoria:
 
 ### ProductListPage
 - Colunas: Produto, SKU, Categoria, Preço Base, Unidade, Status, Ações
+
+---
+
+## 🎨 Design System (Material Design)
+
+### Adaptação Completa
+Todo o módulo Products foi adaptado para o tema Material Design com OKLCH color space:
+
+**ProductListPage:**
+- Header: `text-foreground`, `text-muted-foreground`, `bg-primary`
+- Filtros: `bg-card`, `border-border`, `border-input`
+- Inputs: `bg-background`, `text-foreground`, `focus:ring-ring`
+- Selects: Custom arrow SVG, `hover:border-ring`
+- Tabela: `bg-card`, `border-border`, `text-muted-foreground`
+- Status badges:
+  - Ativo: `bg-success/10 text-success border-success/20`
+  - Inativo: `bg-muted text-muted-foreground border-border`
+- Ícones:
+  - Editar: `text-primary hover:bg-primary/10`
+  - Deletar: `text-destructive hover:bg-destructive/10`
+- Paginação: `bg-card`, `border-border`, `text-foreground`
+
+**ProductFormModal:**
+- Container: `bg-card border-border`
+- Labels: `text-foreground`
+- Asteriscos obrigatórios: `text-destructive`
+- Inputs/Textareas: `bg-background text-foreground border-input focus:ring-ring`
+- Selects: Custom arrow SVG + variáveis CSS
+- Erros: `text-destructive`
+- Checkboxes: `border-input text-primary focus:ring-ring`
+- Botões:
+  - Cancelar: `border-input hover:bg-accent hover:text-accent-foreground`
+  - Salvar: `bg-primary text-primary-foreground hover:bg-primary/90`
+
+### Conformidade
+- ✅ 0 cores hardcoded (blue, gray, green, red)
+- ✅ Funciona perfeitamente em modo claro e escuro
+- ✅ Transições suaves: `transition-colors`
+- ✅ Focus states: `focus:ring-2 focus:ring-ring focus:ring-offset-2`
+- ✅ Hover states com opacidade: `/10`, `/50`, `/90`
+- ✅ Padrão consistente com Customers e Dashboard
 - Filtros: Busca, Status, Categoria
 - Badges verde (Ativo) / cinza (Inativo)
 - Formatação de preços em R$

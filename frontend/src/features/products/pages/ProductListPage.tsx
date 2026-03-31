@@ -155,14 +155,14 @@ export default function ProductListPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Produtos</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-foreground">Produtos</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Gerencie seu catálogo de produtos e serviços
           </p>
         </div>
         <button
           onClick={handleCreate}
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           <Plus className="h-4 w-4" />
           Novo Produto
@@ -170,17 +170,17 @@ export default function ProductListPage() {
       </div>
 
       {/* Filters */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <div className="rounded-lg border border-border bg-card p-4">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               placeholder="Buscar por nome, SKU ou descrição..."
               value={filters.search}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-3 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-lg border border-input bg-background text-foreground py-2 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
             />
           </div>
 
@@ -188,7 +188,7 @@ export default function ProductListPage() {
           <select
             value={filters.is_active === undefined ? '' : filters.is_active.toString()}
             onChange={(e) => handleStatusFilter(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="rounded-lg border border-input bg-background text-foreground px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors appearance-none cursor-pointer hover:border-ring pr-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_0.75rem_center] bg-no-repeat bg-[length:1.25rem]"
           >
             <option value="">Todos os status</option>
             <option value="true">Ativo</option>
@@ -199,7 +199,7 @@ export default function ProductListPage() {
           <select
             value={filters.category_id || ''}
             onChange={(e) => handleCategoryFilter(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="rounded-lg border border-input bg-background text-foreground px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors appearance-none cursor-pointer hover:border-ring pr-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_0.75rem_center] bg-no-repeat bg-[length:1.25rem]"
           >
             <option value="">Todas as categorias</option>
             {categories.map((category) => (
@@ -212,82 +212,82 @@ export default function ProductListPage() {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-muted/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Produto
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   SKU
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Categoria
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Preço Base
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Unidade
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Status
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Ações
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-border bg-card">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-sm text-gray-500">
+                  <td colSpan={7} className="px-6 py-12 text-center text-sm text-muted-foreground">
                     Carregando...
                   </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-sm text-gray-500">
+                  <td colSpan={7} className="px-6 py-12 text-center text-sm text-muted-foreground">
                     Nenhum produto encontrado
                   </td>
                 </tr>
               ) : (
                 products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                  <tr key={product.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                      <div className="text-sm font-medium text-foreground">{product.name}</div>
                       {product.description && (
-                        <div className="text-sm text-gray-500 line-clamp-1">
+                        <div className="text-sm text-muted-foreground line-clamp-1">
                           {product.description}
                         </div>
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="font-mono text-sm text-gray-900">{product.sku}</span>
+                      <span className="font-mono text-sm text-foreground">{product.sku}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-foreground">
                         {product.category?.name || '-'}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-foreground">
                         {formatCurrency(product.base_price)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-foreground">
                         {getUnitLabel(product.unit)}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${
+                        className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold border ${
                           product.is_active
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
+                            ? 'bg-success/10 text-success border-success/20'
+                            : 'bg-muted text-muted-foreground border-border'
                         }`}
                       >
                         {product.is_active ? 'Ativo' : 'Inativo'}
@@ -297,14 +297,14 @@ export default function ProductListPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(product)}
-                          className="rounded p-1 text-blue-600 hover:bg-blue-50"
+                          className="rounded p-1 text-primary hover:bg-primary/10 transition-colors"
                           title="Editar"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(product.id)}
-                          className="rounded p-1 text-red-600 hover:bg-red-50"
+                          className="rounded p-1 text-destructive hover:bg-destructive/10 transition-colors"
                           title="Deletar"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -320,26 +320,26 @@ export default function ProductListPage() {
 
         {/* Pagination */}
         {!loading && products.length > 0 && (
-          <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+          <div className="flex items-center justify-between border-t border-border bg-card px-4 py-3 sm:px-6">
             <div className="flex flex-1 justify-between sm:hidden">
               <button
                 onClick={() => handlePageChange(pagination.current_page - 1)}
                 disabled={pagination.current_page === 1}
-                className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                className="relative inline-flex items-center rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50 disabled:opacity-50 transition-colors"
               >
                 Anterior
               </button>
               <button
                 onClick={() => handlePageChange(pagination.current_page + 1)}
                 disabled={pagination.current_page === pagination.last_page}
-                className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                className="relative ml-3 inline-flex items-center rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50 disabled:opacity-50 transition-colors"
               >
                 Próxima
               </button>
             </div>
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-foreground">
                   Mostrando{' '}
                   <span className="font-medium">
                     {(pagination.current_page - 1) * pagination.per_page + 1}
@@ -356,17 +356,17 @@ export default function ProductListPage() {
                   <button
                     onClick={() => handlePageChange(pagination.current_page - 1)}
                     disabled={pagination.current_page === 1}
-                    className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    className="relative inline-flex items-center rounded-l-md border border-border bg-card px-2 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 disabled:opacity-50 transition-colors"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </button>
-                  <span className="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700">
+                  <span className="relative inline-flex items-center border border-border bg-card px-4 py-2 text-sm font-medium text-foreground">
                     {pagination.current_page} / {pagination.last_page}
                   </span>
                   <button
                     onClick={() => handlePageChange(pagination.current_page + 1)}
                     disabled={pagination.current_page === pagination.last_page}
-                    className="relative inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    className="relative inline-flex items-center rounded-r-md border border-border bg-card px-2 py-2 text-sm font-medium text-muted-foreground hover:bg-muted/50 disabled:opacity-50 transition-colors"
                   >
                     <ChevronRight className="h-5 w-5" />
                   </button>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Search, Edit, Trash2, UserCircle } from 'lucide-react';
+import { Select } from '@/components/ui/select';
 import customerService, { type Customer, type CustomerFilters } from '../services/customerService';
 import CustomerFormModal from '../components/CustomerFormModal';
 import ConfirmDialog from '@/components/ConfirmDialog';
@@ -89,10 +90,10 @@ const CustomerListPage = () => {
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      active: 'bg-green-100 text-green-800',
-      inactive: 'bg-gray-100 text-gray-800',
-      prospect: 'bg-blue-100 text-blue-800',
-      churned: 'bg-red-100 text-red-800',
+      active: 'bg-success/10 text-success border border-success/20',
+      inactive: 'bg-muted text-muted-foreground border border-border',
+      prospect: 'bg-primary/10 text-primary border border-primary/20',
+      churned: 'bg-destructive/10 text-destructive border border-destructive/20',
     };
 
     const labels = {
@@ -113,50 +114,49 @@ const CustomerListPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Clientes</h1>
-        <p className="text-gray-600">Gerencie sua base de clientes e prospects</p>
+        <h1 className="text-2xl font-bold text-foreground mb-2">Clientes</h1>
+        <p className="text-muted-foreground">Gerencie sua base de clientes e prospects</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow mb-6 p-4">
+      <div className="bg-card rounded-lg shadow mb-6 p-4 border border-border">
         <form onSubmit={handleSearch} className="flex gap-4 items-end">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Buscar
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
               <input
                 type="text"
                 placeholder="Nome, email ou documento..."
                 value={filters.search}
                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
           </div>
 
           <div className="w-48">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Status
             </label>
-            <select
+            <Select
               value={filters.status}
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">Todos</option>
               <option value="active">Ativo</option>
               <option value="inactive">Inativo</option>
               <option value="prospect">Prospecto</option>
               <option value="churned">Perdido</option>
-            </select>
+            </Select>
           </div>
 
           <button
             type="button"
             onClick={handleCreate}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
           >
             <Plus size={20} />
             Novo Cliente
@@ -165,19 +165,19 @@ const CustomerListPage = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-card rounded-lg shadow overflow-hidden border border-border">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : customers.length === 0 ? (
           <div className="text-center py-12">
-            <UserCircle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum cliente encontrado</h3>
-            <p className="text-gray-600 mb-4">Comece criando seu primeiro cliente</p>
+            <UserCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">Nenhum cliente encontrado</h3>
+            <p className="text-muted-foreground mb-4">Comece criando seu primeiro cliente</p>
             <button
               onClick={handleCreate}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
             >
               <Plus size={20} />
               Novo Cliente
@@ -185,67 +185,67 @@ const CustomerListPage = () => {
           </div>
         ) : (
           <>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-muted/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Cliente
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Contato
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Segmento
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Responsável
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Ações
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-card divide-y divide-border">
                 {customers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-gray-50">
+                  <tr key={customer.id} className="hover:bg-muted/50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{customer.name}</div>
-                        <div className="text-sm text-gray-500">{formatDocument(customer.document)}</div>
+                        <div className="text-sm font-medium text-foreground">{customer.name}</div>
+                        <div className="text-sm text-muted-foreground">{formatDocument(customer.document)}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm text-gray-900">{customer.email}</div>
+                        <div className="text-sm text-foreground">{customer.email}</div>
                         {customer.phone && (
-                          <div className="text-sm text-gray-500">{formatPhone(customer.phone)}</div>
+                          <div className="text-sm text-muted-foreground">{formatPhone(customer.phone)}</div>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(customer.status)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {customer.segment?.name || '-'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {customer.assigned_to?.name || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(customer)}
-                          className="text-blue-600 hover:text-blue-900 p-1"
+                          className="text-primary hover:text-primary/80 p-1 transition-colors"
                           title="Editar"
                         >
                           <Edit size={18} />
                         </button>
                         <button
                           onClick={() => handleDelete(customer.id)}
-                          className="text-red-600 hover:text-red-900 p-1"
+                          className="text-destructive hover:text-destructive/80 p-1 transition-colors"
                           title="Excluir"
                         >
                           <Trash2 size={18} />
@@ -259,19 +259,19 @@ const CustomerListPage = () => {
 
             {/* Pagination */}
             {meta.last_page > 1 && (
-              <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-gray-200">
-                <div className="text-sm text-gray-700">
-                  Mostrando <span className="font-medium">{(meta.current_page - 1) * meta.per_page + 1}</span> até{' '}
-                  <span className="font-medium">
+              <div className="bg-card px-6 py-4 flex items-center justify-between border-t border-border">
+                <div className="text-sm text-muted-foreground">
+                  Mostrando <span className="font-medium text-foreground">{(meta.current_page - 1) * meta.per_page + 1}</span> até{' '}
+                  <span className="font-medium text-foreground">
                     {Math.min(meta.current_page * meta.per_page, meta.total)}
                   </span>{' '}
-                  de <span className="font-medium">{meta.total}</span> resultados
+                  de <span className="font-medium text-foreground">{meta.total}</span> resultados
                 </div>
                 <div className="flex gap-2">
                   {meta.current_page > 1 && (
                     <button
                       onClick={() => setCurrentPage(meta.current_page - 1)}
-                      className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50"
+                      className="px-3 py-1 border border-border rounded-lg hover:bg-muted/50 transition-colors disabled:opacity-50"
                     >
                       Anterior
                     </button>
@@ -279,7 +279,7 @@ const CustomerListPage = () => {
                   {meta.current_page < meta.last_page && (
                     <button
                       onClick={() => setCurrentPage(meta.current_page + 1)}
-                      className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50"
+                      className="px-3 py-1 border border-border rounded-lg hover:bg-muted/50 transition-colors disabled:opacity-50"
                     >
                       Próxima
                     </button>

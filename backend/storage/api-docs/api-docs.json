@@ -273,14 +273,111 @@
                 ]
             }
         },
+        "/api/dashboard/customers-by-segment": {
+            "get": {
+                "tags": [
+                    "Dashboard"
+                ],
+                "summary": "Clientes por segmento",
+                "description": "Retorna a distribuição de clientes por segmento de mercado",
+                "operationId": "149f913f5b6de77c9bc898123140647a",
+                "parameters": [
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Mês para filtro (01-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "01"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Ano para filtro",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "2026"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Distribuição de clientes por segmento",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "segments": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Indústria"
+                                                    },
+                                                    "count": {
+                                                        "type": "integer",
+                                                        "example": 25
+                                                    },
+                                                    "percentage": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 35.7
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Não autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/dashboard/metrics": {
             "get": {
                 "tags": [
                     "Dashboard"
                 ],
                 "summary": "Métricas do dashboard",
-                "description": "Retorna as principais métricas do sistema: total de clientes, oportunidades, valor total do pipeline e taxa de conversão",
+                "description": "Retorna as principais métricas do sistema com suporte a filtro mensal e comparação com mês anterior",
                 "operationId": "b6b5de8299371a97884c910eab313ee7",
+                "parameters": [
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Mês para filtro (01-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "01"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Ano para filtro",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "2026"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Métricas do dashboard",
@@ -291,6 +388,15 @@
                                         "total_customers": {
                                             "type": "integer",
                                             "example": 150
+                                        },
+                                        "total_customers_previous": {
+                                            "type": "integer",
+                                            "example": 135
+                                        },
+                                        "total_customers_trend": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 11.1
                                         },
                                         "total_opportunities": {
                                             "type": "integer",
@@ -365,7 +471,7 @@
                     "Dashboard"
                 ],
                 "summary": "Atividades recentes",
-                "description": "Retorna as últimas atividades do sistema (oportunidades criadas, clientes cadastrados, etc)",
+                "description": "Retorna as últimas atividades do sistema com suporte a filtro mensal",
                 "operationId": "afde77d8aa948a87f3056548e2f1e122",
                 "parameters": [
                     {
@@ -376,6 +482,26 @@
                         "schema": {
                             "type": "integer",
                             "default": 10
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "description": "Mês para filtro (01-12)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "01"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Ano para filtro",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "2026"
                         }
                     }
                 ],
@@ -1708,6 +1834,113 @@
                     },
                     "404": {
                         "description": "Proposta não encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/proposals/{id}/pdf": {
+            "get": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Gerar PDF da proposta",
+                "description": "Generate and download proposal PDF.",
+                "operationId": "9f51ae29bf815194aa93ccf0fb469ab0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "PDF da proposta",
+                        "content": {
+                            "application/pdf": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Proposta não encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/proposals/{id}/send-email": {
+            "post": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Enviar proposta por email",
+                "description": "Send proposal by email.",
+                "operationId": "d004c1190162487c5e176e273ee7dec9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "cliente@example.com",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email enviado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Proposta enviada por email com sucesso."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Proposta não encontrada"
+                    },
+                    "500": {
+                        "description": "Erro ao enviar email"
                     }
                 },
                 "security": [

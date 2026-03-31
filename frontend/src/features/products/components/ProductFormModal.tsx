@@ -84,16 +84,16 @@ export default function ProductFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg bg-white shadow-xl">
+      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg bg-card border border-border shadow-xl">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card px-6 py-4">
+          <h2 className="text-xl font-semibold text-foreground">
             {product ? 'Editar Produto' : 'Novo Produto'}
           </h2>
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-lg p-1 text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -104,18 +104,18 @@ export default function ProductFormModal({
           <div className="space-y-4">
             {/* Name */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Nome <span className="text-red-500">*</span>
+              <label htmlFor="name" className="block text-sm font-medium text-foreground">
+                Nome <span className="text-destructive">*</span>
               </label>
               <input
                 {...register('name')}
                 type="text"
                 id="name"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-input bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
                 placeholder="Ex: Hora de Desenvolvimento Senior"
               />
               {errors.name && (
-                <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                   <AlertCircle className="h-4 w-4" />
                   {errors.name.message}
                 </p>
@@ -124,19 +124,19 @@ export default function ProductFormModal({
 
             {/* SKU */}
             <div>
-              <label htmlFor="sku" className="block text-sm font-medium text-gray-700">
-                SKU <span className="text-red-500">*</span>
+              <label htmlFor="sku" className="block text-sm font-medium text-foreground">
+                SKU <span className="text-destructive">*</span>
               </label>
               <input
                 {...register('sku')}
                 type="text"
                 id="sku"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 uppercase shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-input bg-background text-foreground px-3 py-2 uppercase shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
                 placeholder="Ex: DEV-SENIOR-HOUR"
                 style={{ textTransform: 'uppercase' }}
               />
               {errors.sku && (
-                <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                   <AlertCircle className="h-4 w-4" />
                   {errors.sku.message}
                 </p>
@@ -145,18 +145,18 @@ export default function ProductFormModal({
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="description" className="block text-sm font-medium text-foreground">
                 Descrição
               </label>
               <textarea
                 {...register('description')}
                 id="description"
                 rows={3}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border border-input bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
                 placeholder="Descreva o produto/serviço..."
               />
               {errors.description && (
-                <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                   <AlertCircle className="h-4 w-4" />
                   {errors.description.message}
                 </p>
@@ -167,7 +167,7 @@ export default function ProductFormModal({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Category */}
               <div>
-                <label htmlFor="category_id" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="category_id" className="block text-sm font-medium text-foreground">
                   Categoria
                 </label>
                 <Controller
@@ -180,7 +180,7 @@ export default function ProductFormModal({
                       value={field.value || ''}
                       onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
                       disabled={loadingCategories}
-                      className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      className="mt-1 block w-full rounded-md border border-input bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors appearance-none cursor-pointer hover:border-ring pr-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_0.75rem_center] bg-no-repeat bg-[length:1.25rem]"
                     >
                       <option value="">Selecione...</option>
                       {categories.map((category) => (
@@ -192,7 +192,7 @@ export default function ProductFormModal({
                   )}
                 />
                 {errors.category_id && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-4 w-4" />
                     {errors.category_id.message}
                   </p>
@@ -201,13 +201,13 @@ export default function ProductFormModal({
 
               {/* Unit */}
               <div>
-                <label htmlFor="unit" className="block text-sm font-medium text-gray-700">
-                  Unidade <span className="text-red-500">*</span>
+                <label htmlFor="unit" className="block text-sm font-medium text-foreground">
+                  Unidade <span className="text-destructive">*</span>
                 </label>
                 <select
                   {...register('unit')}
                   id="unit"
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border border-input bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors appearance-none cursor-pointer hover:border-ring pr-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_0.75rem_center] bg-no-repeat bg-[length:1.25rem]"
                 >
                   {unitOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -216,7 +216,7 @@ export default function ProductFormModal({
                   ))}
                 </select>
                 {errors.unit && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-4 w-4" />
                     {errors.unit.message}
                   </p>
@@ -228,19 +228,19 @@ export default function ProductFormModal({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {/* Base Price */}
               <div>
-                <label htmlFor="base_price" className="block text-sm font-medium text-gray-700">
-                  Preço Base (R$) <span className="text-red-500">*</span>
+                <label htmlFor="base_price" className="block text-sm font-medium text-foreground">
+                  Preço Base (R$) <span className="text-destructive">*</span>
                 </label>
                 <input
                   {...register('base_price')}
                   type="number"
                   step="0.01"
                   id="base_price"
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border border-input bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
                   placeholder="0.00"
                 />
                 {errors.base_price && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-4 w-4" />
                     {errors.base_price.message}
                   </p>
@@ -249,7 +249,7 @@ export default function ProductFormModal({
 
               {/* Cost Price */}
               <div>
-                <label htmlFor="cost_price" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="cost_price" className="block text-sm font-medium text-foreground">
                   Preço de Custo (R$)
                 </label>
                 <input
@@ -257,11 +257,11 @@ export default function ProductFormModal({
                   type="number"
                   step="0.01"
                   id="cost_price"
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border border-input bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
                   placeholder="0.00"
                 />
                 {errors.cost_price && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-4 w-4" />
                     {errors.cost_price.message}
                   </p>
@@ -276,9 +276,9 @@ export default function ProductFormModal({
                   {...register('is_active')}
                   type="checkbox"
                   id="is_active"
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="h-4 w-4 rounded border-input text-primary focus:ring-ring"
                 />
-                <label htmlFor="is_active" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="is_active" className="ml-2 block text-sm text-foreground">
                   Produto ativo
                 </label>
               </div>
@@ -288,9 +288,9 @@ export default function ProductFormModal({
                   {...register('requires_approval')}
                   type="checkbox"
                   id="requires_approval"
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="h-4 w-4 rounded border-input text-primary focus:ring-ring"
                 />
-                <label htmlFor="requires_approval" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="requires_approval" className="ml-2 block text-sm text-foreground">
                   Requer aprovação para venda
                 </label>
               </div>
@@ -303,14 +303,14 @@ export default function ProductFormModal({
               type="button"
               onClick={handleClose}
               disabled={isLoading}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="rounded-lg border border-input px-4 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               {isLoading ? 'Salvando...' : product ? 'Atualizar' : 'Criar'}
             </button>

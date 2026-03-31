@@ -12,7 +12,7 @@
  */
 
 use App\Http\Controllers\API\Auth\AuthController;
-use App\Http\Controllers\API\Dashboard\DashboardController;
+use App\Presentation\Http\Controllers\API\Dashboard\DashboardController;
 use App\Presentation\Http\Controllers\API\Customer\CustomerController;
 use App\Presentation\Http\Controllers\API\Customer\CustomerSegmentController;
 use App\Presentation\Http\Controllers\API\Product\ProductController;
@@ -34,6 +34,7 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
 
     Route::get('/dashboard/metrics', [DashboardController::class, 'metrics']);
     Route::get('/dashboard/recent-activities', [DashboardController::class, 'recentActivities']);
+    Route::get('/dashboard/customers-by-segment', [DashboardController::class, 'customersBySegment']);
 
     Route::get('customer-segments', [CustomerSegmentController::class, 'index']);
     Route::apiResource('customers', CustomerController::class);

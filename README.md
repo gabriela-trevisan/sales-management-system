@@ -24,8 +24,11 @@ Sistema de gestão de vendas e CRM especializado para empresas de **consultoria 
 Focado em gerenciar projetos customizados, alocação de equipes, propostas técnicas e comissões de equipe comercial.
 
 - 📊 **Pipeline de Vendas Consultivo**: Prospecção → Discovery → Proposta Técnica → Negociação → Contrato → Ganho
+- 🎨 **Design System Moderno**: shadcn/ui com Material Design theme (OKLCH color space)
+- 🌓 **Tema Light/Dark**: Suporte completo com transições suaves e CSS variables
 - 👥 **CRUD Completo de Clientes B2B**: Segmentação por setor com filtros, paginação e validação
 - 📦 **CRUD Completo de Produtos**: Catálogo de serviços com categorias, preços e unidades
+- ♿ **Acessibilidade**: Componentes Radix UI (WCAG 2.1 AA compliant)
 - ✨ **Validação de Formulários**: react-hook-form + Zod + react-imask com máscaras dinâmicas
 - 🛡️ **Validação de CPF/CNPJ**: Algoritmo com dígitos verificadores
 - 🏢 **Segmentação por Setor**: Indústria, Financeiro, Varejo, Saúde, Logística, Educação
@@ -63,6 +66,8 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 - **TypeScript** 5.9.3
 - **Vite** 7.2.4
 - **Tailwind CSS** 4.1.18 (v4 com @tailwindcss/postcss)
+- **shadcn/ui** (Material Design theme com OKLCH colors)
+- **Radix UI** (Componentes acessíveis headless)
 - **TanStack Query** 5.90.20 (State Management + Cache)
 - **React Hook Form** 7.71.1 (Form Management)
 - **Zod** 4.3.5 (Schema Validation)
@@ -388,14 +393,47 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 - 🚧 Propostas: PDF generation, email sending, versioning (30% restante)
 - 🚧 Pipeline de Vendas com Kanban drag-and-drop (Module 4)
 
-### 📋 Próximas Features
+### 📋 Melhorias Planejadas do Dashboard (1 Fev 2026)
+
+**Documentação Completa:** 
+- [📊 Dashboard Improvements - Roadmap](docs/quality/DASHBOARD_IMPROVEMENTS.md)
+- [✅ Dashboard Improvements - Checklist](docs/quality/DASHBOARD_IMPROVEMENTS_CHECKLIST.md)
+- [📈 Dashboard Charts Analysis](docs/quality/DASHBOARD_CHARTS_ANALYSIS.md) - Análise dos melhores gráficos
+
+#### Fase 1 - Quick Wins (1-2 dias)
+- ✨ Micro-indicadores de tendência nos cards (↑ +15% vs mês anterior)
+- 🎨 Usar todas as 5 cores de chart do Design System
+- 📊 Gráfico de Pizza/Donut (clientes por segmento)
+- 🔄 Seletor de período mensal (MM/YYYY - ex: 01/2026)
+- 🎭 Animações CountUp nos números
+- 📈 Novo gráfico de linha (propostas por mês)
+
+#### Fase 2 - Média Complexidade (3-4 dias)
+- 🏆 Widget Top Performers (clientes e produtos - tabelas + gráficos)
+- 🎯 Widget Metas e Progresso
+- 🔔 Sistema de Alertas Inteligentes
+- 📊 Gráficos de Barras (Top 5 produtos e clientes)
+- 📈 Comparação mensal (mês atual vs anterior)
+
+#### Fase 3 - Alta Complexidade (5-7 dias)
+- 🕒 Timeline aprimorada (agrupamento, filtros, infinite scroll)
+- 📤 **Exportação completa (PDF, Excel) - ALTA PRIORIDADE**
+- ⚡ Real-time updates (polling)
+- 📊 Gráficos opcionais: Radar, Heatmap Calendar
+- (~~Drag-and-drop: baixa prioridade, não é foco~~)
+
+**Métricas Implementadas (Foco nos Módulos Atuais):**
+- **Clientes:** Total, ativos, novos no mês, por segmento, taxa de crescimento
+- **Produtos:** Total, por categoria, mais vendidos, receita por produto
+- **Propostas:** Total, por status, valor total/aprovado, ticket médio, taxa de conversão
+
+### 📋 Próximas Features (Outros Módulos)
 - Gestão de Oportunidades completa
 - Cálculo de comissões por serviço
 - Scoring RFM de clientes
 - Automação de follow-ups
 - Previsão de vendas (forecast)
 - Sistema de notificações
-- Relatórios exportáveis (Excel/PDF)
 
 ---
 
@@ -426,6 +464,10 @@ A documentação completa do projeto está organizada em módulos para facilitar
 - **[⚡ Performance](docs/quality/PERFORMANCE.md)** - Cache Redis, índices DB, PHPStan, eager loading
 - **[🔒 Segurança](docs/quality/SECURITY.md)** - OWASP, LGPD, rate limiting, headers HTTP, audit logs
 - **[✨ Code Quality](docs/quality/CODE_QUALITY.md)** - PHPDoc/JSDoc, padrões, componentes reutilizáveis
+- **[🎨 Design System](docs/quality/DESIGN_SYSTEM.md)** - Material Design, OKLCH colors, shadcn/ui
+- **[📊 Dashboard Improvements](docs/quality/DASHBOARD_IMPROVEMENTS.md)** - 🆕 Roadmap de melhorias planejadas
+- **[✅ Dashboard Checklist](docs/quality/DASHBOARD_IMPROVEMENTS_CHECKLIST.md)** - 🆕 Checklist de implementação
+- **[📈 Dashboard Charts Analysis](docs/quality/DASHBOARD_CHARTS_ANALYSIS.md)** - 🆕 Análise dos melhores gráficos
 
 #### Guias
 - **[🔧 Comandos Úteis](docs/guides/COMMANDS.md)** - Docker, Artisan, NPM, MySQL, Redis, troubleshooting

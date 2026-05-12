@@ -1,5 +1,7 @@
 # Comandos Úteis
 
+> **Nota:** Use `docker compose` (com espaço, plugin v2). O binário legado `docker-compose` (v1) foi descontinuado.
+
 ---
 
 ## 🐳 Docker
@@ -8,45 +10,45 @@
 
 ```bash
 # Iniciar todos os containers
-docker-compose up -d
+docker compose up -d
 
 # Parar todos os containers
-docker-compose down
+docker compose down
 
 # Parar e remover volumes
-docker-compose down -v
+docker compose down -v
 
 # Rebuild completo
-docker-compose up -d --build
+docker compose up -d --build
 
 # Ver status dos containers
-docker-compose ps
+docker compose ps
 
 # Ver logs
-docker-compose logs -f
+docker compose logs -f
 
 # Ver logs de um container específico
-docker-compose logs -f backend
-docker-compose logs -f frontend
+docker compose logs -f backend
+docker compose logs -f frontend
 
 # Restart de um container
-docker-compose restart backend
+docker compose restart backend
 ```
 
 ### Acessar Containers
 
 ```bash
 # Backend (bash)
-docker exec -it sms_backend bash
+docker compose exec backend bash
 
 # Frontend (sh - Alpine Linux)
-docker exec -it sms_frontend sh
+docker compose exec frontend sh
 
 # MySQL
-docker exec -it sms_mysql mysql -u root -p
+docker compose exec mysql mysql -u root -p
 
 # Redis CLI
-docker exec -it sms_redis redis-cli
+docker compose exec redis redis-cli
 ```
 
 ---
@@ -57,27 +59,27 @@ docker exec -it sms_redis redis-cli
 
 ```bash
 # Migrations
-docker exec sms_backend php artisan migrate
-docker exec sms_backend php artisan migrate:fresh
-docker exec sms_backend php artisan migrate:fresh --seed
-docker exec sms_backend php artisan migrate:rollback
-docker exec sms_backend php artisan migrate:status
+docker compose exec backend php artisan migrate
+docker compose exec backend php artisan migrate:fresh
+docker compose exec backend php artisan migrate:fresh --seed
+docker compose exec backend php artisan migrate:rollback
+docker compose exec backend php artisan migrate:status
 
 # Seeders
-docker exec sms_backend php artisan db:seed
-docker exec sms_backend php artisan db:seed --class=CustomerSeeder
+docker compose exec backend php artisan db:seed
+docker compose exec backend php artisan db:seed --class=CustomerSeeder
 
 # Cache
-docker exec sms_backend php artisan cache:clear
-docker exec sms_backend php artisan config:cache
-docker exec sms_backend php artisan route:cache
-docker exec sms_backend php artisan view:cache
+docker compose exec backend php artisan cache:clear
+docker compose exec backend php artisan config:cache
+docker compose exec backend php artisan route:cache
+docker compose exec backend php artisan view:cache
 
 # Limpar todos os caches
-docker exec sms_backend php artisan optimize:clear
+docker compose exec backend php artisan optimize:clear
 
 # Rotas
-docker exec sms_backend php artisan route:list
+docker compose exec backend php artisan route:list
 docker exec sms_backend php artisan route:list --path=customers
 docker exec sms_backend php artisan route:list --path=proposals
 

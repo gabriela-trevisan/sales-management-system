@@ -26,10 +26,13 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u $uid -d /home/$user $user || true
-RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
+# Fix www-data UID/GID to match the host user UID (passed via build arg).
+# php:8.3-fpm ships www-data with UID 33; useradd would silently fail on a
+# duplicate name, leaving php-fpm running as UID 33 which cannot write to
+# host-mounted volumes owned by the developer's account.
+RUN usermod -u $uid www-data && groupmod -g $uid www-data
+RUN mkdir -p /home/www-data/.composer && \
+    chown -R www-data:www-data /home/www-data
 
 # Set working directory
 WORKDIR /var/www/backend

@@ -120,18 +120,18 @@ cp frontend/.env.example frontend/.env
 
 3. **Suba os containers:**
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 4. **Instale as dependências dentro do container:**
 ```bash
 # Backend
-docker-compose exec backend composer install
-docker-compose exec backend php artisan key:generate
-docker-compose exec backend php artisan migrate --seed
+docker compose exec backend composer install
+docker compose exec backend php artisan key:generate
+docker compose exec backend php artisan migrate --seed
 
 # Frontend
-docker-compose exec frontend npm install
+docker compose exec frontend npm install
 ```
 
 5. **Acesse a aplicação:**
@@ -290,7 +290,7 @@ O projeto segue padrões de documentação reconhecidos pela indústria:
 
 ```bash
 # Com Docker
-docker-compose exec backend php artisan test
+docker compose exec backend php artisan test
 
 # Local
 cd backend
@@ -304,7 +304,7 @@ php artisan test --coverage
 
 ```bash
 # Com Docker
-docker-compose exec frontend npm test
+docker compose exec frontend npm test
 
 # Local
 cd frontend

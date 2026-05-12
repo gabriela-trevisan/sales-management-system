@@ -98,6 +98,13 @@ class OpportunitySeeder extends Seeder
         ];
 
         foreach ($opportunities as $oppData) {
+            if (DB::table('opportunities')
+                ->where('title', $oppData['title'])
+                ->where('customer_id', $oppData['customer_id'])
+                ->exists()) {
+                continue;
+            }
+
             $opportunityId = DB::table('opportunities')->insertGetId([
                 'title' => $oppData['title'],
                 'description' => $oppData['description'],

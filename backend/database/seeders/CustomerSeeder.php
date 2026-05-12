@@ -137,41 +137,50 @@ class CustomerSeeder extends Seeder
         ];
 
         foreach ($customers as $customerData) {
-            $customer = Customer::create([
-                'name' => $customerData['name'],
-                'document' => $customerData['document'],
-                'email' => $customerData['email'],
-                'phone' => $customerData['phone'],
-                'segment_id' => $customerData['segment_id'],
-                'status' => $customerData['status'],
-                'assigned_to' => $customerData['assigned_to'],
-            ]);
+            // Normaliza o documento para coincidir com o valor armazenado (sem formatação)
+            $document = preg_replace('/[^0-9]/', '', $customerData['document']);
 
-            DB::table('customer_addresses')->insert([
-                'customer_id' => $customer->id,
-                'type' => 'both',
-                'zip_code' => preg_replace('/[^0-9]/', '', $customerData['address']['zip_code']),
-                'street' => $customerData['address']['street'],
-                'number' => $customerData['address']['number'],
-                'neighborhood' => $customerData['address']['neighborhood'],
-                'city' => $customerData['address']['city'],
-                'state' => $customerData['address']['state'],
-                'country' => 'BR',
-                'is_primary' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $customer = Customer::firstOrCreate(
+                ['document' => $document],
+                [
+                    'name'       => $customerData['name'],
+                    'email'      => $customerData['email'],
+                    'phone'      => $customerData['phone'],
+                    'segment_id' => $customerData['segment_id'],
+                    'status'     => $customerData['status'],
+                    'assigned_to' => $customerData['assigned_to'],
+                ]
+            );
 
-            DB::table('customer_contacts')->insert([
-                'customer_id' => $customer->id,
-                'name' => $customerData['contact']['name'],
-                'email' => strtolower(trim($customerData['contact']['email'])),
-                'phone' => preg_replace('/[^0-9]/', '', $customerData['contact']['phone']),
-                'role' => $customerData['contact']['role'],
-                'is_primary' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            if (!DB::table('customer_addresses')->where('customer_id', $customer->id)->exists()) {
+                DB::table('customer_addresses')->insert([
+                    'customer_id' => $customer->id,
+                    'type' => 'both',
+                    'zip_code' => preg_replace('/[^0-9]/', '', $customerData['address']['zip_code']),
+                    'street' => $customerData['address']['street'],
+                    'number' => $customerData['address']['number'],
+                    'neighborhood' => $customerData['address']['neighborhood'],
+                    'city' => $customerData['address']['city'],
+                    'state' => $customerData['address']['state'],
+                    'country' => 'BR',
+                    'is_primary' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            if (!DB::table('customer_contacts')->where('customer_id', $customer->id)->exists()) {
+                DB::table('customer_contacts')->insert([
+                    'customer_id' => $customer->id,
+                    'name' => $customerData['contact']['name'],
+                    'email' => strtolower(trim($customerData['contact']['email'])),
+                    'phone' => preg_replace('/[^0-9]/', '', $customerData['contact']['phone']),
+                    'role' => $customerData['contact']['role'],
+                    'is_primary' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
     }
 }

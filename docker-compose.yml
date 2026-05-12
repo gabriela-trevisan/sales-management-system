@@ -22,7 +22,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
       args:
-        uid: ${UID:-1000}
+        uid: ${HOST_UID:-1000}
     container_name: sms_backend
     working_dir: /var/www/backend
     volumes:

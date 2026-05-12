@@ -87,10 +87,17 @@ class EnvValidationServiceProvider extends ServiceProvider
     }
 
     /**
-     * Verifica se deve pular validação (comandos de setup).
+     * Verifica se deve pular validação (comandos de setup ou config cacheada).
      */
     private function shouldSkipValidation(): bool
     {
+        // Quando a config está em cache, o Laravel não carrega o .env —
+        // env() retorna null para todas as variáveis. A validação já ocorreu
+        // durante a geração do cache, portanto é seguro pular aqui.
+        if (app()->configurationIsCached()) {
+            return true;
+        }
+
         if (!app()->runningInConsole()) {
             return false;
         }

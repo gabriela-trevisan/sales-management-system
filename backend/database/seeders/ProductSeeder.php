@@ -167,6 +167,10 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
+            if (DB::table('products')->where('sku', $product['sku'])->exists()) {
+                continue;
+            }
+
             DB::table('products')->insert([
                 'name' => $product['name'],
                 'sku' => $product['sku'],

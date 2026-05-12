@@ -101,7 +101,30 @@ Para rodar o projeto, você precisa ter instalado:
 
 ## 🚀 Instalação e Configuração
 
-### Opção 1: Usando Docker (Recomendado)
+### ⚡ Setup Automatizado (Recomendado)
+
+Um único comando configura todo o ambiente: cria os `.env`, constrói as imagens, aguarda os serviços ficarem prontos, instala dependências, gera a `APP_KEY`, roda migrations e seeds.
+
+```bash
+git clone https://github.com/gabriela-trevisan/sales-management-system.git
+cd sales-management-system
+./setup.sh
+```
+
+**Opções disponíveis:**
+
+| Flag | Descrição |
+|---|---|
+| _(sem flags)_ | Instalação padrão — preserva dados existentes |
+| `--fresh` | Recria banco e volumes do zero (`migrate:fresh --seed`) |
+| `--no-seed` | Roda migrations sem inserir dados de exemplo |
+| `--help` | Exibe ajuda |
+
+> **Pré-requisitos:** Docker 25+ com o plugin Compose v2 (`docker compose version`).
+
+---
+
+### Opção 1: Usando Docker (Setup Manual)
 
 1. **Clone o repositório:**
 ```bash
@@ -143,7 +166,7 @@ docker compose exec frontend npm install
 
 ---
 
-### Opção 2: Desenvolvimento Local
+### Opção 2: Desenvolvimento Local (sem Docker)
 
 1. **Clone o repositório:**
 ```bash

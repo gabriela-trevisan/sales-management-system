@@ -120,6 +120,10 @@ class ProposalSeeder extends Seeder
 
             $total = $subtotal - $totalDiscount;
 
+            if (DB::table('proposals')->where('number', $proposalData['number'])->exists()) {
+                continue;
+            }
+
             $proposalId = DB::table('proposals')->insertGetId([
                 'number' => $proposalData['number'],
                 'opportunity_id' => $proposalData['opportunity_id'],

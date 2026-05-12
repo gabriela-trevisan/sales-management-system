@@ -25,9 +25,9 @@ class UserSeeder extends Seeder
 
         // Gerente de Vendas
         User::firstOrCreate(
-            ['email' => 'carlos.silva@salesmanagement.com'],
+            ['email' => 'gabriela.trevisan@salesmanagement.com'],
             [
-                'name' => 'Carlos Silva',
+                'name' => 'Gabriela Trevisan',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ]

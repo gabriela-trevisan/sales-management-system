@@ -177,6 +177,8 @@ class ProposalController extends Controller
             ], 404);
         }
 
+        $this->authorize('view', $proposal);
+
         return (new ProposalResource($proposal))->response();
     }
 
@@ -238,6 +240,8 @@ class ProposalController extends Controller
             ], 404);
         }
 
+        $this->authorize('update', $proposal);
+
         $updatedProposal = $this->proposalRepository->update($id, $request->validated());
 
         return (new ProposalResource($updatedProposal))->response();
@@ -268,6 +272,8 @@ class ProposalController extends Controller
                 'message' => 'Proposta não encontrada.'
             ], 404);
         }
+
+        $this->authorize('delete', $proposal);
 
         $this->proposalRepository->delete($id);
 
@@ -308,6 +314,8 @@ class ProposalController extends Controller
                 'message' => 'Proposta não encontrada.'
             ], 404);
         }
+
+        $this->authorize('view', $proposal);
 
         return $this->pdfService->download($proposal);
     }
@@ -354,7 +362,7 @@ class ProposalController extends Controller
             ], 404);
         }
 
-        // Email opcional (usa customer email por padrão)
+        $this->authorize('view', $proposal);
         $emailTo = $request->input('email');
 
         $sent = $this->emailService->send($proposal, $emailTo);

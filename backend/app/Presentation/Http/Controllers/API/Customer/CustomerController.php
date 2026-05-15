@@ -213,6 +213,8 @@ class CustomerController extends Controller
             ], 404);
         }
 
+        $this->authorize('view', $customer);
+
         return response()->json([
             'data' => new CustomerResource($customer),
         ]);
@@ -264,18 +266,17 @@ class CustomerController extends Controller
     )]
     public function update(UpdateCustomerRequest $request, int $id): JsonResponse
     {
-        $oldCustomer = $this->customerRepository->findById($id);
-        $oldValues = [
-            'name' => $oldCustomer->name,
-            'email' => $oldCustomer->email,
-            'phone' => $oldCustomer->phone,
-            'status' => $oldCustomer->status,
-        ];
+        $customer = $this->customerRepository->findById($id);
+
+        if (!$customer) {
+            return response()->json(['message' => 'Cliente não encontrado'], 404);
+        }
+
+        $this->authorize('update', $customer);
 
         $data = $request->validated();
-        
         unset($data['assigned_to']);
-        
+
         $customer = $this->customerRepository->update($id, $data);
 
         // Invalida cache do dashboard
@@ -319,6 +320,12 @@ class CustomerController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $customer = $this->customerRepository->findById($id);
+
+        if (!$customer) {
+            return response()->json(['message' => 'Cliente não encontrado'], 404);
+        }
+
+        $this->authorize('delete', $customer);
 
         $this->customerRepository->delete($id);
 

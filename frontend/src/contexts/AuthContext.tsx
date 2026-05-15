@@ -7,52 +7,58 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Carregar dados do localStorage ao iniciar
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+    /**
+     * Exibe o usuário cacheado imediatamente para evitar flash de conteúdo,
+     * mas verifica com o servidor se a sessão ainda é válida.
+     *
+     * Com cookie httpOnly (Sanctum SPA), a sessão é a fonte de verdade —
+     * não há token em localStorage para verificar localmente.
+     */
+    const cachedUser = localStorage.getItem('user');
+    if (cachedUser) {
+      try {
+        setUser(JSON.parse(cachedUser) as User);
+      } catch {
+        localStorage.removeItem('user');
+      }
     }
-    setIsLoading(false);
+
+    authService
+      .me()
+      .then((serverUser) => {
+        setUser(serverUser);
+        localStorage.setItem('user', JSON.stringify(serverUser));
+      })
+      .catch(() => {
+        // Sessão expirada ou inválida
+        setUser(null);
+        localStorage.removeItem('user');
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   const login = async (credentials: LoginCredentials) => {
-    try {
-      const response = await authService.login(credentials);
-      
-      setUser(response.user);
-      setToken(response.token);
-      
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('user', JSON.stringify(response.user));
-    } catch (error) {
-      throw error;
-    }
+    const response = await authService.login(credentials);
+    setUser(response.user);
+    localStorage.setItem('user', JSON.stringify(response.user));
   };
 
   const logout = () => {
     authService.logout().catch(() => {
-      // Continua logout mesmo se falhar no backend
+      // Continua o logout local mesmo se o backend falhar
     });
-    
     setUser(null);
-    setToken(null);
-    localStorage.removeItem('token');
     localStorage.removeItem('user');
   };
 
-  const value = {
+  const value: AuthContextType = {
     user,
-    token,
     login,
     logout,
-    isAuthenticated: !!token,
+    isAuthenticated: !!user,
     isLoading,
   };
 

@@ -71,6 +71,15 @@ class AuthController extends Controller
             ]);
         }
 
+        // SPA cookie auth: inicia sessão httpOnly para o frontend
+        // O EnsureFrontendRequestsAreStateful ativa session middleware para domínios stateful
+        if ($request->hasSession()) {
+            auth()->guard('web')->login($user);
+            $request->session()->regenerate(); // Previne session fixation
+        }
+
+        // Token auth: mantido para clientes não-SPA (Swagger, mobile, etc.)
+        // O frontend SPA ignora o token e usa exclusivamente o cookie de sessão
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
@@ -112,7 +121,18 @@ class AuthController extends Controller
     )]
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        // Token auth: revoga o token Sanctum atual, se houver
+        $currentToken = $request->user()->currentAccessToken();
+        if ($currentToken instanceof \Laravel\Sanctum\PersonalAccessToken) {
+            $currentToken->delete();
+        }
+
+        // Session auth: invalida sessão do frontend SPA
+        if ($request->hasSession()) {
+            auth()->guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
         return response()->json([
             'message' => 'Logout realizado com sucesso.',

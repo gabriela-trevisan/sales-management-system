@@ -1,19 +1,7 @@
 # Plano de Portfólio - Projetos GitHub
 
 **Data:** 7 de Janeiro de 2026  
-**Objetivo:** Criar projetos pessoais no GitHub para montar portfólio demonstrando conhecimento em sistemas de vendas, fiscal, administrativo e logística.
-
----
-
-## 📋 Contexto
-
-Anos de experiência em sistemas desenvolvidos para:
-- Vendas
-- Fiscal
-- Administrativo
-- Logística
-
----
+**Objetivo:** Projeto pessoal no GitHub para incrementar portfólio demonstrando conhecimento em sistemas coorporativos de vendas, fiscal, administrativo e logística.
 
 ## 🎯 Estratégia de Desenvolvimento
 

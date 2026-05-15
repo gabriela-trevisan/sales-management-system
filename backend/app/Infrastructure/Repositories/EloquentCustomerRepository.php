@@ -69,15 +69,16 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
      */
     public function update(int $id, array $data): Customer
     {
-        $customer = $this->findById($id);
+        // findOrFail lança ModelNotFoundException → handler global retorna 404
+        $customer = Customer::findOrFail($id);
         $customer->update($data);
-        return $customer->fresh();
+
+        return $this->findById($id) ?? $customer;
     }
 
     public function delete(int $id): bool
     {
-        $customer = $this->findById($id);
-        return $customer->delete();
+        return Customer::findOrFail($id)->delete();
     }
 
     public function getByAssignedUser(int $userId)

@@ -31,22 +31,17 @@ class SendProposalEmailService
      */
     public function send(Proposal $proposal, ?string $emailTo = null): bool
     {
-        // Carrega relacionamentos se ainda não carregados
         $proposal->loadMissing(['customer', 'creator', 'items.product.category']);
 
-        // Gera PDF como string
         $pdfContent = $this->pdfService->output($proposal);
 
-        // Email de destino (usa customer email por padrão)
         $to = $emailTo ?? $proposal->customer->email;
 
         try {
-            // Envia email com PDF anexado
             Mail::to($to)->send(new ProposalMail($proposal, $pdfContent));
             
             return true;
         } catch (\Exception $e) {
-            // Log do erro
             \Log::error('Erro ao enviar proposta por email', [
                 'proposal_id' => $proposal->id,
                 'email_to' => $to,

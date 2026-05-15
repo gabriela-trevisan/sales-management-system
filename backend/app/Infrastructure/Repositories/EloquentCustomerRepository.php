@@ -36,14 +36,14 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
 
         if (isset($filters['search'])) {
             $search = $filters['search'];
-            // Remove formatação para buscar documento
+            // remove formatação para buscar por documento armazenado sem máscara
             $searchClean = preg_replace('/[^0-9]/', '', $search);
             
             $query->where(function ($q) use ($search, $searchClean) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
                 
-                // Busca por documento (já armazenado sem formatação)
+                // busca por documento (já armazenado sem formatação)
                 if ($searchClean) {
                     $q->orWhere('document', 'like', "%{$searchClean}%");
                 }

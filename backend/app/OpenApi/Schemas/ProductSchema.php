@@ -45,5 +45,5 @@ use OpenApi\Attributes as OA;
 )]
 class ProductSchema
 {
-    // Este arquivo só existe para definir o schema OpenAPI
+    // este arquivo só existe para definir o schema OpenAPI
 }

@@ -17,20 +17,17 @@
  * validateCPF('12345678909') // true ou false
  */
 export function validateCPF(cpf: string): boolean {
-  // Remove caracteres não numéricos
   const cleanCPF = cpf.replace(/\D/g, '');
 
-  // Verifica se tem 11 dígitos
   if (cleanCPF.length !== 11) {
     return false;
   }
 
-  // Verifica se todos os dígitos são iguais (CPF inválido)
+  // CPFs com todos os dígitos iguais (ex: 000.000.000-00) são blacklistados pela Receita Federal
   if (/^(\d)\1{10}$/.test(cleanCPF)) {
     return false;
   }
 
-  // Valida primeiro dígito verificador
   let sum = 0;
   for (let i = 0; i < 9; i++) {
     sum += parseInt(cleanCPF.charAt(i)) * (10 - i);
@@ -42,7 +39,6 @@ export function validateCPF(cpf: string): boolean {
     return false;
   }
 
-  // Valida segundo dígito verificador
   sum = 0;
   for (let i = 0; i < 10; i++) {
     sum += parseInt(cleanCPF.charAt(i)) * (11 - i);
@@ -66,20 +62,17 @@ export function validateCPF(cpf: string): boolean {
  * validateCNPJ('12345678000190') // true ou false
  */
 export function validateCNPJ(cnpj: string): boolean {
-  // Remove caracteres não numéricos
   const cleanCNPJ = cnpj.replace(/\D/g, '');
 
-  // Verifica se tem 14 dígitos
   if (cleanCNPJ.length !== 14) {
     return false;
   }
 
-  // Verifica se todos os dígitos são iguais (CNPJ inválido)
+  // CNPJs com todos os dígitos iguais (ex: 00.000.000/0000-00) são blacklistados pela Receita Federal
   if (/^(\d)\1{13}$/.test(cleanCNPJ)) {
     return false;
   }
 
-  // Valida primeiro dígito verificador
   let length = cleanCNPJ.length - 2;
   let numbers = cleanCNPJ.substring(0, length);
   const digits = cleanCNPJ.substring(length);
@@ -96,7 +89,6 @@ export function validateCNPJ(cnpj: string): boolean {
     return false;
   }
 
-  // Valida segundo dígito verificador
   length = length + 1;
   numbers = cleanCNPJ.substring(0, length);
   sum = 0;
@@ -152,12 +144,11 @@ export function validateDocument(document: string): boolean {
 export function validatePhone(phone: string): boolean {
   const cleanPhone = phone.replace(/\D/g, '');
 
-  // Telefone deve ter 10 dígitos (fixo) ou 11 dígitos (celular)
   if (cleanPhone.length !== 10 && cleanPhone.length !== 11) {
     return false;
   }
 
-  // Celular deve começar com 9
+  // celular deve começar com 9 (regra da Anatel para números móveis)
   if (cleanPhone.length === 11 && cleanPhone.charAt(2) !== '9') {
     return false;
   }

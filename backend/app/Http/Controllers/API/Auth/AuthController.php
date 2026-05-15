@@ -71,7 +71,7 @@ class AuthController extends Controller
         }
 
         // SPA Cookie Auth (OWASP A07:2021 — Identification and Authentication Failures)
-        // Sessão httpOnly: inacessível a scripts JS mesmo em caso de XSS.
+        // sessão httpOnly: inacessível a scripts JS mesmo em caso de XSS.
         // statefulApi() em bootstrap/app.php garante que este bloco só executa
         // para requisições vindas de SANCTUM_STATEFUL_DOMAINS.
         if ($request->hasSession()) {
@@ -117,13 +117,13 @@ class AuthController extends Controller
     )]
     public function logout(Request $request)
     {
-        // Token auth: revoga o token Sanctum atual, se houver
+        // token auth: revoga o token Sanctum atual, se houver
         $currentToken = $request->user()->currentAccessToken();
         if ($currentToken instanceof \Laravel\Sanctum\PersonalAccessToken) {
             $currentToken->delete();
         }
 
-        // Session auth: invalida sessão do frontend SPA
+        // session auth: invalida sessão do frontend SPA
         if ($request->hasSession()) {
             auth()->guard('web')->logout();
             $request->session()->invalidate();
@@ -216,10 +216,8 @@ class AuthController extends Controller
     {
         $user = $request->user();
         
-        // Revoga o token atual
         $request->user()->currentAccessToken()->delete();
         
-        // Cria um novo token
         $newToken = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([

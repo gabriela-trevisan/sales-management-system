@@ -29,36 +29,20 @@ class SecurityHeaders
     {
         $response = $next($request);
 
-        // X-Frame-Options: Previne clickjacking
-        // DENY: Não permite que a página seja exibida em frame/iframe
         $response->headers->set('X-Frame-Options', 'DENY');
 
-        // X-Content-Type-Options: Previne MIME sniffing
-        // nosniff: Navegador não tenta adivinhar o Content-Type
         $response->headers->set('X-Content-Type-Options', 'nosniff');
 
-        // X-XSS-Protection: Proteção XSS legacy (navegadores antigos)
-        // 1; mode=block: Ativa filtro XSS e bloqueia página se detectar ataque
         $response->headers->set('X-XSS-Protection', '1; mode=block');
 
-        // Referrer-Policy: Controla informações de referência
-        // strict-origin-when-cross-origin: Envia apenas origem em requisições cross-origin via HTTPS
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-        // Permissions-Policy: Controla acesso a APIs do navegador
-        // Desabilita APIs não utilizadas pelo sistema
         $response->headers->set('Permissions-Policy', 
             'geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()'
         );
 
-        // Content-Security-Policy: Previne XSS, clickjacking e data injection
-        // Diretivas configuradas por ambiente (strict em produção, permissivo em desenvolvimento)
         $response->headers->set('Content-Security-Policy', $this->buildCspPolicy());
 
-        // HSTS: Force HTTPS (apenas em produção)
-        // max-age=31536000: Válido por 1 ano
-        // includeSubDomains: Aplica a todos os subdomínios
-        // preload: Pode ser incluído na lista HSTS do navegador
         if (app()->environment('production')) {
             $response->headers->set(
                 'Strict-Transport-Security',
@@ -81,14 +65,12 @@ class SecurityHeaders
     {
         $isProduction = app()->environment('production');
         
-        // Frontend URL (React/Vite)
         $frontendUrl = config('app.frontend_url', 'http://localhost:5173');
         $parsedUrl = parse_url($frontendUrl);
         $frontendOrigin = ($parsedUrl['scheme'] ?? 'http') . '://' . ($parsedUrl['host'] ?? 'localhost') . 
                          (isset($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '');
 
         if ($isProduction) {
-            // Produção: Política strict
             return implode('; ', [
                 "default-src 'self'",
                 "script-src 'self'",
@@ -103,7 +85,7 @@ class SecurityHeaders
             ]);
         }
 
-        // Desenvolvimento: Política permissiva (Vite HMR + Tailwind inline styles)
+        // política permissiva em dev: Tailwind usa inline styles e Vite HMR requer unsafe-eval
         return implode('; ', [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' {$frontendOrigin}",

@@ -68,7 +68,7 @@ const CustomerFormModal = ({ customer, onClose, onSave }: CustomerFormModalProps
       setIsSubmitting(true);
       setServerError('');
 
-      // Limpa formatação antes de enviar ao backend
+      // limpa formatação antes de enviar ao backend
       const dataToSend = {
         ...data,
         document: cleanDocument(data.document),
@@ -89,7 +89,7 @@ const CustomerFormModal = ({ customer, onClose, onSave }: CustomerFormModalProps
       if (error.response?.data?.message) {
         setServerError(error.response.data.message);
       } else if (error.response?.data?.errors) {
-        // Mapeia erros do Laravel para o formulário
+        // mapeia erros do Laravel para o formulário
         const backendErrors = error.response.data.errors;
         Object.keys(backendErrors).forEach((key) => {
           setServerError(backendErrors[key][0]);

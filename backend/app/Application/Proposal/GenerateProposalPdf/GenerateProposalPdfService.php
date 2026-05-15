@@ -20,13 +20,10 @@ class GenerateProposalPdfService
      */
     public function generate(Proposal $proposal): \Barryvdh\DomPDF\PDF
     {
-        // Carrega relacionamentos se ainda não carregados
         $proposal->loadMissing(['customer', 'creator', 'items.product.category']);
 
-        // Gera PDF a partir do template Blade
         $pdf = Pdf::loadView('proposals.pdf', ['proposal' => $proposal]);
 
-        // Configurações do PDF
         $pdf->setPaper('A4', 'portrait');
         $pdf->setOption('isHtml5ParserEnabled', true);
         $pdf->setOption('isRemoteEnabled', true);

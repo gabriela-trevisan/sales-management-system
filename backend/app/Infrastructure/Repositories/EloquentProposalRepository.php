@@ -20,17 +20,14 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
     {
         $query = Proposal::with(['customer', 'creator', 'items.product']);
 
-        // Filtro por status
         if (!empty($filters['status'])) {
             $query->byStatus($filters['status']);
         }
 
-        // Filtro por cliente
         if (!empty($filters['customer_id'])) {
             $query->byCustomer($filters['customer_id']);
         }
 
-        // Search por número, nome do cliente ou notas
         if (!empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
@@ -42,7 +39,6 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
             });
         }
 
-        // Ordenação por data de emissão (mais recentes primeiro)
         $query->orderBy('issue_date', 'desc');
 
         return $query->paginate($perPage);
@@ -62,16 +58,13 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
      */
     public function create(array $data): Proposal
     {
-        // Gera número da proposta se não fornecido
         if (empty($data['number'])) {
             $data['number'] = $this->generateProposalNumber();
         }
 
-        // Extrai items do array principal
         $items = $data['items'] ?? [];
         unset($data['items']);
 
-        // Calcula totais
         $subtotal = 0;
         $totalDiscount = 0;
 
@@ -87,10 +80,8 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
         $data['discount'] = $totalDiscount;
         $data['total'] = $subtotal - $totalDiscount;
 
-        // Cria a proposta
         $proposal = Proposal::create($data);
 
-        // Cria os items
         foreach ($items as $item) {
             $itemSubtotal = $item['quantity'] * $item['unit_price'];
             $itemDiscount = $itemSubtotal * ($item['discount_percentage'] ?? 0) / 100;
@@ -115,11 +106,9 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
     {
         $proposal = Proposal::findOrFail($id);
 
-        // Extrai items do array principal
         $items = $data['items'] ?? null;
         unset($data['items']);
 
-        // Se items foram fornecidos, recalcula totais
         if ($items !== null) {
             $subtotal = 0;
             $totalDiscount = 0;
@@ -136,7 +125,6 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
             $data['discount'] = $totalDiscount;
             $data['total'] = $subtotal - $totalDiscount;
 
-            // Remove items antigos e cria novos
             $proposal->items()->delete();
             
             foreach ($items as $item) {
@@ -154,7 +142,6 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
             }
         }
 
-        // Atualiza a proposta
         $proposal->update($data);
 
         return $proposal->load(['customer', 'creator', 'items.product']);
@@ -181,7 +168,7 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
             ->first();
 
         if ($lastProposal) {
-            // Extrai o número sequencial do último número
+            // extrai o número sequencial do último número
             preg_match('/PROP-\d{4}-(\d+)/', $lastProposal->number, $matches);
             $sequence = isset($matches[1]) ? intval($matches[1]) + 1 : 1;
         } else {

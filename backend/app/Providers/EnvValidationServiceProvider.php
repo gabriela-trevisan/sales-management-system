@@ -76,7 +76,6 @@ class EnvValidationServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Skip validation em comandos específicos (key:generate, migrate, etc)
         if ($this->shouldSkipValidation()) {
             return;
         }
@@ -91,7 +90,7 @@ class EnvValidationServiceProvider extends ServiceProvider
      */
     private function shouldSkipValidation(): bool
     {
-        // Quando a config está em cache, o Laravel não carrega o .env —
+        // quando a config está em cache, o Laravel não carrega o .env —
         // env() retorna null para todas as variáveis. A validação já ocorreu
         // durante a geração do cache, portanto é seguro pular aqui.
         if (app()->configurationIsCached()) {
@@ -104,7 +103,6 @@ class EnvValidationServiceProvider extends ServiceProvider
 
         $command = $_SERVER['argv'][1] ?? '';
         
-        // Comandos que podem rodar sem .env completo
         $allowedCommands = [
             'key:generate',
             'env:decrypt',

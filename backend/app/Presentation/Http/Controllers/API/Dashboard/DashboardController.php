@@ -88,7 +88,6 @@ class DashboardController extends Controller
                 )
                 ->groupBy('customer_segments.id', 'customer_segments.name');
             
-            // Aplicar filtro de período se fornecido
             if ($month && $year) {
                 $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
                 $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
@@ -263,7 +262,6 @@ class DashboardController extends Controller
         $month = $request->query('month');
         $year = $request->query('year');
         
-        // Definir período se fornecido
         $startDate = null;
         $endDate = null;
         if ($month && $year) {
@@ -271,7 +269,6 @@ class DashboardController extends Controller
             $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
         }
 
-        // Buscar últimas oportunidades criadas
         $opportunitiesQuery = DB::table('opportunities')
             ->join('customers', 'opportunities.customer_id', '=', 'customers.id')
             ->join('users', 'opportunities.assigned_to', '=', 'users.id')
@@ -292,7 +289,6 @@ class DashboardController extends Controller
             ->limit((int) ceil($limit / 2))
             ->get();
 
-        // Buscar últimos clientes cadastrados
         $customersQuery = DB::table('customers')
             ->leftJoin('users', 'customers.assigned_to', '=', 'users.id')
             ->select(
@@ -311,7 +307,6 @@ class DashboardController extends Controller
             ->limit((int) ceil($limit / 2))
             ->get();
 
-        // Combinar e ordenar por data
         $activities = collect($recentOpportunities)
             ->merge($recentCustomers)
             ->sortByDesc('created_at')
@@ -333,7 +328,6 @@ class DashboardController extends Controller
      */
     private function calculateMetrics(?string $month, ?string $year): JsonResponse
     {
-        // Definir período atual
         $currentStart = $month && $year 
             ? Carbon::createFromDate($year, $month, 1)->startOfMonth()
             : Carbon::now()->startOfMonth();
@@ -341,26 +335,23 @@ class DashboardController extends Controller
             ? Carbon::createFromDate($year, $month, 1)->endOfMonth()
             : Carbon::now()->endOfMonth();
         
-        // Definir período anterior (mês anterior)
         $previousStart = (clone $currentStart)->subMonth()->startOfMonth();
         $previousEnd = (clone $currentStart)->subMonth()->endOfMonth();
 
-        // Total de clientes (até o final do período atual)
+        // total de clientes acumulado até o fim do período atual (não apenas criados nele)
         $totalCustomers = DB::table('customers')
             ->where('created_at', '<=', $currentEnd)
             ->count();
         
-        // Total de clientes no período anterior
+        // total de clientes acumulado até o fim do período anterior (base para calcular tendência)
         $totalCustomersPrevious = DB::table('customers')
             ->where('created_at', '<=', $previousEnd)
             ->count();
         
-        // Tendência de clientes (%)
         $customersTrend = $totalCustomersPrevious > 0
             ? round((($totalCustomers - $totalCustomersPrevious) / $totalCustomersPrevious) * 100, 1)
             : 0;
 
-        // Total de oportunidades no período
         $totalOpportunities = DB::table('opportunities')
             ->whereBetween('created_at', [$currentStart, $currentEnd])
             ->count();
@@ -369,17 +360,15 @@ class DashboardController extends Controller
             ->whereBetween('created_at', [$previousStart, $previousEnd])
             ->count();
         
-        // Tendência de oportunidades (%)
         $opportunitiesTrend = $totalOpportunitiesPrevious > 0
             ? round((($totalOpportunities - $totalOpportunitiesPrevious) / $totalOpportunitiesPrevious) * 100, 1)
             : 0;
 
-        // Valor total do pipeline (oportunidades abertas)
+        // valor total do pipeline inclui apenas oportunidades com status 'open'
         $totalPipelineValue = DB::table('opportunities')
             ->where('status', 'open')
             ->sum('value');
 
-        // Taxa de conversão no período
         $wonOpportunities = DB::table('opportunities')
             ->where('status', 'won')
             ->whereBetween('closed_at', [$currentStart, $currentEnd])
@@ -388,7 +377,6 @@ class DashboardController extends Controller
             ? round(($wonOpportunities / $totalOpportunities) * 100, 1) 
             : 0;
 
-        // Vendas dos últimos 6 meses
         $monthlySales = DB::table('opportunities')
             ->select(
                 DB::raw("DATE_FORMAT(closed_at, '%b') as month"),
@@ -407,7 +395,6 @@ class DashboardController extends Controller
                 ];
             });
 
-        // Oportunidades por estágio (usando pipeline_stages)
         $opportunitiesByStage = DB::table('opportunities')
             ->join('pipeline_stages', 'opportunities.pipeline_stage_id', '=', 'pipeline_stages.id')
             ->select(

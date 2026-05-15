@@ -152,12 +152,12 @@ class CustomerController extends Controller
             phone: $request->input('phone'),
             status: $request->input('status', 'active'),
             segmentId: $request->input('segment_id'),
-            assignedTo: $request->user()->id, // Auto-atribui ao usuário logado
+            assignedTo: $request->user()->id, // auto-atribui ao usuário logado
         );
 
         $customer = $this->createCustomerHandler->handle($command);
 
-        // Invalida cache do dashboard pois o total de clientes mudou
+        // invalida cache do dashboard pois o total de clientes mudou
         Cache::forget('dashboard.metrics');
 
         return response()->json([
@@ -279,7 +279,7 @@ class CustomerController extends Controller
 
         $customer = $this->customerRepository->update($id, $data);
 
-        // Invalida cache do dashboard
+        // invalida cache do dashboard pois métricas agregadas do período podem ter mudado
         Cache::forget('dashboard.metrics');
 
         return response()->json([
@@ -329,7 +329,7 @@ class CustomerController extends Controller
 
         $this->customerRepository->delete($id);
 
-        // Invalida cache do dashboard pois o total de clientes mudou
+        // invalida cache do dashboard pois o total de clientes mudou
         Cache::forget('dashboard.metrics');
 
         return response()->json([

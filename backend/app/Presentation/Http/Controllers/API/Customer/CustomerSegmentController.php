@@ -42,8 +42,7 @@ class CustomerSegmentController extends Controller
     )]
     public function index(): JsonResponse
     {
-        // Cache por 15 minutos (900 segundos)
-        // Segmentos são dados mestres que raramente mudam
+        // 900s de cache — segmentos são dados mestres que raramente mudam
         $segments = Cache::remember('customer.segments', 900, function () {
             return CustomerSegment::orderBy('name')->get(['id', 'name', 'description']);
         });

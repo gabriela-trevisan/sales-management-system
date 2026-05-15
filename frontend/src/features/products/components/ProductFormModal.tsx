@@ -40,7 +40,6 @@ export default function ProductFormModal({
     },
   });
 
-  // Reset form when product changes or modal opens
   useEffect(() => {
     if (isOpen) {
       if (product) {

@@ -7,20 +7,16 @@
 export const formatDocument = (document: string): string => {
   if (!document) return '';
   
-  // Remove tudo que não é número
   const numbers = document.replace(/\D/g, '');
   
-  // CPF: 123.456.789-00
   if (numbers.length === 11) {
     return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   }
   
-  // CNPJ: 12.345.678/0001-90
   if (numbers.length === 14) {
     return numbers.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
   }
   
-  // Se não for CPF nem CNPJ, retorna sem formatação
   return numbers;
 };
 
@@ -45,12 +41,10 @@ export const formatPhone = (phone: string): string => {
   
   const numbers = phone.replace(/\D/g, '');
   
-  // Celular: (11) 98765-4321
   if (numbers.length === 11) {
     return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
   }
   
-  // Fixo: (11) 3456-7890
   if (numbers.length === 10) {
     return numbers.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
   }

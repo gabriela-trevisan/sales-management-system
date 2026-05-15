@@ -55,25 +55,21 @@ export default function ProposalListPage() {
     proposal: null,
   });
 
-  // Fetch proposals
   const { data, isLoading, error } = useQuery({
     queryKey: ['proposals', filters],
     queryFn: () => proposalService.getAll(filters),
   });
 
-  // Fetch customers for modal
   const { data: customersData, isLoading: loadingCustomers } = useQuery({
     queryKey: ['customers', { per_page: 1000 }],
     queryFn: () => customerService.getAll({ per_page: 1000 }),
   });
 
-  // Fetch products for modal
   const { data: productsData, isLoading: loadingProducts } = useQuery({
     queryKey: ['products', { is_active: true, per_page: 1000 }],
     queryFn: () => productService.getAll({ is_active: true, per_page: 1000 }),
   });
 
-  // Create mutation
   const createMutation = useMutation({
     mutationFn: (data: CreateProposalData) => proposalService.create(data),
     onSuccess: () => {
@@ -86,7 +82,6 @@ export default function ProposalListPage() {
     },
   });
 
-  // Update mutation
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: UpdateProposalData }) =>
       proposalService.update(id, data),
@@ -100,7 +95,6 @@ export default function ProposalListPage() {
     },
   });
 
-  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: (id: number) => proposalService.delete(id),
     onSuccess: () => {
@@ -113,33 +107,26 @@ export default function ProposalListPage() {
     },
   });
 
-  // Handle search
   const handleSearch = () => {
     setFilters({ ...filters, search: searchTerm, status: selectedStatus || undefined });
   };
 
-  // Handle create
   const handleCreate = () => {
     setModalState({ isOpen: true, proposal: null });
   };
 
-  // Handle edit
   const handleEdit = (proposal: Proposal) => {
     setModalState({ isOpen: true, proposal });
   };
 
-  // Handle form submit
   const handleFormSubmit = (data: ProposalFormData) => {
     if (modalState.proposal) {
-      // Update existing proposal
       updateMutation.mutate({ id: modalState.proposal.id, data });
     } else {
-      // Create new proposal
       createMutation.mutate(data as CreateProposalData);
     }
   };
 
-  // Handle delete
   const handleDelete = (id: number) => {
     setDeleteConfirm({ isOpen: true, proposalId: id });
   };
@@ -150,12 +137,10 @@ export default function ProposalListPage() {
     }
   };
 
-  // Format currency
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   };
 
-  // Format date
   const formatDate = (date: string | null | undefined) => {
     if (!date) return 'N/A';
     
@@ -317,7 +302,7 @@ export default function ProposalListPage() {
         </div>
       )}
 
-      {/* Confirm Dialog - Remover isso temporariamente até criar o componente ConfirmDialog */}
+      {/* TODO(#?): substituir inline dialog pelo componente ConfirmDialog já existente */}
       {deleteConfirm.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="rounded-lg bg-white p-6 shadow-xl">

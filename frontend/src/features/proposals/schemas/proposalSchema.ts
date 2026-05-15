@@ -29,7 +29,6 @@ export const proposalSchema = z.object({
   status: z.enum(['draft', 'sent', 'approved', 'rejected', 'expired']),
   items: z.array(proposalItemSchema).min(1, 'É necessário adicionar pelo menos um item'),
 }).refine((data) => {
-  // Valida que expiration_date é posterior a issue_date
   const issueDate = new Date(data.issue_date);
   const expirationDate = new Date(data.expiration_date);
   return expirationDate > issueDate;

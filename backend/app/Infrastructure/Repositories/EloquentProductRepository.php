@@ -18,17 +18,14 @@ class EloquentProductRepository implements ProductRepositoryInterface
         $query = Product::with('category')
             ->orderBy('created_at', 'desc');
 
-        // Filter by active status
         if (isset($filters['is_active'])) {
             $query->where('is_active', filter_var($filters['is_active'], FILTER_VALIDATE_BOOLEAN));
         }
 
-        // Filter by category
         if (isset($filters['category_id'])) {
             $query->where('category_id', $filters['category_id']);
         }
 
-        // Search by name, sku or description
         if (isset($filters['search']) && !empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {

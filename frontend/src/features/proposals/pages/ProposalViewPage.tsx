@@ -39,14 +39,12 @@ export default function ProposalViewPage() {
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
-  // Fetch proposal details
   const { data: proposal, isLoading, error } = useQuery({
     queryKey: ['proposal', id],
     queryFn: () => proposalService.getById(Number(id)),
     enabled: !!id,
   });
 
-  // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: () => proposalService.delete(Number(id)),
     onSuccess: () => {
@@ -58,7 +56,6 @@ export default function ProposalViewPage() {
     },
   });
 
-  // Format currency
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -66,7 +63,6 @@ export default function ProposalViewPage() {
     }).format(value);
   };
 
-  // Format date
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return 'N/A';
     
@@ -80,14 +76,12 @@ export default function ProposalViewPage() {
     }).format(date);
   };
 
-  // Handle delete
   const handleDelete = () => {
     if (deleteConfirm) {
       deleteMutation.mutate();
     }
   };
 
-  // Handle PDF download
   const handleDownloadPDF = async () => {
     try {
       await proposalService.downloadPdf(proposal.id);
@@ -97,7 +91,6 @@ export default function ProposalViewPage() {
     }
   };
 
-  // Handle email send
   const handleSendEmail = async () => {
     try {
       await proposalService.sendEmail(proposal.id);
@@ -107,7 +100,6 @@ export default function ProposalViewPage() {
     }
   };
 
-  // Calculate subtotal from items
   const calculateSubtotal = () => {
     if (!proposal?.items) return 0;
     return proposal.items.reduce((sum: number, item: ProposalItem) => sum + (item.quantity * item.unit_price), 0);

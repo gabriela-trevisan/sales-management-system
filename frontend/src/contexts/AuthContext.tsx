@@ -33,7 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('user', JSON.stringify(serverUser));
       })
       .catch(() => {
-        // Sessão expirada ou inválida
+        // sessão expirada ou inválida
         setUser(null);
         localStorage.removeItem('user');
       })
@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     authService.logout().catch(() => {
-      // Continua o logout local mesmo se o backend falhar
+      // continua o logout local mesmo se o backend falhar
     });
     setUser(null);
     localStorage.removeItem('user');

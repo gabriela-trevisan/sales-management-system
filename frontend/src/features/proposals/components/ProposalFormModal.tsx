@@ -50,14 +50,13 @@ export default function ProposalFormModal({
     name: 'items',
   });
 
-  // Watch all items for real-time calculations using useWatch (React Compiler compatible)
+  // useWatch em vez de watch() para compatibilidade com React Compiler — evita re-renders do componente inteiro
   const watchedItems = useWatch({
     control,
     name: 'items',
     defaultValue: [],
   });
 
-  // Calculate totals
   const calculations = useMemo(() => {
     let subtotal = 0;
     let totalDiscount = 0;
@@ -83,7 +82,6 @@ export default function ProposalFormModal({
     };
   }, [watchedItems]);
 
-  // Reset form when proposal changes or modal opens
   useEffect(() => {
     if (isOpen) {
       if (proposal) {
@@ -103,9 +101,7 @@ export default function ProposalFormModal({
           })),
         });
       } else {
-        // Get today's date in YYYY-MM-DD format
         const today = new Date().toISOString().split('T')[0];
-        // Get date 30 days from now
         const expiration = new Date();
         expiration.setDate(expiration.getDate() + 30);
         const expirationDate = expiration.toISOString().split('T')[0];
@@ -142,7 +138,7 @@ export default function ProposalFormModal({
     }
   };
 
-  // Auto-fill unit price when product is selected
+  // auto-fill de unit_price ao selecionar produto, evitando preenchimento manual
   const handleProductChange = (index: number, productId: number) => {
     const selectedProduct = products.find((p) => p.id === productId);
     if (selectedProduct) {

@@ -2,19 +2,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Edit2, FileDown, Mail, Trash2, AlertCircle } from 'lucide-react';
 import proposalService, { type ProposalItem } from '../services/proposalService';
-import { Button } from '../../../components/common/Button';
-import { Alert } from '../../../components/common/Alert';
+import { Button } from '@/components/ui/button';
+import { Alert } from '@/components/common/Alert';
 import { useState } from 'react';
 
 /**
  * Status badge color mapping
  */
 const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-muted text-muted-foreground',
-  sent: 'bg-blue-100/80 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300',
-  approved: 'bg-green-100/80 dark:bg-green-900/40 text-green-800 dark:text-green-300',
-  rejected: 'bg-red-100/80 dark:bg-red-900/40 text-red-800 dark:text-red-300',
-  expired: 'bg-orange-100/80 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300',
+  draft:    'bg-muted text-muted-foreground',
+  sent:     'bg-info/10 text-info',
+  approved: 'bg-success/10 text-success',
+  rejected: 'bg-destructive/10 text-destructive',
+  expired:  'bg-warning/10 text-warning',
 };
 
 /**

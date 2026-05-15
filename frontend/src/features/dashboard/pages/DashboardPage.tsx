@@ -64,7 +64,7 @@ function DashboardContent() {
           value={metrics.total_customers}
           trend={metrics.total_customers_trend}
           icon={Users}
-          iconColor="text-oklch-primary"
+          iconColor="text-primary"
           loading={isLoading}
         />
         <MetricCard
@@ -72,7 +72,7 @@ function DashboardContent() {
           value={metrics.total_opportunities}
           trend={metrics.total_opportunities_trend}
           icon={Target}
-          iconColor="text-green-600"
+          iconColor="text-success"
           loading={isLoading}
         />
         <MetricCard
@@ -80,7 +80,7 @@ function DashboardContent() {
           value={metrics.total_pipeline_value}
           trend={metrics.total_pipeline_value_trend}
           icon={DollarSign}
-          iconColor="text-blue-600"
+          iconColor="text-info"
           formatValue="currency"
           loading={isLoading}
         />
@@ -89,7 +89,7 @@ function DashboardContent() {
           value={metrics.conversion_rate}
           trend={metrics.conversion_rate_trend}
           icon={TrendingUp}
-          iconColor="text-amber-600"
+          iconColor="text-warning"
           formatValue="percentage"
           loading={isLoading}
         />

@@ -63,10 +63,10 @@ export function Sidebar() {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group",
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group select-none",
                 isActive 
                   ? "bg-sidebar-primary/10 text-sidebar-primary ring-1 ring-sidebar-ring/20" 
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-primary/15 active:scale-[0.98]"
               )}
             >
               <Icon className={cn(

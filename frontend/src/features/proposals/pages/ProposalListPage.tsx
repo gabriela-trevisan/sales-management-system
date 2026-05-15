@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import proposalService, { type Proposal, type ProposalFilters, type CreateProposalData, type UpdateProposalData } from '../services/proposalService';
 import customerService from '@/features/customers/services/customerService';
 import productService from '@/features/products/services/productService';
-import { Button } from '../../../components/common/Button';
-import { Input } from '../../../components/common/Input';
-import { Alert } from '../../../components/common/Alert';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Alert } from '@/components/common/Alert';
 import ProposalFormModal from '../components/ProposalFormModal';
 import { type ProposalFormData } from '../schemas/proposalSchema';
 
@@ -15,11 +15,11 @@ import { type ProposalFormData } from '../schemas/proposalSchema';
  * Status badge color mapping
  */
 const STATUS_COLORS: Record<Proposal['status'], string> = {
-  draft: 'bg-gray-100 text-gray-800',
-  sent: 'bg-blue-100 text-blue-800',
-  approved: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-800',
-  expired: 'bg-orange-100 text-orange-800',
+  draft:    'bg-muted text-muted-foreground',
+  sent:     'bg-info/10 text-info',
+  approved: 'bg-success/10 text-success',
+  rejected: 'bg-destructive/10 text-destructive',
+  expired:  'bg-warning/10 text-warning',
 };
 
 /**

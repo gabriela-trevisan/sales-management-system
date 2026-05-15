@@ -8,14 +8,14 @@ interface AlertProps {
 
 export function Alert({ type = 'info', children, onClose }: AlertProps) {
   const styles = {
-    success: 'bg-green-50 border-green-500 text-green-800',
-    error: 'bg-red-50 border-red-500 text-red-800',
-    warning: 'bg-yellow-50 border-yellow-500 text-yellow-800',
-    info: 'bg-blue-50 border-blue-500 text-blue-800',
+    success: 'bg-success/10 border-success text-foreground',
+    error:   'bg-destructive/10 border-destructive text-foreground',
+    warning: 'bg-warning/10 border-warning text-foreground',
+    info:    'bg-info/10 border-info text-foreground',
   };
 
   return (
-    <div className={`border-l-4 p-4 ${styles[type]} flex items-start justify-between`}>
+    <div className={`border-l-4 p-4 rounded-r-md ${styles[type]} flex items-start justify-between`}>
       <div className="flex-1">{children}</div>
       {onClose && (
         <button

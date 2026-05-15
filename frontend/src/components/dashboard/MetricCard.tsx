@@ -19,7 +19,7 @@ export function MetricCard({
   value,
   trend,
   icon: Icon,
-  iconColor = 'text-oklch-primary',
+  iconColor = 'text-primary',
   formatValue = 'number',
   loading = false,
 }: MetricCardProps) {
@@ -52,7 +52,7 @@ export function MetricCard({
     }
     return {
       icon: trend > 0 ? TrendingUp : TrendingDown,
-      color: trend > 0 ? 'text-green-600' : 'text-red-600',
+      color: trend > 0 ? 'text-success' : 'text-destructive',
     };
   }, [trend]);
 

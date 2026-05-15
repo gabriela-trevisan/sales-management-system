@@ -53,7 +53,7 @@ function DashboardContent() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-oklch-on-surface">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
         <MonthlyPeriodSelector />
       </div>
       
@@ -101,37 +101,37 @@ function DashboardContent() {
         <CustomersBySegmentChart />
 
         {/* Gráfico de Vendas Mensais */}
-        <Card className="bg-oklch-surface-container border-oklch-outline-variant">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-base text-oklch-on-surface">Vendas Mensais</CardTitle>
+            <CardTitle className="text-base">Vendas Mensais</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={metrics.monthly_sales}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(var(--outline-variant))" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
                 <XAxis 
                   dataKey="month" 
-                  stroke="oklch(var(--on-surface-variant))"
-                  tick={{ fill: 'oklch(var(--on-surface))' }}
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fill: 'var(--color-foreground)' }}
                 />
                 <YAxis 
-                  stroke="oklch(var(--on-surface-variant))"
-                  tick={{ fill: 'oklch(var(--on-surface))' }}
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fill: 'var(--color-foreground)' }}
                 />
                 <Tooltip 
                   formatter={(value) => formatCurrency(Number(value))}
                   contentStyle={{
-                    backgroundColor: 'oklch(var(--surface-container))',
-                    border: '1px solid oklch(var(--outline-variant))',
+                    backgroundColor: 'var(--color-card)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: '8px',
-                    color: 'oklch(var(--on-surface))'
+                    color: 'var(--color-foreground)'
                   }}
                 />
-                <Legend wrapperStyle={{ color: 'oklch(var(--on-surface))' }} />
+                <Legend wrapperStyle={{ color: 'var(--color-foreground)' }} />
                 <Line 
                   type="monotone" 
                   dataKey="value" 
-                  stroke="oklch(var(--chart-2))"
+                  stroke="var(--color-chart-2)"
                   strokeWidth={2}
                   name="Vendas"
                 />
@@ -141,34 +141,34 @@ function DashboardContent() {
         </Card>
 
         {/* Gráfico de Oportunidades por Estágio */}
-        <Card className="bg-oklch-surface-container border-oklch-outline-variant">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-base text-oklch-on-surface">Oportunidades por Estágio</CardTitle>
+            <CardTitle className="text-base">Oportunidades por Estágio</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={metrics.opportunities_by_stage}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(var(--outline-variant))" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
                 <XAxis 
                   dataKey="stage" 
-                  stroke="oklch(var(--on-surface-variant))"
-                  tick={{ fill: 'oklch(var(--on-surface))' }}
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fill: 'var(--color-foreground)' }}
                 />
                 <YAxis 
-                  stroke="oklch(var(--on-surface-variant))"
-                  tick={{ fill: 'oklch(var(--on-surface))' }}
+                  stroke="var(--color-muted-foreground)"
+                  tick={{ fill: 'var(--color-foreground)' }}
                 />
                 <Tooltip 
                   formatter={(value) => formatCurrency(Number(value))}
                   contentStyle={{
-                    backgroundColor: 'oklch(var(--surface-container))',
-                    border: '1px solid oklch(var(--outline-variant))',
+                    backgroundColor: 'var(--color-card)',
+                    border: '1px solid var(--color-border)',
                     borderRadius: '8px',
-                    color: 'oklch(var(--on-surface))'
+                    color: 'var(--color-foreground)'
                   }}
                 />
-                <Legend wrapperStyle={{ color: 'oklch(var(--on-surface))' }} />
-                <Bar dataKey="value" fill="oklch(var(--chart-3))" name="Valor Total" />
+                <Legend wrapperStyle={{ color: 'var(--color-foreground)' }} />
+                <Bar dataKey="value" fill="var(--color-chart-3)" name="Valor Total" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -176,29 +176,29 @@ function DashboardContent() {
       </div>
 
       {/* Atividades Recentes */}
-      <Card className="bg-oklch-surface-container border-oklch-outline-variant">
+      <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Activity className="w-5 h-5 text-oklch-on-surface-variant" />
-            <CardTitle className="text-base text-oklch-on-surface">Atividades Recentes</CardTitle>
+            <Activity className="w-5 h-5 text-muted-foreground" />
+            <CardTitle className="text-base">Atividades Recentes</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {activities.map((activity, index) => (
-              <div key={index} className="flex items-start gap-4 pb-4 border-b border-oklch-outline-variant last:border-0">
+              <div key={index} className="flex items-start gap-4 pb-4 border-b border-border last:border-0">
                 <div className={`p-2 rounded-full ${
-                  activity.type === 'opportunity_created' ? 'bg-green-100' : 'bg-blue-100'
+                  activity.type === 'opportunity_created' ? 'bg-success/10' : 'bg-primary/10'
                 }`}>
                   {activity.type === 'opportunity_created' ? (
-                    <Target className="w-4 h-4 text-green-600" />
+                    <Target className="w-4 h-4 text-success" />
                   ) : (
-                    <Users className="w-4 h-4 text-blue-600" />
+                    <Users className="w-4 h-4 text-primary" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-oklch-on-surface">{activity.description}</p>
-                  <p className="text-xs text-oklch-on-surface-variant">{activity.user} • {formatDate(activity.created_at)}</p>
+                  <p className="text-sm font-medium text-foreground">{activity.description}</p>
+                  <p className="text-xs text-muted-foreground">{activity.user} • {formatDate(activity.created_at)}</p>
                 </div>
               </div>
             ))}

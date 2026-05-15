@@ -11,11 +11,11 @@ interface SegmentData {
 }
 
 const CHART_COLORS = [
-  'oklch(var(--chart-1))',
-  'oklch(var(--chart-2))',
-  'oklch(var(--chart-3))',
-  'oklch(var(--chart-4))',
-  'oklch(var(--chart-5))',
+  'var(--color-chart-1)',
+  'var(--color-chart-2)',
+  'var(--color-chart-3)',
+  'var(--color-chart-4)',
+  'var(--color-chart-5)',
 ];
 
 export function CustomersBySegmentChart() {
@@ -42,14 +42,14 @@ export function CustomersBySegmentChart() {
 
   if (loading) {
     return (
-      <Card className="bg-oklch-surface-container border-oklch-outline-variant">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-base text-oklch-on-surface">
+          <CardTitle className="text-base">
             Clientes por Segmento
           </CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
-          <div className="text-oklch-on-surface-variant">Carregando...</div>
+          <div className="text-muted-foreground">Carregando...</div>
         </CardContent>
       </Card>
     );
@@ -57,23 +57,23 @@ export function CustomersBySegmentChart() {
 
   if (!data || data.length === 0) {
     return (
-      <Card className="bg-oklch-surface-container border-oklch-outline-variant">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-base text-oklch-on-surface">
+          <CardTitle className="text-base">
             Clientes por Segmento
           </CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
-          <div className="text-oklch-on-surface-variant">Nenhum dado disponível</div>
+          <div className="text-muted-foreground">Nenhum dado disponível</div>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="bg-oklch-surface-container border-oklch-outline-variant">
+    <Card>
       <CardHeader>
-        <CardTitle className="text-base text-oklch-on-surface">
+        <CardTitle className="text-base">
           Clientes por Segmento
         </CardTitle>
       </CardHeader>
@@ -100,9 +100,10 @@ export function CustomersBySegmentChart() {
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: 'oklch(var(--surface-container))',
-                border: '1px solid oklch(var(--outline-variant))',
+                backgroundColor: 'var(--color-card)',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
+                color: 'var(--color-foreground)',
               }}
               formatter={(value: number | undefined) => [
                 value ? `${value} clientes` : '',

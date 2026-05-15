@@ -4,6 +4,7 @@ import { ArrowLeft, Edit2, FileDown, Mail, Trash2, AlertCircle } from 'lucide-re
 import proposalService, { type ProposalItem } from '../services/proposalService';
 import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/common/Alert';
+import ConfirmDialog from '@/components/ConfirmDialog';
 import { useState } from 'react';
 
 /**
@@ -74,12 +75,6 @@ export default function ProposalViewPage() {
       month: '2-digit',
       year: 'numeric',
     }).format(date);
-  };
-
-  const handleDelete = () => {
-    if (deleteConfirm) {
-      deleteMutation.mutate();
-    }
   };
 
   const handleDownloadPDF = async () => {
@@ -169,7 +164,7 @@ export default function ProposalViewPage() {
             {STATUS_LABELS[proposal.status]}
           </span>
           {proposal.is_expired && (
-            <span className="px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+            <span className="px-3 py-1 rounded-full text-sm font-medium bg-destructive/10 text-destructive">
               Expirada
             </span>
           )}
@@ -179,7 +174,7 @@ export default function ProposalViewPage() {
       {/* Action Buttons */}
       <div className="flex gap-2">
         <Button
-          variant="primary"
+          variant="default"
           onClick={() => navigate(`/proposals/${id}/edit`)}
           disabled={!proposal.can_be_edited}
         >
@@ -195,7 +190,7 @@ export default function ProposalViewPage() {
           Enviar por Email
         </Button>
         <Button
-          variant="danger"
+          variant="destructive"
           onClick={() => setDeleteConfirm(true)}
           disabled={!proposal.can_be_edited}
         >
@@ -348,14 +343,14 @@ export default function ProposalViewPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-muted-foreground">Desconto</span>
-                <span className="text-sm font-medium text-red-600">
+                <span className="text-sm font-medium text-destructive">
                   - {formatCurrency(proposal.discount)}
                 </span>
               </div>
               <div className="pt-3 border-t border-border">
                 <div className="flex justify-between">
                   <span className="text-base font-semibold text-foreground">Total</span>
-                  <span className="text-xl font-bold text-blue-600">
+                  <span className="text-xl font-bold text-primary">
                     {formatCurrency(proposal.total)}
                   </span>
                 </div>
@@ -386,35 +381,16 @@ export default function ProposalViewPage() {
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {deleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Confirmar Exclusão
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Tem certeza que deseja excluir a proposta <strong>{proposal.number}</strong>?
-              Esta ação não pode ser desfeita.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <Button
-                variant="secondary"
-                onClick={() => setDeleteConfirm(false)}
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="danger"
-                onClick={handleDelete}
-                disabled={deleteMutation.isPending}
-              >
-                {deleteMutation.isPending ? 'Excluindo...' : 'Excluir'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        isOpen={deleteConfirm}
+        title="Excluir proposta"
+        message={`Tem certeza que deseja excluir a proposta ${proposal.number}? Esta ação não pode ser desfeita.`}
+        confirmLabel={deleteMutation.isPending ? 'Excluindo...' : 'Excluir'}
+        cancelLabel="Cancelar"
+        onConfirm={() => deleteMutation.mutate()}
+        onCancel={() => setDeleteConfirm(false)}
+        variant="danger"
+      />
     </div>
   );
 }

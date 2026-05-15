@@ -7,7 +7,9 @@ import customerService from '@/features/customers/services/customerService';
 import productService from '@/features/products/services/productService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import { Alert } from '@/components/common/Alert';
+import ConfirmDialog from '@/components/ConfirmDialog';
 import ProposalFormModal from '../components/ProposalFormModal';
 import { type ProposalFormData } from '../schemas/proposalSchema';
 
@@ -154,8 +156,8 @@ export default function ProposalListPage() {
     <div className="p-6">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Propostas Comerciais</h1>
-          <p className="text-gray-600">Gerencie propostas enviadas aos clientes</p>
+          <h1 className="text-2xl font-bold text-foreground">Propostas Comerciais</h1>
+          <p className="text-muted-foreground">Gerencie propostas enviadas aos clientes</p>
         </div>
         <Button onClick={handleCreate} className="flex items-center gap-2">
           <Plus size={20} />
@@ -173,65 +175,77 @@ export default function ProposalListPage() {
       )}
 
       {/* Filtros */}
-      <div className="mb-6 flex gap-4">
-        <div className="flex-1">
-          <Input
-            type="text"
-            placeholder="Buscar por número, cliente ou notas..."
-            value={searchTerm}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleSearch()}
-          />
-        </div>
-        <select
-          value={selectedStatus}
-          onChange={(e) => setSelectedStatus(e.target.value)}
-          className="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-        >
-          <option value="">Todos os status</option>
-          <option value="draft">Rascunho</option>
-          <option value="sent">Enviada</option>
-          <option value="approved">Aprovada</option>
-          <option value="rejected">Rejeitada</option>
-          <option value="expired">Expirada</option>
-        </select>
-        <Button onClick={handleSearch} className="flex items-center gap-2">
-          <Search size={18} />
-          Buscar
-        </Button>
+      <div className="bg-card rounded-lg shadow mb-6 p-4 border border-border">
+        <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="flex gap-4 items-end">
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
+              Buscar
+            </label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+              <Input
+                type="text"
+                placeholder="Buscar por número, cliente ou notas..."
+                value={searchTerm}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+          <div className="w-48">
+            <label className="block text-sm font-medium text-foreground mb-1">
+              Status
+            </label>
+            <Select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              <option value="">Todos os status</option>
+              <option value="draft">Rascunho</option>
+              <option value="sent">Enviada</option>
+              <option value="approved">Aprovada</option>
+              <option value="rejected">Rejeitada</option>
+              <option value="expired">Expirada</option>
+            </Select>
+          </div>
+          <Button type="submit" className="flex items-center gap-2">
+            <Search size={18} />
+            Buscar
+          </Button>
+        </form>
       </div>
 
       {/* Tabela */}
       {isLoading ? (
         <div className="flex h-64 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
         </div>
       ) : error ? (
         <Alert type="error">Erro ao carregar propostas. Tente novamente.</Alert>
       ) : (
-        <div className="overflow-hidden rounded-lg bg-white shadow">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="bg-card rounded-lg shadow overflow-hidden border border-border">
+            <table className="min-w-full divide-y divide-border">
             <thead className="bg-muted/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Número
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Cliente
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Data Emissão
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Validade
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Valor Total
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Status
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   Ações
                 </th>
               </tr>
@@ -239,27 +253,27 @@ export default function ProposalListPage() {
             <tbody className="divide-y divide-border bg-card">
               {data?.data?.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
-                    <FileText className="mx-auto mb-2 h-12 w-12 text-gray-400" />
+                  <td colSpan={7} className="px-6 py-8 text-center text-muted-foreground">
+                    <FileText className="mx-auto mb-2 h-12 w-12 text-muted-foreground" />
                     <p>Nenhuma proposta encontrada</p>
                   </td>
                 </tr>
               ) : (
                 data?.data?.map((proposal: Proposal) => (
                   <tr key={proposal.id} className="hover:bg-muted/50 transition-colors">
-                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-foreground">
                       {proposal.number}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
+                    <td className="px-6 py-4 text-sm text-foreground">
                       {proposal.customer.name}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-muted-foreground">
                       {formatDate(proposal.issue_date)}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-muted-foreground">
                       {formatDate(proposal.expiration_date)}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-foreground">
                       {formatCurrency(proposal.total)}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-sm">
@@ -271,7 +285,7 @@ export default function ProposalListPage() {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => navigate(`/proposals/${proposal.id}`)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-primary hover:text-primary/80 p-1 transition-colors"
                           title="Visualizar"
                         >
                           <Eye size={18} />
@@ -279,7 +293,7 @@ export default function ProposalListPage() {
                         {proposal.can_be_edited && (
                           <button
                             onClick={() => handleEdit(proposal)}
-                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            className="text-muted-foreground hover:text-foreground p-1 transition-colors"
                             title="Editar"
                           >
                             <Edit2 size={18} />
@@ -287,7 +301,7 @@ export default function ProposalListPage() {
                         )}
                         <button
                           onClick={() => handleDelete(proposal.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-destructive hover:text-destructive/80 p-1 transition-colors"
                           title="Excluir"
                         >
                           <Trash2 size={18} />
@@ -302,28 +316,16 @@ export default function ProposalListPage() {
         </div>
       )}
 
-      {/* TODO(#?): substituir inline dialog pelo componente ConfirmDialog já existente */}
-      {deleteConfirm.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="rounded-lg bg-white p-6 shadow-xl">
-            <h3 className="mb-4 text-lg font-semibold">Excluir Proposta</h3>
-            <p className="mb-6 text-gray-600">
-              Tem certeza que deseja excluir esta proposta? Esta ação não pode ser desfeita.
-            </p>
-            <div className="flex justify-end gap-3">
-              <Button
-                variant="secondary"
-                onClick={() => setDeleteConfirm({ isOpen: false, proposalId: null })}
-              >
-                Cancelar
-              </Button>
-              <Button variant="danger" onClick={confirmDelete}>
-                Excluir
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        title="Excluir proposta"
+        message="Tem certeza que deseja excluir esta proposta? Esta ação não pode ser desfeita."
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteConfirm({ isOpen: false, proposalId: null })}
+        variant="danger"
+      />
 
       {/* Proposal Form Modal */}
       <ProposalFormModal

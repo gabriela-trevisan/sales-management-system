@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, Plus, Trash2, X } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { Select } from '@/components/ui/select';
 import { type Customer } from '@/features/customers/services/customerService';
 import { type Product } from '@/features/products/services/productService';
 import { proposalSchema, type ProposalFormData } from '../schemas/proposalSchema';
@@ -150,10 +151,10 @@ export default function ProposalFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-lg bg-white shadow-xl">
+      <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-lg bg-card border border-border shadow-xl">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b bg-white px-6 py-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card px-6 py-4">
+          <h2 className="text-xl font-semibold text-foreground">
             {proposal ? 'Editar Proposta' : 'Nova Proposta'}
           </h2>
           <button
@@ -173,19 +174,17 @@ export default function ProposalFormModal({
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {/* Customer */}
               <div>
-                <label htmlFor="customer_id" className="block text-sm font-medium text-gray-700">
-                  Cliente <span className="text-red-500">*</span>
+                <label htmlFor="customer_id" className="block text-sm font-medium text-foreground">
+                  Cliente <span className="text-destructive">*</span>
                 </label>
                 <Controller
                   name="customer_id"
                   control={control}
                   render={({ field }) => (
-                    <select
+                    <Select
                       {...field}
                       id="customer_id"
-                      className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                        errors.customer_id ? 'border-red-300' : 'border-gray-300'
-                      }`}
+                      className={`mt-1 ${errors.customer_id ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                       disabled={loadingCustomers || isLoading}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     >
@@ -195,11 +194,11 @@ export default function ProposalFormModal({
                           {customer.name} - {customer.document}
                         </option>
                       ))}
-                    </select>
+                    </Select>
                   )}
                 />
                 {errors.customer_id && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-4 w-4" />
                     {errors.customer_id.message}
                   </p>
@@ -208,15 +207,13 @@ export default function ProposalFormModal({
 
               {/* Status */}
               <div>
-                <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-                  Status <span className="text-red-500">*</span>
+                <label htmlFor="status" className="block text-sm font-medium text-foreground">
+                  Status <span className="text-destructive">*</span>
                 </label>
-                <select
+                <Select
                   {...register('status')}
                   id="status"
-                  className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                    errors.status ? 'border-red-300' : 'border-gray-300'
-                  }`}
+                  className={`mt-1 ${errors.status ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                   disabled={isLoading}
                 >
                   <option value="draft">Rascunho</option>
@@ -224,9 +221,9 @@ export default function ProposalFormModal({
                   <option value="approved">Aprovada</option>
                   <option value="rejected">Rejeitada</option>
                   <option value="expired">Expirada</option>
-                </select>
+                </Select>
                 {errors.status && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-4 w-4" />
                     {errors.status.message}
                   </p>
@@ -235,20 +232,20 @@ export default function ProposalFormModal({
 
               {/* Issue Date */}
               <div>
-                <label htmlFor="issue_date" className="block text-sm font-medium text-gray-700">
-                  Data de Emissão <span className="text-red-500">*</span>
+                <label htmlFor="issue_date" className="block text-sm font-medium text-foreground">
+                  Data de Emissão <span className="text-destructive">*</span>
                 </label>
                 <input
                   {...register('issue_date')}
                   type="date"
                   id="issue_date"
-                  className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                    errors.issue_date ? 'border-red-300' : 'border-gray-300'
+                  className={`mt-1 block w-full rounded-md border bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors ${
+                    errors.issue_date ? 'border-destructive' : 'border-input'
                   }`}
                   disabled={isLoading}
                 />
                 {errors.issue_date && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-4 w-4" />
                     {errors.issue_date.message}
                   </p>
@@ -257,20 +254,20 @@ export default function ProposalFormModal({
 
               {/* Expiration Date */}
               <div>
-                <label htmlFor="expiration_date" className="block text-sm font-medium text-gray-700">
-                  Data de Validade <span className="text-red-500">*</span>
+                <label htmlFor="expiration_date" className="block text-sm font-medium text-foreground">
+                  Data de Validade <span className="text-destructive">*</span>
                 </label>
                 <input
                   {...register('expiration_date')}
                   type="date"
                   id="expiration_date"
-                  className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                    errors.expiration_date ? 'border-red-300' : 'border-gray-300'
+                  className={`mt-1 block w-full rounded-md border bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors ${
+                    errors.expiration_date ? 'border-destructive' : 'border-input'
                   }`}
                   disabled={isLoading}
                 />
                 {errors.expiration_date && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                  <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-4 w-4" />
                     {errors.expiration_date.message}
                   </p>
@@ -280,21 +277,21 @@ export default function ProposalFormModal({
 
             {/* Notes */}
             <div>
-              <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="notes" className="block text-sm font-medium text-foreground">
                 Observações
               </label>
               <textarea
                 {...register('notes')}
                 id="notes"
                 rows={3}
-                className={`mt-1 block w-full rounded-md border px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                  errors.notes ? 'border-red-300' : 'border-gray-300'
+                className={`mt-1 block w-full rounded-md border bg-background text-foreground px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors ${
+                  errors.notes ? 'border-destructive' : 'border-input'
                 }`}
                 placeholder="Observações adicionais sobre a proposta"
                 disabled={isLoading}
               />
               {errors.notes && (
-                <p className="mt-1 flex items-center gap-1 text-sm text-red-600">
+                <p className="mt-1 flex items-center gap-1 text-sm text-destructive">
                   <AlertCircle className="h-4 w-4" />
                   {errors.notes.message}
                 </p>
@@ -302,15 +299,15 @@ export default function ProposalFormModal({
             </div>
 
             {/* Items Section */}
-            <div className="border-t pt-6">
+            <div className="border-t border-border pt-6">
               <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Itens da Proposta <span className="text-red-500">*</span>
+                <h3 className="text-lg font-medium text-foreground">
+                  Itens da Proposta <span className="text-destructive">*</span>
                 </h3>
                 <button
                   type="button"
                   onClick={handleAddItem}
-                  className="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
                   disabled={isLoading || loadingProducts}
                 >
                   <Plus className="h-4 w-4" />
@@ -320,28 +317,28 @@ export default function ProposalFormModal({
 
               {/* Items Table */}
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full divide-y divide-border">
                   <thead className="bg-muted/50">
                     <tr>
-                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Produto
                       </th>
-                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Descrição
                       </th>
-                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Qtd
                       </th>
-                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Preço Unit.
                       </th>
-                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Desc. %
                       </th>
-                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Total
                       </th>
-                      <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-3 py-3 text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Ações
                       </th>
                     </tr>
@@ -362,12 +359,12 @@ export default function ProposalFormModal({
                               name={`items.${index}.product_id`}
                               control={control}
                               render={({ field: productField }) => (
-                                <select
+                                <Select
                                   {...productField}
-                                  className={`block w-full min-w-[200px] rounded-md border px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                                  className={`min-w-[200px] text-sm ${
                                     errors.items?.[index]?.product_id
-                                      ? 'border-red-300'
-                                      : 'border-gray-300'
+                                      ? 'border-destructive focus-visible:ring-destructive'
+                                      : ''
                                   }`}
                                   disabled={loadingProducts || isLoading}
                                   onChange={(e) => {
@@ -382,11 +379,11 @@ export default function ProposalFormModal({
                                       {product.name} - R$ {product.base_price.toFixed(2)}
                                     </option>
                                   ))}
-                                </select>
+                                </Select>
                               )}
                             />
                             {errors.items?.[index]?.product_id && (
-                              <p className="mt-1 text-xs text-red-600">
+                              <p className="mt-1 text-xs text-destructive">
                                 {errors.items[index]?.product_id?.message}
                               </p>
                             )}
@@ -397,7 +394,7 @@ export default function ProposalFormModal({
                             <input
                               {...register(`items.${index}.description`)}
                               type="text"
-                              className="block w-full min-w-[150px] rounded-md border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                              className="block w-full min-w-[150px] rounded-md border border-input bg-background text-foreground px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
                               placeholder="Descrição adicional"
                               disabled={isLoading}
                             />
@@ -410,15 +407,13 @@ export default function ProposalFormModal({
                               type="number"
                               min="1"
                               step="1"
-                              className={`block w-20 rounded-md border px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                                errors.items?.[index]?.quantity
-                                  ? 'border-red-300'
-                                  : 'border-gray-300'
+                              className={`block w-20 rounded-md border bg-background text-foreground px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors ${
+                                errors.items?.[index]?.quantity ? 'border-destructive' : 'border-input'
                               }`}
                               disabled={isLoading}
                             />
                             {errors.items?.[index]?.quantity && (
-                              <p className="mt-1 text-xs text-red-600">
+                              <p className="mt-1 text-xs text-destructive">
                                 {errors.items[index]?.quantity?.message}
                               </p>
                             )}
@@ -431,15 +426,13 @@ export default function ProposalFormModal({
                               type="number"
                               min="0"
                               step="0.01"
-                              className={`block w-28 rounded-md border px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
-                                errors.items?.[index]?.unit_price
-                                  ? 'border-red-300'
-                                  : 'border-gray-300'
+                              className={`block w-28 rounded-md border bg-background text-foreground px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors ${
+                                errors.items?.[index]?.unit_price ? 'border-destructive' : 'border-input'
                               }`}
                               disabled={isLoading}
                             />
                             {errors.items?.[index]?.unit_price && (
-                              <p className="mt-1 text-xs text-red-600">
+                              <p className="mt-1 text-xs text-destructive">
                                 {errors.items[index]?.unit_price?.message}
                               </p>
                             )}
@@ -455,14 +448,14 @@ export default function ProposalFormModal({
                               min="0"
                               max="100"
                               step="0.01"
-                              className="block w-20 rounded-md border border-gray-300 px-2 py-1 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                              className="block w-20 rounded-md border border-input bg-background text-foreground px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
                               disabled={isLoading}
                             />
                           </td>
 
                           {/* Total */}
                           <td className="px-3 py-4">
-                            <span className="text-sm font-medium text-gray-900">
+                            <span className="text-sm font-medium text-foreground">
                               R$ {itemTotal.toFixed(2)}
                             </span>
                           </td>
@@ -472,7 +465,7 @@ export default function ProposalFormModal({
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(index)}
-                              className="inline-flex items-center rounded p-1 text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                              className="inline-flex items-center rounded p-1 text-destructive hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
                               disabled={fields.length === 1 || isLoading}
                               title="Remover item"
                             >
@@ -487,7 +480,7 @@ export default function ProposalFormModal({
               </div>
 
               {errors.items && typeof errors.items.message === 'string' && (
-                <p className="mt-2 flex items-center gap-1 text-sm text-red-600">
+                <p className="mt-2 flex items-center gap-1 text-sm text-destructive">
                   <AlertCircle className="h-4 w-4" />
                   {errors.items.message}
                 </p>
@@ -495,37 +488,37 @@ export default function ProposalFormModal({
             </div>
 
             {/* Summary Section */}
-            <div className="flex justify-end border-t pt-4">
+            <div className="flex justify-end border-t border-border pt-4">
               <div className="w-full max-w-xs space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal:</span>
-                  <span className="font-medium text-gray-900">R$ {calculations.subtotal}</span>
+                  <span className="text-muted-foreground">Subtotal:</span>
+                  <span className="font-medium text-foreground">R$ {calculations.subtotal}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Desconto:</span>
-                  <span className="font-medium text-red-600">- R$ {calculations.totalDiscount}</span>
+                  <span className="text-muted-foreground">Desconto:</span>
+                  <span className="font-medium text-destructive">- R$ {calculations.totalDiscount}</span>
                 </div>
-                <div className="flex justify-between border-t pt-2 text-base">
-                  <span className="font-semibold text-gray-900">Total:</span>
-                  <span className="text-xl font-bold text-blue-600">R$ {calculations.total}</span>
+                <div className="flex justify-between border-t border-border pt-2 text-base">
+                  <span className="font-semibold text-foreground">Total:</span>
+                  <span className="text-xl font-bold text-primary">R$ {calculations.total}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="mt-6 flex justify-end gap-3 border-t pt-4">
+          <div className="mt-6 flex justify-end gap-3 border-t border-border pt-4">
             <button
               type="button"
               onClick={handleClose}
-              className="rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="rounded-md border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/50 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               disabled={isLoading}
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
               disabled={isLoading}
             >
               {isLoading ? 'Salvando...' : proposal ? 'Salvar Alterações' : 'Criar Proposta'}

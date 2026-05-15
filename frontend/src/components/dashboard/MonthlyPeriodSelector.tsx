@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
 import { useDashboardPeriod } from '@/hooks/useDashboardPeriod';
 import { useState } from 'react';
 
@@ -49,32 +48,23 @@ export function MonthlyPeriodSelector() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={cn(
-            'justify-start text-left font-normal',
-            'border-oklch-outline/50 hover:border-oklch-outline',
-            'bg-oklch-surface hover:bg-oklch-surface-container-high'
-          )}
+          className="justify-start text-left font-normal"
         >
           <Calendar className="mr-2 h-4 w-4" />
           {getFormattedPeriod()}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 bg-oklch-surface-container border-oklch-outline-variant" align="start">
+      <PopoverContent className="w-80" align="start">
         <div className="space-y-4">
           <div className="space-y-2">
-            <h4 className="font-medium text-sm text-oklch-on-surface">Selecione o mês</h4>
+            <h4 className="font-medium text-sm text-foreground">Selecione o mês</h4>
             <div className="grid grid-cols-3 gap-2">
               {MONTHS.map((m) => (
                 <Button
                   key={m.value}
                   variant={tempMonth === m.value ? 'default' : 'outline'}
                   size="sm"
-                  className={cn(
-                    'h-8',
-                    tempMonth === m.value
-                      ? 'bg-oklch-primary text-oklch-on-primary hover:bg-oklch-primary/90'
-                      : 'bg-oklch-surface hover:bg-oklch-surface-container-high border-oklch-outline-variant'
-                  )}
+                  className="h-8"
                   onClick={() => setTempMonth(m.value)}
                 >
                   {m.label.slice(0, 3)}
@@ -84,19 +74,14 @@ export function MonthlyPeriodSelector() {
           </div>
 
           <div className="space-y-2">
-            <h4 className="font-medium text-sm text-oklch-on-surface">Selecione o ano</h4>
+            <h4 className="font-medium text-sm text-foreground">Selecione o ano</h4>
             <div className="grid grid-cols-5 gap-2">
               {years.map((y) => (
                 <Button
                   key={y}
                   variant={tempYear === y ? 'default' : 'outline'}
                   size="sm"
-                  className={cn(
-                    'h-8',
-                    tempYear === y
-                      ? 'bg-oklch-primary text-oklch-on-primary hover:bg-oklch-primary/90'
-                      : 'bg-oklch-surface hover:bg-oklch-surface-container-high border-oklch-outline-variant'
-                  )}
+                  className="h-8"
                   onClick={() => setTempYear(y)}
                 >
                   {y}
@@ -110,14 +95,12 @@ export function MonthlyPeriodSelector() {
               variant="outline"
               size="sm"
               onClick={handleCancel}
-              className="bg-oklch-surface hover:bg-oklch-surface-container-high border-oklch-outline-variant"
             >
               Cancelar
             </Button>
             <Button
               size="sm"
               onClick={handleApply}
-              className="bg-oklch-primary text-oklch-on-primary hover:bg-oklch-primary/90"
             >
               Aplicar
             </Button>

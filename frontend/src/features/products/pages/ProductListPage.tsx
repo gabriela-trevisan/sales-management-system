@@ -1,5 +1,8 @@
 import { ChevronLeft, ChevronRight, Edit, Plus, Search, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import productService, { type Product, type ProductFilters } from '../services/productService';
 import categoryService, { type ProductCategory } from '../services/categoryService';
@@ -151,7 +154,7 @@ export default function ProductListPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -160,46 +163,41 @@ export default function ProductListPage() {
             Gerencie seu catálogo de produtos e serviços
           </p>
         </div>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors focus:ring-2 focus:ring-ring focus:ring-offset-2"
-        >
+        <Button onClick={handleCreate} className="flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Novo Produto
-        </button>
+        </Button>
       </div>
 
       {/* Filters */}
-      <div className="rounded-lg border border-border bg-card p-4">
+      <div className="rounded-lg border border-border bg-card p-4 shadow">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-            <input
+            <Input
               type="text"
               placeholder="Buscar por nome, SKU ou descrição..."
               value={filters.search}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full rounded-lg border border-input bg-background text-foreground py-2 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors"
+              className="pl-10"
             />
           </div>
 
           {/* Status Filter */}
-          <select
+          <Select
             value={filters.is_active === undefined ? '' : filters.is_active.toString()}
             onChange={(e) => handleStatusFilter(e.target.value)}
-            className="rounded-lg border border-input bg-background text-foreground px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors appearance-none cursor-pointer hover:border-ring pr-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_0.75rem_center] bg-no-repeat bg-[length:1.25rem]"
           >
             <option value="">Todos os status</option>
             <option value="true">Ativo</option>
             <option value="false">Inativo</option>
-          </select>
+          </Select>
 
           {/* Category Filter */}
-          <select
+          <Select
             value={filters.category_id || ''}
             onChange={(e) => handleCategoryFilter(e.target.value)}
-            className="rounded-lg border border-input bg-background text-foreground px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-colors appearance-none cursor-pointer hover:border-ring pr-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22currentColor%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-[position:right_0.75rem_center] bg-no-repeat bg-[length:1.25rem]"
           >
             <option value="">Todas as categorias</option>
             {categories.map((category) => (
@@ -207,7 +205,7 @@ export default function ProductListPage() {
                 {category.name}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
 

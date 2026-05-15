@@ -95,16 +95,16 @@ export function MetricCard({
   };
 
   return (
-    <Card className="bg-oklch-surface-container border-oklch-outline-variant hover:shadow-md transition-shadow">
+    <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-oklch-on-surface">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
         <Icon className={cn('h-5 w-5', iconColor)} />
       </CardHeader>
       <CardContent>
         <div className="space-y-1">
-          <div className="text-2xl font-bold text-oklch-on-surface">
+          <div className="text-2xl font-bold text-foreground">
             {getFormattedValue()}
           </div>
           {trend !== undefined && trend !== 0 && trendData.icon && (
@@ -117,7 +117,7 @@ export function MetricCard({
                 decimalScale={1}
                 fixedDecimalScale
               />
-              <span className="text-oklch-on-surface-variant">vs mês anterior</span>
+              <span className="text-muted-foreground">vs mês anterior</span>
             </div>
           )}
         </div>

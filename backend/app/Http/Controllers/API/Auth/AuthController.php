@@ -13,8 +13,8 @@ class AuthController extends Controller
 {
     #[OA\Post(
         path: "/api/auth/login",
-        summary: "Autenticar usuário",
-        description: "Realiza login do usuário e retorna token JWT",
+        summary: "Autenticar usuário (SPA Cookie Auth)",
+        description: "Realiza login via Sanctum SPA Cookie Authentication. Inicia sessão httpOnly — nenhum token é retornado no body. Para obter Bearer token (Swagger/mobile), use POST /api/auth/token.",
         tags: ["Authentication"],
         requestBody: new OA\RequestBody(
             required: true,
@@ -40,8 +40,7 @@ class AuthController extends Controller
                                 new OA\Property(property: "email", type: "string", example: "admin@salesmanagement.com")
                             ],
                             type: "object"
-                        ),
-                        new OA\Property(property: "token", type: "string", example: "1|abcdef123456...")
+                        )
                     ]
                 )
             ),
@@ -56,7 +55,7 @@ class AuthController extends Controller
             )
         ]
     )]
-    public function login(Request $request)
+    public function login(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
             'email' => 'required|email',
@@ -71,16 +70,14 @@ class AuthController extends Controller
             ]);
         }
 
-        // SPA cookie auth: inicia sessão httpOnly para o frontend
-        // O EnsureFrontendRequestsAreStateful ativa session middleware para domínios stateful
+        // SPA Cookie Auth (OWASP A07:2021 — Identification and Authentication Failures)
+        // Sessão httpOnly: inacessível a scripts JS mesmo em caso de XSS.
+        // statefulApi() em bootstrap/app.php garante que este bloco só executa
+        // para requisições vindas de SANCTUM_STATEFUL_DOMAINS.
         if ($request->hasSession()) {
             auth()->guard('web')->login($user);
             $request->session()->regenerate(); // Previne session fixation
         }
-
-        // Token auth: mantido para clientes não-SPA (Swagger, mobile, etc.)
-        // O frontend SPA ignora o token e usa exclusivamente o cookie de sessão
-        $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
             'user' => [
@@ -88,7 +85,6 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
             ],
-            'token' => $token,
         ]);
     }
 
@@ -216,7 +212,7 @@ class AuthController extends Controller
             )
         ]
     )]
-    public function refresh(Request $request)
+    public function refresh(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = $request->user();
         
@@ -228,6 +224,62 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $newToken,
+        ]);
+    }
+
+    #[OA\Post(
+        path: "/api/auth/token",
+        summary: "Gerar Bearer token (não-SPA)",
+        description: "Gera um Bearer token para clientes não-SPA (Swagger UI, apps mobile, scripts). SPAs devem usar POST /api/auth/login com cookie httpOnly.",
+        tags: ["Authentication"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["email", "password"],
+                properties: [
+                    new OA\Property(property: "email", type: "string", format: "email", example: "admin@salesmanagement.com"),
+                    new OA\Property(property: "password", type: "string", format: "password", example: "password")
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Token gerado com sucesso",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "token", type: "string", example: "1|abcdef123456...")
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Credenciais inválidas",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "message", type: "string", example: "As credenciais fornecidas estão incorretas.")
+                    ]
+                )
+            )
+        ]
+    )]
+    public function token(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['As credenciais fornecidas estão incorretas.'],
+            ]);
+        }
+
+        return response()->json([
+            'token' => $user->createToken('api-token')->plainTextToken,
         ]);
     }
 }

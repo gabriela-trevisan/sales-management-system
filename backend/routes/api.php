@@ -26,6 +26,12 @@ Route::post('/auth/login', [AuthController::class, 'login'])
     ->middleware('throttle:5,1')
     ->name('login');
 
+// Geração de Bearer token para clientes não-SPA (Swagger UI, mobile, scripts)
+// SPAs devem usar /auth/login com cookie httpOnly
+Route::post('/auth/token', [AuthController::class, 'token'])
+    ->middleware('throttle:5,1')
+    ->name('auth.token');
+
 // Rotas autenticadas com rate limiting (60 req/minuto por usuário)
 Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);

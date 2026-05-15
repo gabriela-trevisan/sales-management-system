@@ -19,6 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Sanctum SPA Cookie Auth — ativa EncryptCookies, StartSession e
+        // ValidateCsrfToken para requisições vindas de SANCTUM_STATEFUL_DOMAINS.
+        // Sem isso, o guard auth:sanctum não resolve sessão via cookie.
+        $middleware->statefulApi();
+
         // Security Headers para todas as requisições
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
     })

@@ -1,16 +1,33 @@
 # Correção da Autenticação — SPA Cookie Auth (Sanctum Stateful)
 
+> ✅ **Resolvido em 15/05/2026** — Todos os itens abaixo foram implementados e validados.
+
 ## Contexto
 
-O sistema foi projetado para **Sanctum SPA Cookie Authentication** — a abordagem mais segura para SPAs conforme OWASP ASVS v4 §3.4.  
-No entanto, a implementação atual está inconsistente:
+O sistema foi projetado para **Sanctum SPA Cookie Authentication** — a abordagem mais segura para SPAs conforme OWASP ASVS v4 §3.4.
 
-- O `statefulApi()` foi removido do `bootstrap/app.php` (para resolver um 419 sintomático)
-- O frontend chama `initCsrf()` e usa `withCredentials: true`, esperando cookie auth
-- O backend cria sessão E token, mas retorna o token no body (que o frontend ignora)
-- `AuthContext` armazena `user` no `localStorage` (ok — são dados públicos, não o token)
+**Estado atual (corrigido):**
+- `statefulApi()` restaurado em `bootstrap/app.php`
+- `SESSION_DOMAIN=` (vazio), `SANCTUM_STATEFUL_DOMAINS`, `SESSION_SECURE_COOKIE` configurados no `.env`
+- `login()` retorna apenas `{ user }` sem token — sessão httpOnly via cookie
+- Vite proxy configurado — elimina cross-origin entre frontend e backend no browser
+- Novo endpoint `POST /api/auth/token` para clientes não-SPA (Swagger, mobile)
 
-**Resultado:** login retorna 200, mas rotas autenticadas retornam 401 — não há sessão ativa e não há Bearer token sendo enviado.
+---
+
+## Causa raiz do 419 original (e da regressão)
+
+**419 original:** `statefulApi()` removido do `bootstrap/app.php` — sem ele, o `ValidateCsrfToken` nunca é ativado para a sessão, mas o `VerifyCsrfToken` padrão do Laravel ainda opera em certas condições.
+
+**419 após restaurar `statefulApi()`:** Mesmo com o middleware correto, o CSRF falha em ambiente Docker cross-origin (`localhost:5173` → `localhost:8000`) porque:
+- O cookie `XSRF-TOKEN` é setado com `Domain=localhost` (ou sem domain)
+- Browsers modernos (Chrome, Firefox) têm restrições `SameSite` que impedem o envio do cookie entre origens diferentes na mesma máquina
+- O axios lia o cookie `XSRF-TOKEN` de `localhost:8000`, mas o enviava em requests para `localhost:5173` — origins diferentes
+
+**Solução definitiva: Vite Dev Server Proxy.** Todas as chamadas saem do mesmo origin (`localhost:5173`). O browser não vê nenhuma diferença de porta ou host — é same-origin do início ao fim.
+
+
+- Novo endpoint `/api/auth/token` para clientes não-SPA (Swagger UI, mobile)
 
 ---
 
@@ -22,7 +39,7 @@ O `statefulApi()` **não era o problema**. O 419 era causado pelo `EnvValidation
 
 ## Passo a passo da correção
 
-### 1. Restaurar `statefulApi()` no `bootstrap/app.php`
+### ✅ 1. Restaurar `statefulApi()` no `bootstrap/app.php`
 
 ```php
 ->withMiddleware(function (Middleware $middleware) {
@@ -35,109 +52,64 @@ O `statefulApi()` **não era o problema**. O 419 era causado pelo `EnvValidation
 })
 ```
 
-### 2. Configurar `SANCTUM_STATEFUL_DOMAINS` no `.env`
+### ✅ 2. Configurar `SANCTUM_STATEFUL_DOMAINS` e `SESSION_SECURE_COOKIE` no `.env`
 
 ```dotenv
 SANCTUM_STATEFUL_DOMAINS=localhost:5173,localhost
+SESSION_DOMAIN=            # vazio = sem atributo Domain no cookie (correto para proxy)
+SESSION_SECURE_COOKIE=false   # true em produção (HTTPS obrigatório)
 ```
 
-E no `.env.example`:
+### ✅ 3. Configurar Vite proxy — eliminar cross-origin no browser
 
-```dotenv
-SANCTUM_STATEFUL_DOMAINS=localhost:5173,localhost
-```
+**Raiz do 419 pós-`statefulApi()`:** frontend em `localhost:5173` chamava backend em `localhost:8000` — cross-origin. O cookie `XSRF-TOKEN` setado por uma origem não é confiável para outra origem em browsers modernos (restrições `SameSite`).
 
-### 3. Garantir que `SESSION_DOMAIN` está correto no `.env`
+**Solução:** Vite Dev Server proxy em `vite.config.ts`:
 
-Para cookie funcionar entre portas diferentes no localhost, o domínio deve ser:
-
-```dotenv
-SESSION_DOMAIN=localhost
-SESSION_DRIVER=redis
-SESSION_SECURE_COOKIE=false   # true apenas em produção (HTTPS)
-```
-
-### 4. Corrigir `AuthController::login()` — remover retorno do token no body para SPAs
-
-O token no body é desnecessário para o frontend SPA e expõe a credencial. Manter apenas para documentação/Swagger via `Accept` header:
-
-```php
-public function login(Request $request): JsonResponse
-{
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
-
-    $user = User::where('email', $request->email)->first();
-
-    if (! $user || ! Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['As credenciais fornecidas estão incorretas.'],
-        ]);
-    }
-
-    // Inicia sessão via cookie httpOnly (Sanctum SPA)
-    auth()->guard('web')->login($user);
-    $request->session()->regenerate(); // OWASP: previne session fixation
-
-    return response()->json([
-        'user' => [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-        ],
-    ]);
+```ts
+proxy: {
+  '/api': { target: env.VITE_BACKEND_PROXY_TARGET, changeOrigin: true },
+  '/sanctum': { target: env.VITE_BACKEND_PROXY_TARGET, changeOrigin: true },
 }
 ```
 
-> **Nota Swagger:** Se quiser manter suporte a Bearer token para o Swagger UI, crie um endpoint separado `/api/auth/token` que gera `createToken()`, exclusivo para clientes não-SPA.
+`VITE_BACKEND_PROXY_TARGET`:
+- **Docker:** `http://nginx:8000` (container nginx na rede Docker)
+- **Local sem Docker:** `http://localhost:8000`
 
-### 5. Corrigir `AuthController::logout()` — invalidar sessão
+`VITE_API_URL=/api` → URL relativa, sem origin hardcoded.
 
-```php
-public function logout(Request $request): JsonResponse
-{
-    auth()->guard('web')->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken(); // Regenera CSRF token
+O browser vê tudo como `localhost:5173` — same-origin, CSRF funciona.
 
-    return response()->json(['message' => 'Logout realizado com sucesso.']);
-}
-```
+### ✅ 4. Corrigir `AuthController::login()` — remover token do body (SPA-only)
 
-### 6. Verificar `AuthController::me()` — guard correto
+Token removido do body. `login()` é exclusivo para SPA Cookie Auth.  
+Para clientes não-SPA (Swagger, mobile), usar o novo endpoint `POST /api/auth/token`.
 
-```php
-public function me(Request $request): JsonResponse
-{
-    // auth('sanctum') resolve tanto cookie session quanto Bearer token
-    return response()->json(['user' => $request->user()]);
-}
-```
+### ✅ 5. Criar `AuthController::token()` — endpoint para clientes não-SPA
 
-### 7. Verificar rotas — guard `auth:sanctum` é compatível com ambos os modos
+Novo endpoint `POST /api/auth/token` gera Bearer token para Swagger UI e clientes não-SPA.  
+Rate limiting aplicado: 5 tentativas/minuto.
 
-O guard `auth:sanctum` já autentica via cookie de sessão (quando `statefulApi()` está ativo) **e** via Bearer token. Nenhuma mudança necessária no `routes/api.php`.
+### ✅ 6. `AuthController::logout()` — invalidar sessão
 
-### 8. Verificar `cors.php` — já está correto
+Já implementado: `auth()->guard('web')->logout()`, `session()->invalidate()`, `session()->regenerateToken()`.
 
-```php
-'supports_credentials' => true,  // obrigatório para cookie auth
-'allowed_origins' => [env('APP_FRONTEND_URL', 'http://localhost:5173')],
-```
+### ✅ 7. `AuthController::me()` — guard correto
+
+Já implementado: `$request->user()` resolve tanto cookie session quanto Bearer token via `auth:sanctum`.
+
+### ✅ 8. `cors.php` — já estava correto
+
+`supports_credentials: true` + `allowed_origins` restrito a `APP_FRONTEND_URL`.
 
 > ⚠️ `supports_credentials: true` **nunca** pode ser combinado com `allowed_origins: ['*']` — viola a spec CORS e é rejeitado pelo browser.
 
-### 9. Verificar `api.ts` no frontend — já está correto
+### ✅ 9. `api.ts` no frontend — já estava correto
 
-```ts
-withCredentials: true,  // envia cookies em cross-origin
-```
+`withCredentials: true` + `initCsrf()` antes do login.
 
-O `initCsrf()` já busca `GET /sanctum/csrf-cookie` antes do login — correto.
-
-### 10. Regenerar cache após todas as alterações
+### ✅ 10. Cache regenerado após as alterações
 
 ```bash
 docker compose exec backend php artisan optimize:clear
@@ -146,16 +118,19 @@ docker compose exec backend php artisan config:cache
 
 ---
 
-## Fluxo completo após a correção
+## Fluxo completo (implementado)
 
 ```
 1. Frontend → GET /sanctum/csrf-cookie
    └─ Backend define XSRF-TOKEN (cookie legível JS) + laravel_session (httpOnly)
+      ↑ Vite proxy: browser chama localhost:5173/sanctum/... → nginx:8000 internamente
 
 2. Frontend → POST /api/auth/login  { email, password }
-   └─ Axios envia X-XSRF-TOKEN header automaticamente (lê do cookie)
-   └─ Backend valida CSRF ✓, autentica, regenera session ID
-   └─ Response: { user } + cookie laravel_session renovado
+   └─ Axios lê XSRF-TOKEN do cookie e envia X-XSRF-TOKEN header automaticamente
+   └─ Vite proxy encaminha localhost:5173/api/... → nginx:8000/api/...
+   └─ Backend valida CSRF ✓ (same-origin do ponto de vista do browser)
+   └─ Backend autentica, regenera session ID (previne session fixation)
+   └─ Response: { user } — sem token no body
 
 3. Frontend → GET /api/auth/me (e demais rotas)
    └─ Browser envia laravel_session automaticamente (httpOnly, sem acesso JS)
@@ -164,6 +139,9 @@ docker compose exec backend php artisan config:cache
 4. Frontend → POST /api/auth/logout
    └─ Backend invalida sessão + regenera CSRF token
    └─ Cookie expira
+
+5. Swagger/mobile → POST /api/auth/token  { email, password }
+   └─ Endpoint dedicado para não-SPA — retorna Bearer token
 ```
 
 ---
@@ -175,5 +153,6 @@ docker compose exec backend php artisan config:cache
 | **XSS rouba credencial** | Cookie `httpOnly` → inacessível a qualquer script |
 | **CSRF** | XSRF-TOKEN validado em toda requisição não-idempotente |
 | **Session fixation** | `session()->regenerate()` no login |
-| **Token leak no body** | Token não retornado para o SPA |
+| **Token leak no body** | Token não retornado para o SPA (endpoint separado `/auth/token`) |
 | **CORS wildcard** | `allowed_origins` restrito ao frontend URL |
+| **Cross-origin cookie bypass** | Vite proxy: same-origin no browser, SameSite cookies funcionam corretamente |

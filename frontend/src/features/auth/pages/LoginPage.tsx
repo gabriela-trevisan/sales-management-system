@@ -65,7 +65,7 @@ export function LoginPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold">Sales Management</h1>
-              <p className="text-primary-foreground/80 text-sm">Sistema de CRM Profissional</p>
+              <p className="text-primary-foreground/80 text-sm">Customer Relationship Management</p>
             </div>
           </div>
 

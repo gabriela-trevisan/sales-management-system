@@ -53,7 +53,10 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_API_URL=http://localhost:8000/api
+      # URL relativa: o Vite proxy encaminha para o container backend internamente.
+      # Isso elimina cross-origin entre frontend:5173 e backend:8000 no browser.
+      - VITE_API_URL=/api
+      - VITE_BACKEND_PROXY_TARGET=http://nginx:8000
     networks:
       - app-network
 

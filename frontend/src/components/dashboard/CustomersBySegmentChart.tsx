@@ -1,14 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { useDashboardPeriod } from '@/hooks/useDashboardPeriod';
-import { useEffect, useState } from 'react';
-import api from '@/services/api';
-
-interface SegmentData {
-  name: string;
-  count: number;
-  percentage: number;
-}
+import { useCustomersBySegment } from '@/features/dashboard/hooks/useDashboard';
 
 const CHART_COLORS = [
   'var(--color-chart-1)',
@@ -19,52 +13,32 @@ const CHART_COLORS = [
 ];
 
 export function CustomersBySegmentChart() {
-  const { getApiParams } = useDashboardPeriod();
-  const [data, setData] = useState<SegmentData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { month, year } = useDashboardPeriod();
+  const { data, isLoading, isError } = useCustomersBySegment(month, year);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const params = getApiParams();
-        const response = await api.get('/api/dashboard/customers-by-segment', { params });
-        setData(response.data.segments || []);
-      } catch (error) {
-        console.error('Erro ao carregar dados de segmentos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [getApiParams]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">
-            Clientes por Segmento
-          </CardTitle>
+          <CardTitle className="text-base">Clientes por Segmento</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
-          <div className="text-muted-foreground">Carregando...</div>
+          <Skeleton className="w-48 h-48 rounded-full" />
         </CardContent>
       </Card>
     );
   }
 
-  if (!data || data.length === 0) {
+  if (isError || !data || data.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">
-            Clientes por Segmento
-          </CardTitle>
+          <CardTitle className="text-base">Clientes por Segmento</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center justify-center h-[300px]">
-          <div className="text-muted-foreground">Nenhum dado disponível</div>
+          <div className="text-muted-foreground text-sm">
+            {isError ? 'Erro ao carregar dados' : 'Nenhum dado disponível'}
+          </div>
         </CardContent>
       </Card>
     );
@@ -73,9 +47,7 @@ export function CustomersBySegmentChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">
-          Clientes por Segmento
-        </CardTitle>
+        <CardTitle className="text-base">Clientes por Segmento</CardTitle>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
@@ -86,7 +58,6 @@ export function CustomersBySegmentChart() {
               cy="50%"
               outerRadius={100}
               innerRadius={60}
-              fill="#8884d8"
               dataKey="count"
               animationBegin={0}
               animationDuration={800}
@@ -105,8 +76,8 @@ export function CustomersBySegmentChart() {
                 borderRadius: '8px',
                 color: 'var(--color-foreground)',
               }}
-              formatter={(value: number | undefined) => [
-                value ? `${value} clientes` : '',
+              formatter={(value: number, _name: string, props: { payload?: { percentage?: number } }) => [
+                `${value} clientes (${props.payload?.percentage ?? 0}%)`,
                 '',
               ]}
             />

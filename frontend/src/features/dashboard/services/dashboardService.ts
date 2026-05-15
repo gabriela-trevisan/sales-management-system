@@ -11,10 +11,8 @@ export interface DashboardMetrics {
   total_opportunities_previous?: number;
   total_opportunities_trend?: number;
   total_pipeline_value: number;
-  total_pipeline_value_previous?: number;
   total_pipeline_value_trend?: number;
   conversion_rate: number;
-  conversion_rate_previous?: number;
   conversion_rate_trend?: number;
   monthly_sales: Array<{
     month: string;
@@ -25,6 +23,15 @@ export interface DashboardMetrics {
     count: number;
     value: number;
   }>;
+}
+
+/**
+ * Segmento de cliente com contagem e percentual.
+ */
+export interface SegmentData {
+  name: string;
+  count: number;
+  percentage: number;
 }
 
 /**
@@ -49,6 +56,16 @@ export const dashboardService = {
       params: month && year ? { month, year } : undefined
     });
     return response.data;
+  },
+
+  /**
+   * Busca distribuição de clientes por segmento.
+   */
+  async getCustomersBySegment(month?: string, year?: string): Promise<SegmentData[]> {
+    const response = await api.get('/dashboard/customers-by-segment', {
+      params: month && year ? { month, year } : undefined
+    });
+    return response.data.segments ?? [];
   },
 
   /**

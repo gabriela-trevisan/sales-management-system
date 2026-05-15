@@ -74,8 +74,10 @@ class DashboardController extends Controller
     )]
     public function customersBySegment(Request $request): JsonResponse
     {
-        $month = $request->query('month');
-        $year = $request->query('year');
+        $rawMonth = $request->query('month');
+        $rawYear = $request->query('year');
+        $month = is_string($rawMonth) ? $rawMonth : null;
+        $year = is_string($rawYear) ? $rawYear : null;
         
         $cacheKey = "dashboard.customers_by_segment.{$month}.{$year}";
         
@@ -86,11 +88,12 @@ class DashboardController extends Controller
                     'customer_segments.name',
                     DB::raw('COUNT(customers.id) as count')
                 )
+                ->whereNull('customers.deleted_at')
                 ->groupBy('customer_segments.id', 'customer_segments.name');
             
             if ($month && $year) {
-                $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-                $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+                $startDate = Carbon::createFromDate((int) $year, (int) $month, 1)->startOfMonth();
+                $endDate = Carbon::createFromDate((int) $year, (int) $month, 1)->endOfMonth();
                 
                 $query->whereBetween('customers.created_at', [$startDate, $endDate]);
             }
@@ -186,8 +189,10 @@ class DashboardController extends Controller
     )]
     public function metrics(Request $request): JsonResponse
     {
-        $month = $request->query('month');
-        $year = $request->query('year');
+        $rawMonth = $request->query('month');
+        $rawYear = $request->query('year');
+        $month = is_string($rawMonth) ? $rawMonth : null;
+        $year = is_string($rawYear) ? $rawYear : null;
         
         $cacheKey = "dashboard.metrics.{$month}.{$year}";
         
@@ -258,15 +263,17 @@ class DashboardController extends Controller
     )]
     public function recentActivities(Request $request): JsonResponse
     {
-        $limit = $request->query('limit', 10);
-        $month = $request->query('month');
-        $year = $request->query('year');
-        
+        $limit = min(max((int) $request->query('limit', '10'), 1), 100);
+        $rawMonth = $request->query('month');
+        $rawYear = $request->query('year');
+        $month = is_string($rawMonth) ? $rawMonth : null;
+        $year = is_string($rawYear) ? $rawYear : null;
+
         $startDate = null;
         $endDate = null;
         if ($month && $year) {
-            $startDate = Carbon::createFromDate($year, $month, 1)->startOfMonth();
-            $endDate = Carbon::createFromDate($year, $month, 1)->endOfMonth();
+            $startDate = Carbon::createFromDate((int) $year, (int) $month, 1)->startOfMonth();
+            $endDate = Carbon::createFromDate((int) $year, (int) $month, 1)->endOfMonth();
         }
 
         $opportunitiesQuery = DB::table('opportunities')
@@ -278,9 +285,11 @@ class DashboardController extends Controller
                 'users.name as user',
                 'opportunities.created_at'
             )
+            ->whereNull('opportunities.deleted_at')
+            ->whereNull('customers.deleted_at')
             ->whereNotNull('opportunities.assigned_to');
         
-        if ($startDate && $endDate) {
+        if ($startDate !== null) {
             $opportunitiesQuery->whereBetween('opportunities.created_at', [$startDate, $endDate]);
         }
         
@@ -296,9 +305,10 @@ class DashboardController extends Controller
                 DB::raw("CONCAT('Novo cliente: ', customers.name) as description"),
                 DB::raw("COALESCE(users.name, 'Sistema') as user"),
                 'customers.created_at'
-            );
+            )
+            ->whereNull('customers.deleted_at');
         
-        if ($startDate && $endDate) {
+        if ($startDate !== null) {
             $customersQuery->whereBetween('customers.created_at', [$startDate, $endDate]);
         }
         
@@ -329,10 +339,10 @@ class DashboardController extends Controller
     private function calculateMetrics(?string $month, ?string $year): JsonResponse
     {
         $currentStart = $month && $year 
-            ? Carbon::createFromDate($year, $month, 1)->startOfMonth()
+            ? Carbon::createFromDate((int) $year, (int) $month, 1)->startOfMonth()
             : Carbon::now()->startOfMonth();
         $currentEnd = $month && $year
-            ? Carbon::createFromDate($year, $month, 1)->endOfMonth()
+            ? Carbon::createFromDate((int) $year, (int) $month, 1)->endOfMonth()
             : Carbon::now()->endOfMonth();
         
         $previousStart = (clone $currentStart)->subMonth()->startOfMonth();
@@ -341,11 +351,13 @@ class DashboardController extends Controller
         // total de clientes acumulado até o fim do período atual (não apenas criados nele)
         $totalCustomers = DB::table('customers')
             ->where('created_at', '<=', $currentEnd)
+            ->whereNull('deleted_at')
             ->count();
         
         // total de clientes acumulado até o fim do período anterior (base para calcular tendência)
         $totalCustomersPrevious = DB::table('customers')
             ->where('created_at', '<=', $previousEnd)
+            ->whereNull('deleted_at')
             ->count();
         
         $customersTrend = $totalCustomersPrevious > 0
@@ -354,10 +366,12 @@ class DashboardController extends Controller
 
         $totalOpportunities = DB::table('opportunities')
             ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->whereNull('deleted_at')
             ->count();
         
         $totalOpportunitiesPrevious = DB::table('opportunities')
             ->whereBetween('created_at', [$previousStart, $previousEnd])
+            ->whereNull('deleted_at')
             ->count();
         
         $opportunitiesTrend = $totalOpportunitiesPrevious > 0
@@ -367,14 +381,46 @@ class DashboardController extends Controller
         // valor total do pipeline inclui apenas oportunidades com status 'open'
         $totalPipelineValue = DB::table('opportunities')
             ->where('status', 'open')
+            ->whereNull('deleted_at')
             ->sum('value');
+
+        // valor do pipeline novo criado no período atual vs anterior (para tendência)
+        $pipelineValueCurrent = DB::table('opportunities')
+            ->where('status', 'open')
+            ->whereNull('deleted_at')
+            ->whereBetween('created_at', [$currentStart, $currentEnd])
+            ->sum('value');
+
+        $pipelineValuePrevious = DB::table('opportunities')
+            ->where('status', 'open')
+            ->whereNull('deleted_at')
+            ->whereBetween('created_at', [$previousStart, $previousEnd])
+            ->sum('value');
+
+        $pipelineValueTrend = $pipelineValuePrevious > 0
+            ? round((((float) $pipelineValueCurrent - (float) $pipelineValuePrevious) / (float) $pipelineValuePrevious) * 100, 1)
+            : 0;
 
         $wonOpportunities = DB::table('opportunities')
             ->where('status', 'won')
+            ->whereNull('deleted_at')
             ->whereBetween('closed_at', [$currentStart, $currentEnd])
             ->count();
         $conversionRate = $totalOpportunities > 0 
             ? round(($wonOpportunities / $totalOpportunities) * 100, 1) 
+            : 0;
+
+        $wonOpportunitiesPrevious = DB::table('opportunities')
+            ->where('status', 'won')
+            ->whereNull('deleted_at')
+            ->whereBetween('closed_at', [$previousStart, $previousEnd])
+            ->count();
+        $conversionRatePrevious = $totalOpportunitiesPrevious > 0
+            ? round(($wonOpportunitiesPrevious / $totalOpportunitiesPrevious) * 100, 1)
+            : 0;
+
+        $conversionRateTrend = $conversionRatePrevious > 0
+            ? round((($conversionRate - $conversionRatePrevious) / $conversionRatePrevious) * 100, 1)
             : 0;
 
         $monthlySales = DB::table('opportunities')
@@ -383,6 +429,7 @@ class DashboardController extends Controller
                 DB::raw('SUM(value) as value')
             )
             ->where('status', 'won')
+            ->whereNull('deleted_at')
             ->whereNotNull('closed_at')
             ->where('closed_at', '>=', now()->subMonths(6))
             ->groupBy(DB::raw("DATE_FORMAT(closed_at, '%Y-%m')"), DB::raw("DATE_FORMAT(closed_at, '%b')"))
@@ -403,6 +450,7 @@ class DashboardController extends Controller
                 DB::raw('SUM(opportunities.value) as value')
             )
             ->where('opportunities.status', 'open')
+            ->whereNull('opportunities.deleted_at')
             ->groupBy('pipeline_stages.id', 'pipeline_stages.name')
             ->orderBy('pipeline_stages.order')
             ->get()
@@ -422,7 +470,9 @@ class DashboardController extends Controller
             'total_opportunities_previous' => $totalOpportunitiesPrevious,
             'total_opportunities_trend' => $opportunitiesTrend,
             'total_pipeline_value' => (float) $totalPipelineValue,
+            'total_pipeline_value_trend' => $pipelineValueTrend,
             'conversion_rate' => $conversionRate,
+            'conversion_rate_trend' => $conversionRateTrend,
             'monthly_sales' => $monthlySales,
             'opportunities_by_stage' => $opportunitiesByStage
         ]);

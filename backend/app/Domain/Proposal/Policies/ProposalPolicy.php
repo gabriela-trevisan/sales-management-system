@@ -26,11 +26,12 @@ class ProposalPolicy
     }
 
     /**
-     * Apenas o criador pode visualizar a proposta.
+     * Qualquer usuário autenticado pode visualizar a proposta.
+     * Restrição de escrita (update/delete) permanece exclusiva do criador.
      */
     public function view(User $user, Proposal $proposal): bool
     {
-        return $user->id === $proposal->created_by;
+        return true;
     }
 
     /**

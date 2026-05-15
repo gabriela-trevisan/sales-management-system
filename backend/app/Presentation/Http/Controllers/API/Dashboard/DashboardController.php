@@ -423,22 +423,29 @@ class DashboardController extends Controller
             ? round((($conversionRate - $conversionRatePrevious) / $conversionRatePrevious) * 100, 1)
             : 0;
 
+        $monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+        // Janela de 6 meses encerrada no período selecionado (ou mês atual)
+        $salesWindowStart = (clone $currentEnd)->subMonths(5)->startOfMonth();
+
         $monthlySales = DB::table('opportunities')
             ->select(
-                DB::raw("DATE_FORMAT(closed_at, '%b') as month"),
+                DB::raw("DATE_FORMAT(closed_at, '%Y-%m') as month_key"),
+                DB::raw("MONTH(closed_at) as month_number"),
+                DB::raw("DATE_FORMAT(closed_at, '%y') as year_short"),
                 DB::raw('SUM(value) as value')
             )
             ->where('status', 'won')
             ->whereNull('deleted_at')
             ->whereNotNull('closed_at')
-            ->where('closed_at', '>=', now()->subMonths(6))
-            ->groupBy(DB::raw("DATE_FORMAT(closed_at, '%Y-%m')"), DB::raw("DATE_FORMAT(closed_at, '%b')"))
+            ->whereBetween('closed_at', [$salesWindowStart, $currentEnd])
+            ->groupBy(DB::raw("DATE_FORMAT(closed_at, '%Y-%m')"), DB::raw("MONTH(closed_at)"), DB::raw("DATE_FORMAT(closed_at, '%y')"))
             ->orderBy(DB::raw("DATE_FORMAT(closed_at, '%Y-%m')"))
             ->get()
-            ->map(function ($item) {
+            ->map(function ($item) use ($monthNames) {
                 return [
-                    'month' => $item->month,
-                    'value' => (float) $item->value
+                    'month' => $monthNames[(int) $item->month_number - 1] . '/' . $item->year_short,
+                    'value' => (float) $item->value,
                 ];
             });
 

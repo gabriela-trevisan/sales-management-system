@@ -103,40 +103,54 @@ function DashboardContent() {
         {/* Gráfico de Vendas Mensais */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Vendas Mensais</CardTitle>
+            <CardTitle className="text-base">Vendas Mensais (últimos 6 meses)</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={metrics.monthly_sales}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis 
-                  dataKey="month" 
-                  stroke="var(--color-muted-foreground)"
-                  tick={{ fill: 'var(--color-foreground)' }}
-                />
-                <YAxis 
-                  stroke="var(--color-muted-foreground)"
-                  tick={{ fill: 'var(--color-foreground)' }}
-                />
-                <Tooltip 
-                  formatter={(value) => formatCurrency(Number(value))}
-                  contentStyle={{
-                    backgroundColor: 'var(--color-card)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: '8px',
-                    color: 'var(--color-foreground)'
-                  }}
-                />
-                <Legend wrapperStyle={{ color: 'var(--color-foreground)' }} />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="var(--color-chart-2)"
-                  strokeWidth={2}
-                  name="Vendas"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {metrics.monthly_sales.length === 0 ? (
+              <div className="flex items-center justify-center h-[300px] text-muted-foreground text-sm">
+                Nenhuma venda fechada no período
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={metrics.monthly_sales}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+                  <XAxis
+                    dataKey="month"
+                    stroke="var(--color-muted-foreground)"
+                    tick={{ fill: 'var(--color-foreground)', fontSize: 12 }}
+                  />
+                  <YAxis
+                    stroke="var(--color-muted-foreground)"
+                    tick={{ fill: 'var(--color-foreground)', fontSize: 12 }}
+                    tickFormatter={(v: number) => {
+                      if (v >= 1_000_000) return `R$${(v / 1_000_000).toFixed(1)}M`;
+                      if (v >= 1_000) return `R$${(v / 1_000).toFixed(0)}K`;
+                      return `R$${v}`;
+                    }}
+                    width={72}
+                  />
+                  <Tooltip
+                    formatter={(value) => [formatCurrency(Number(value)), 'Vendas']}
+                    contentStyle={{
+                      backgroundColor: 'var(--color-card)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '8px',
+                      color: 'var(--color-foreground)'
+                    }}
+                  />
+                  <Legend wrapperStyle={{ color: 'var(--color-foreground)' }} />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="var(--color-chart-2)"
+                    strokeWidth={2}
+                    dot={{ fill: 'var(--color-chart-2)', r: 4 }}
+                    activeDot={{ r: 6 }}
+                    name="Vendas"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
 

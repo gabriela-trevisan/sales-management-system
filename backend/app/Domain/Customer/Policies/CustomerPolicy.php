@@ -27,11 +27,12 @@ class CustomerPolicy
     }
 
     /**
-     * Apenas o vendedor responsável pode visualizar o cliente.
+     * Qualquer usuário autenticado pode visualizar o cliente.
+     * Restrição de escrita (update/delete) permanece exclusiva do responsável.
      */
     public function view(User $user, Customer $customer): bool
     {
-        return $user->id === $customer->assigned_to;
+        return true;
     }
 
     /**

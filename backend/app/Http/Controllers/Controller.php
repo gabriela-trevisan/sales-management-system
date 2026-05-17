@@ -22,7 +22,7 @@ use OpenApi\Attributes as OA;
     securityScheme: "bearerAuth",
     type: "http",
     scheme: "bearer",
-    bearerFormat: "JWT"
+    description: "Sanctum opaque token. Obtenha via POST /api/auth/token."
 )]
 #[OA\Tag(
     name: "Authentication",

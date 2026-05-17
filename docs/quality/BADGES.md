@@ -10,7 +10,7 @@
 
 | Badge | Tipo | Status | Prioridade |
 |---|---|---|---|
-| CI passing (GitHub Actions) | Dinâmico | ⏳ Fase 1 | 🔴 Alta |
+| CI passing (GitHub Actions) | Dinâmico | ✅ Concluído | 🔴 Alta |
 | PHPStan Level 6 | Estático | ✅ Pode adicionar agora | 🟡 Média |
 | Cobertura de testes (Codecov) | Dinâmico | ⏳ Fase 2 | 🔴 Alta |
 | Segurança deps (Snyk) | Dinâmico | ⏳ Fase 3 | 🟡 Média |
@@ -30,8 +30,8 @@
 
 - [x] Criar `.github/workflows/ci.yml` com jobs backend e frontend
 - [x] Descomentar SQLite in-memory no `phpunit.xml` (para suporte a feature tests futuros)
-- [ ] Fazer push para o GitHub e verificar que o workflow executa com sucesso
-- [ ] Adicionar badge ao `README.md` após confirmação verde
+- [x] Fazer push para o GitHub e verificar que o workflow executa com sucesso
+- [x] Adicionar badge ao `README.md` após confirmação verde
 
 ### Workflow criado: `.github/workflows/ci.yml`
 
@@ -222,4 +222,5 @@ Após completar todas as fases, o bloco de badges no `README.md` ficará:
 | Data | Fase | Ação |
 |---|---|---|
 | 2026-05-17 | Fase 1 | Criado `.github/workflows/ci.yml` + ajuste `phpunit.xml` (SQLite ativado) |
-| — | Fase 1 | Aguardando push para GitHub e confirmação do badge verde |
+| 2026-05-17 | Fase 1 | Corrigido trigger `master` (era `main`) — workflow passou com sucesso |
+| 2026-05-17 | Fase 1 | ✅ Badge CI adicionado ao `README.md` |

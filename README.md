@@ -6,6 +6,7 @@
 Sistema completo de gestão de vendas e CRM desenvolvido com Laravel 11, React 19 e TypeScript.  
 **Nicho:** Consultoria e Desenvolvimento de Software Customizado
 
+[![CI](https://github.com/gabriela-trevisan/sales-management-system/actions/workflows/ci.yml/badge.svg)](https://github.com/gabriela-trevisan/sales-management-system/actions)
 [![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)](https://php.net)
 [![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)

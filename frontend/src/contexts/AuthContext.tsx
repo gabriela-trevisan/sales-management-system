@@ -6,26 +6,28 @@ import type { User, LoginCredentials, AuthContextType } from '@/types/auth';
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  /**
+   * Inicializa do cache local imediatamente para evitar flash de conteúdo.
+   * O useEffect abaixo valida a sessão com o servidor de forma assíncrona.
+   * Usar lazy initializer evita chamar setState sincronamente dentro de um effect.
+   */
+  const [user, setUser] = useState<User | null>(() => {
+    const cachedUser = localStorage.getItem('user');
+    if (!cachedUser) return null;
+    try {
+      return JSON.parse(cachedUser) as User;
+    } catch {
+      localStorage.removeItem('user');
+      return null;
+    }
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     /**
-     * Exibe o usuário cacheado imediatamente para evitar flash de conteúdo,
-     * mas verifica com o servidor se a sessão ainda é válida.
-     *
-     * Com cookie httpOnly (Sanctum SPA), a sessão é a fonte de verdade —
-     * não há token em localStorage para verificar localmente.
+     * Verifica com o servidor se a sessão ainda é válida.
+     * Com cookie httpOnly (Sanctum SPA), a sessão é a fonte de verdade.
      */
-    const cachedUser = localStorage.getItem('user');
-    if (cachedUser) {
-      try {
-        setUser(JSON.parse(cachedUser) as User);
-      } catch {
-        localStorage.removeItem('user');
-      }
-    }
-
     authService
       .me()
       .then((serverUser) => {
@@ -65,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {

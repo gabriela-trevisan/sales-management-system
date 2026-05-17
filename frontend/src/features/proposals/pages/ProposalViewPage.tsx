@@ -81,7 +81,7 @@ export default function ProposalViewPage() {
     try {
       await proposalService.downloadPdf(proposal.id);
       setAlert({ type: 'success', message: 'PDF baixado com sucesso!' });
-    } catch (error) {
+    } catch {
       setAlert({ type: 'error', message: 'Erro ao baixar PDF. Tente novamente.' });
     }
   };
@@ -90,7 +90,7 @@ export default function ProposalViewPage() {
     try {
       await proposalService.sendEmail(proposal.id);
       setAlert({ type: 'success', message: `Proposta enviada para ${proposal.customer.email}!` });
-    } catch (error) {
+    } catch {
       setAlert({ type: 'error', message: 'Erro ao enviar email. Tente novamente.' });
     }
   };

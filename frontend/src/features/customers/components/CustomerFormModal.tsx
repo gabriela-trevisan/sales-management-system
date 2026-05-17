@@ -83,14 +83,15 @@ const CustomerFormModal = ({ customer, onClose, onSave }: CustomerFormModalProps
       }
 
       onSave();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erro ao salvar cliente:', error);
       
-      if (error.response?.data?.message) {
-        setServerError(error.response.data.message);
-      } else if (error.response?.data?.errors) {
+      const apiError = error as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } };
+      if (apiError.response?.data?.message) {
+        setServerError(apiError.response.data.message);
+      } else if (apiError.response?.data?.errors) {
         // mapeia erros do Laravel para o formulário
-        const backendErrors = error.response.data.errors;
+        const backendErrors = apiError.response.data.errors;
         Object.keys(backendErrors).forEach((key) => {
           setServerError(backendErrors[key][0]);
         });

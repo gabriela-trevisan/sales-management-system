@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Search, Edit, Trash2, UserCircle } from 'lucide-react';
 import { Select } from '@/components/ui/select';
 import customerService, { type Customer, type CustomerFilters } from '../services/customerService';
@@ -28,7 +28,7 @@ const CustomerListPage = () => {
     total: 0,
   });
 
-  const loadCustomers = async () => {
+  const loadCustomers = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await customerService.getAll({ 
@@ -43,11 +43,11 @@ const CustomerListPage = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filters, currentPage]);
 
   useEffect(() => {
     loadCustomers();
-  }, [filters, currentPage]);
+  }, [loadCustomers]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

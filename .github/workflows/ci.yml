@@ -2,8 +2,8 @@
 # CI — Sales Management System
 #
 # Executa em:
-#   - push para main e develop
-#   - pull requests com destino main
+#   - push para master e develop
+#   - pull requests com destino master
 #
 # Jobs:
 #   backend  → PHPUnit (testsuite Unit) + PHPStan Level 6
@@ -39,7 +39,6 @@ jobs:
         with:
           php-version: '8.3'
           extensions: mbstring, pdo, pdo_sqlite, sqlite3
-          # coverage: none mantém a execução rápida.
           # Trocar para 'xdebug' na Fase 2 (geração de relatório de cobertura).
           coverage: none
 
@@ -50,13 +49,21 @@ jobs:
           key: composer-${{ hashFiles('backend/composer.lock') }}
           restore-keys: composer-
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
-
+      # .env deve existir ANTES do composer install porque o hook post-autoload-dump
+      # executa `artisan package:discover`, que faz boot do Laravel e dispara o
+      # EnvValidationServiceProvider. APP_KEY é gerada com PHP nativo (sem vendor).
       - name: Prepare .env for testing
         run: |
           cp .env.example .env
-          php artisan key:generate --no-interaction
+          php -r "
+            \$env = file_get_contents('.env');
+            \$key = 'base64:' . base64_encode(random_bytes(32));
+            \$env = preg_replace('/^APP_KEY=.*/m', 'APP_KEY=' . \$key, \$env);
+            file_put_contents('.env', \$env);
+          "
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Run PHPUnit — Unit testsuite
         # Executa apenas os testes unitários de domínio (Value Objects, Enums,
@@ -101,5 +108,4 @@ jobs:
 
       - name: Vite build
         # Valida que o bundle compila sem erros e que os tipos estão corretos.
-        # Equivale ao check que um recrutador faria clonando o repo.
         run: npm run build

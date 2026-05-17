@@ -57,7 +57,6 @@ export const WithFooter: Story = {
 };
 
 export const MetricCard: Story = {
-  name: 'Metric Card',
   render: () => (
     <div className="grid grid-cols-2 gap-4 p-4">
       {[

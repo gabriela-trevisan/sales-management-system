@@ -107,6 +107,7 @@ class EnvValidationServiceProvider extends ServiceProvider
             'key:generate',
             'env:decrypt',
             'env:encrypt',
+            'package:discover', // Disparado pelo hook post-autoload-dump do Composer
         ];
 
         foreach ($allowedCommands as $allowed) {

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Model de Audit Log para compliance LGPD Art. 46
@@ -88,7 +89,7 @@ class AuditLog extends Model
             'event' => $event,
             'auditable_type' => $model ? get_class($model) : null,
             'auditable_id' => $model?->id,
-            'user_id' => auth()->check() ? auth()->id() : null,
+            'user_id' => Auth::check() ? Auth::id() : null,
             'old_values' => $oldValues,
             'new_values' => $newValues,
             'ip_address' => $request->ip(),

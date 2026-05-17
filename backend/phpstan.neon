@@ -14,3 +14,17 @@ parameters:
         - '#Property (.*)::\$casts type has no value type specified#'
         - '#has no return type specified#'
         - '#uses generic trait (.*)HasFactory but does not specify its types#'
+        # Eloquent relation generic types — noise sem Larastan instalado
+        - '#return type with generic class.*BelongsTo does not specify its types#'
+        - '#return type with generic class.*HasMany does not specify its types#'
+        - '#should return.*BelongsTo.*but returns.*\$this\(#'
+        - '#should return.*HasMany.*but returns.*\$this\(#'
+        - '#should return.*MorphTo.*but returns.*\$this\(#'
+        - '#Generic type.*HasMany.* in PHPDoc tag @return does not specify all template types#'
+        - '#return type with generic interface.*LengthAwarePaginator does not specify its types#'
+        # Eloquent query scopes — PHPStan não consegue inferir via Builder magic
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder.*::(byStatus|byCustomer)\(\)#'
+        # Pattern de instanceof redundante em domain event dispatch
+        - '#Instanceof between .* will always evaluate to true#'
+        # Scope methods sem type hint em $query — padrão Laravel aceito
+        - '#has parameter \$query with no type specified#'

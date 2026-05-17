@@ -51,8 +51,8 @@ class ProposalResource extends JsonResource
             'deleted_at' => $this->deleted_at?->toISOString(),
             
             // helper fields
-            'is_expired' => $this->isExpired(),
-            'can_be_edited' => $this->canBeEdited(),
+            'is_expired' => $this->resource->isExpired(),
+            'can_be_edited' => $this->resource->canBeEdited(),
         ];
     }
 }

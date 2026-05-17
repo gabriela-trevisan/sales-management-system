@@ -75,7 +75,9 @@ class AuthController extends Controller
         // statefulApi() em bootstrap/app.php garante que este bloco só executa
         // para requisições vindas de SANCTUM_STATEFUL_DOMAINS.
         if ($request->hasSession()) {
-            auth()->guard('web')->login($user);
+            /** @var \Illuminate\Auth\SessionGuard $webGuard */
+            $webGuard = auth()->guard('web');
+            $webGuard->login($user);
             $request->session()->regenerate(); // Previne session fixation
         }
 
@@ -125,7 +127,9 @@ class AuthController extends Controller
 
         // session auth: invalida sessão do frontend SPA
         if ($request->hasSession()) {
-            auth()->guard('web')->logout();
+            /** @var \Illuminate\Auth\SessionGuard $webGuard */
+            $webGuard = auth()->guard('web');
+            $webGuard->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
         }

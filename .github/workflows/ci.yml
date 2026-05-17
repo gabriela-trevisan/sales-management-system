@@ -1,0 +1,105 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CI — Sales Management System
+#
+# Executa em:
+#   - push para main e develop
+#   - pull requests com destino main
+#
+# Jobs:
+#   backend  → PHPUnit (testsuite Unit) + PHPStan Level 6
+#   frontend → TypeScript check + ESLint + Vite build
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ───────────────────────────────────────────────────────────────────────────
+  # Backend: Laravel / PHP 8.3
+  # ───────────────────────────────────────────────────────────────────────────
+  backend:
+    name: Backend — PHPUnit + PHPStan
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo, pdo_sqlite, sqlite3
+          # coverage: none mantém a execução rápida.
+          # Trocar para 'xdebug' na Fase 2 (geração de relatório de cobertura).
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: backend/vendor
+          key: composer-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Prepare .env for testing
+        run: |
+          cp .env.example .env
+          php artisan key:generate --no-interaction
+
+      - name: Run PHPUnit — Unit testsuite
+        # Executa apenas os testes unitários de domínio (Value Objects, Enums,
+        # Aggregate totals). Esses testes estendem PHPUnit\Framework\TestCase
+        # diretamente — não precisam de banco de dados.
+        # Feature tests serão adicionados na Fase 2 com SQLite in-memory.
+        run: php artisan test --testsuite=Unit --stop-on-failure
+
+      - name: Run PHPStan — Level 6
+        run: vendor/bin/phpstan analyse --no-progress --memory-limit=512M
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # Frontend: React / TypeScript / Vite
+  # ───────────────────────────────────────────────────────────────────────────
+  frontend:
+    name: Frontend — TypeScript + ESLint + Build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Vite build
+        # Valida que o bundle compila sem erros e que os tipos estão corretos.
+        # Equivale ao check que um recrutador faria clonando o repo.
+        run: npm run build

@@ -74,7 +74,7 @@ class ProposalController extends Controller
             'search' => $request->query('search'),
         ];
 
-        $perPage = (int) $request->query('per_page', 15);
+        $perPage = (int) $request->query('per_page', '15');
 
         $proposals = $this->proposalRepository->getAll($filters, $perPage);
 

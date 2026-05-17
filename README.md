@@ -519,7 +519,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 **Gabriela Trevisan**
 
 - GitHub: [@gabriela-trevisan](https://github.com/gabriela-trevisan)
-- LinkedIn: [Seu LinkedIn](https://linkedin.com/in/seu-perfil)
+- LinkedIn: [Gabriela Trevisan Leturiondo](https://www.linkedin.com/in/gabriela-trevisan/)
 
 ---
 

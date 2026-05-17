@@ -12,7 +12,7 @@
 |--------|--------|-----------|----------|--------|
 | Module 0: Infraestrutura | ✅ Completo | 100% | 6 containers | - |
 | Module 1: Autenticação | ✅ Completo | 100% | 8 arquivos | 3 |
-| Module 2: Dashboard | ✅ Completo | 100% | 6 arquivos | 2 |
+| Module 2: Dashboard | ✅ Completo | 100% | 6 arquivos | 3 |
 | Module 3: Customers | ✅ Completo | 100% | 20 arquivos | 6 |
 | Module 5: Products | ✅ Completo | 100% | 20 arquivos | 7 |
 | Module 6: Proposals | ✅ Completo | 100% | 23 arquivos | 7 |
@@ -69,12 +69,7 @@
 ## 🚀 Próximos Passos
 
 ### Curto Prazo (Próxima Sprint)
-1. **Dashboard Improvements - Fase 1 (1-2 dias)**
-   - Micro-indicadores de tendência nos cards
-   - Gráfico de Pizza/Donut (segmentos)
-   - Seletor de período global
-   - Animações CountUp
-   - Ver: [Dashboard Improvements Roadmap](quality/DASHBOARD_IMPROVEMENTS.md)
+1. **Finalizar Proposals (30% restante)** — PDF generation, email sending, versioning
 
 ### Médio Prazo
 2. **Dashboard Improvements - Fase 2 (3-4 dias)**

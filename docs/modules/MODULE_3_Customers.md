@@ -58,25 +58,30 @@ Sistema completo de gerenciamento de clientes com validação profissional, más
 
 ### Mutators Implementados (Backend)
 ```php
-// Customer.php
-protected function setDocumentAttribute($value) {
-    $this->attributes['document'] = preg_replace('/\D/', '', $value);
+// Customer.php — delega validação para Value Objects
+public function setDocumentAttribute(string $value): void
+{
+    // Document::fromString valida CPF/CNPJ com dígitos verificadores
+    $this->attributes['document'] = Document::fromString($value)->value();
 }
 
-protected function setPhoneAttribute($value) {
-    $this->attributes['phone'] = preg_replace('/\D/', '', $value);
+public function setEmailAttribute(string $value): void
+{
+    $this->attributes['email'] = Email::fromString($value)->value();
 }
 
-protected function setEmailAttribute($value) {
-    $this->attributes['email'] = strtolower($value);
+public function setPhoneAttribute(?string $value): void
+{
+    $phone = Phone::fromString($value);
+    $this->attributes['phone'] = $phone?->value();
 }
 ```
 
 **Armazenamento:**
-- CPF/CNPJ: apenas números (11 ou 14 dígitos) - campo `document` max:14
-- Telefone: apenas números (10 ou 11 dígitos) - campo `phone` max:11
+- CPF/CNPJ: apenas números validados (11 ou 14 dígitos) via `Document` Value Object
+- Telefone: apenas números (10 ou 11 dígitos) via `Phone` Value Object
 - CEP: apenas números (8 dígitos)
-- Email: lowercase automático
+- Email: lowercase automático via `Email` Value Object
 
 ### Validação Frontend (React)
 

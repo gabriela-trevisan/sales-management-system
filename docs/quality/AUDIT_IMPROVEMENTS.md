@@ -17,7 +17,7 @@
 7. [🟡 Importante — `$oldValues` código morto no controller](#7-importante--oldvalues-código-morto-no-controller)
 8. [🟡 Importante — `JsonResponse` serializado no cache Redis](#8-importante--jsonresponse-serializado-no-cache-redis)
 9. [🟡 Importante — `recentActivities` sem cache](#9-importante--recentactivities-sem-cache)
-10. [🟡 Importante — Validação de CPF/CNPJ ausente no backend](#10-importante--validação-de-cpfcnpj-ausente-no-backend)
+10. [✅ Importante — Validação de CPF/CNPJ ausente no backend — Resolvido](#10-✅-importante--validação-de-cpfcnpj-ausente-no-backend--resolvido)
 11. [🟡 Importante — Conflito de security headers entre Nginx e PHP](#11-importante--conflito-de-security-headers-entre-nginx-e-php)
 12. [🟡 Importante — URL da API hardcoded no frontend](#12-importante--url-da-api-hardcoded-no-frontend)
 13. [🔵 Melhoria — Assimetria entre use cases no Application layer](#13-melhoria--assimetria-entre-use-cases-no-application-layer)
@@ -643,7 +643,7 @@ public function recentActivities(Request $request): JsonResponse
 
 ---
 
-## 10. 🟡 Importante — Validação de CPF/CNPJ ausente no backend
+## 10. ✅ Importante — Validação de CPF/CNPJ ausente no backend — Resolvido
 
 ### O Problema
 
@@ -763,6 +763,8 @@ public function rules(): array
     ];
 }
 ```
+
+> **✅ Resolvido em 19/05/2026** — `Document` Value Object (`app/Domain/Shared/ValueObjects/Document.php`) implementa algoritmo módulo-11 oficial da Receita Federal com `isValidCpf()` e `isValidCnpj()`. Rejeita CPFs/CNPJs com dígitos verificadores inválidos e sequências homogêneas (ex: `111.111.111-11`). Mutator `Customer::setDocumentAttribute()` delega para `Document::fromString()`, que lança `InvalidDomainStateException` em documentos inválidos. 11 testes unitários cobrindo CPF/CNPJ válidos, inválidos, formatados, não formatados, homogêneos e comprimento incorreto — todos passando.
 
 ---
 

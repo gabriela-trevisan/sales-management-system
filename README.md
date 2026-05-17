@@ -35,7 +35,7 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 - 💼 **Catálogo de Serviços**: Horas técnicas (Arquiteto, Dev Sênior/Pleno/Júnior, QA, DevOps, UX/UI)
 - 📦 **Pacotes de Projeto**: Discovery (40h), MVP (320h), Squad Dedicado (160h/mês)
 - 💰 **Propostas Técnicas**: Geração e acompanhamento com escopo detalhado
-- 💵 **Cálculo de Comissões**: Regras por tipo de serviço e valor de projeto
+- 💵 **Cálculo de Comissões**: Regras por tipo de serviço e valor de projeto _(⏳ Pendente)_
 - 📈 **Dashboard Analítico**: Métricas reais, gráficos de vendas mensais e pipeline
 - 📚 **API Documentada**: Swagger/OpenAPI
 - 📝 **Código Documentado**: PHPDoc e JSDoc/TSDoc completos seguindo padrões oficiais
@@ -53,7 +53,7 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 ### Backend
 - **PHP** 8.3
 - **Laravel** 11.47 (DDD Architecture)
-- **Laravel Sanctum** 4.2.4 (JWT Authentication - Token 24h + Refresh)
+- **Laravel Sanctum** 4.2.4 (SPA Cookie + Bearer Token - Token 24h)
 - **Laravel Auditing** 14.0.0 (Audit automático LGPD)
 - **l5-swagger** 10.1 (OpenAPI Documentation)
 - **PHPStan** 2.1.36 (Static Analysis Level 6)
@@ -206,9 +206,10 @@ sales-management-system/
 │   ├── app/
 │   │   ├── Domain/         # Camada de domínio (DDD)
 │   │   │   └── Customer/  # Aggregate Root Customer
-│   │   │       ├── Models/           # Customer, CustomerContact, CustomerAddress (com mutators)
-│   │   │       ├── Repositories/     # CustomerRepositoryInterface
-│   │   │       └── Services/         # CustomerService
+│   │   │       ├── Contracts/        # CustomerRepositoryInterface
+│   │   │       ├── Enums/            # CustomerStatusEnum
+│   │   │       ├── Models/           # Customer, CustomerContact, CustomerAddress
+│   │   │       └── Policies/         # CustomerPolicy (IDOR protection)
 │   │   ├── Application/    # Casos de uso
 │   │   ├── Infrastructure/ # Implementações técnicas
 │   │   │   └── Repositories/        # EloquentCustomerRepository
@@ -217,23 +218,24 @@ sales-management-system/
 │   │           ├── Controllers/     # AuthController, CustomerController, DashboardController
 │   │           └── Requests/        # CreateCustomerRequest, UpdateCustomerRequest (validações)
 │   ├── database/
-│   │   ├── migrations/              # 21 migrations
-│   │   └── seeders/                 # 8 seeders com dados realistas
+│   │   ├── migrations/              # 24 migrations
+│   │   └── seeders/                 # 9 seeders com dados realistas
 │   ├── tests/
 │   └── Dockerfile
 ├── frontend/               # React SPA
 │   ├── src/
 │   │   ├── components/    # Componentes reutilizáveis
 │   │   │   ├── layout/         # Layout, Sidebar, Header
-│   │   │   ├── common/         # Button, Input, Alert
+│   │   │   ├── common/         # Alert, ConfirmDialog
 │   │   │   └── ConfirmDialog   # Modal de confirmação moderno
-│   │   ├── contexts/      # AuthContext para gerenciamento de autenticação
-│   │   ├── features/      # Features por módulo
-│   │   │   ├── auth/      # LoginPage
-│   │   │   ├── customers/ # CustomerListPage, CustomerFormModal
-│   │   │   └── dashboard/ # DashboardPage com métricas e gráficos
-│   │   ├── schemas/       # Zod schemas (customerSchema.ts)
-│   │   ├── services/      # API services (customerService, segmentService, dashboardService)
+│   │   ├── contexts/      # AuthContext, ThemeContext
+│   │   ├── features/      # Features por módulo (auth, customers, dashboard, products, proposals)
+│   │   │   ├── auth/      # LoginPage, authService
+│   │   │   ├── customers/ # CustomerListPage, CustomerFormModal, customerService
+│   │   │   ├── dashboard/ # DashboardPage com métricas e gráficos, dashboardService
+│   │   │   ├── products/  # ProductListPage, ProductFormModal, productService
+│   │   │   └── proposals/ # ProposalListPage, ProposalFormModal, proposalService
+│   │   ├── services/      # api.ts (instância Axios com withCredentials)
 │   │   ├── types/         # TypeScript interfaces e types
 │   │   └── utils/         # Utilitários
 │   │       ├── formatters.ts   # formatDocument, formatPhone, cleanDocument, formatCurrency, formatDate
@@ -347,13 +349,14 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 ### Endpoints Disponíveis
 
 **Autenticação:**
-- `POST /api/auth/login` - Login e geração de token JWT
+- `POST /api/auth/login` - Login e geração de token Sanctum
 - `POST /api/auth/logout` - Logout e invalidação do token
 - `GET /api/auth/me` - Dados do usuário autenticado
 
 **Dashboard:**
 - `GET /api/dashboard/metrics` - Métricas gerais (clientes, oportunidades, pipeline, conversão)
 - `GET /api/dashboard/recent-activities` - Últimas atividades do sistema
+- `GET /api/dashboard/customers-by-segment` - Distribuição de clientes por segmento
 
 **Clientes:**
 - `GET /api/customers` - Listar clientes com filtros e paginação
@@ -388,7 +391,7 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 
 ### ✅ Implementadas
 - ✅ **Infraestrutura**: Docker com 6 containers (Nginx, Laravel, React, MySQL, Redis, Mailhog)
-- ✅ **Autenticação JWT**: Login, logout, proteção de rotas com Laravel Sanctum
+- ✅ **Autenticação Sanctum**: Login, logout, proteção de rotas com Laravel Sanctum (SPA Cookie)
 - ✅ **Layout**: Sidebar com navegação, Header com usuário e logout
 - ✅ **LoginPage Redesenhado**: Layout split screen moderno com features showcase
 - ✅ **Dashboard Completo**: 4 cards de métricas, LineChart de vendas mensais (Recharts), BarChart de pipeline por estágio, timeline de atividades recentes
@@ -403,7 +406,7 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 - ✅ **Segmentação**: 6 segmentos por setor (Indústria, Financeiro, Varejo, Saúde, Logística, Educação)
 - ✅ **Catálogo de Serviços**: 8 categorias, 6 tipos de unidade, SKU validado, preços e specifications
 - ✅ **TypeScript Moderno**: Type-only imports com verbatimModuleSyntax, React Compiler compatible
-- ✅ **Auto Refresh Token**: Interceptor Axios com renovação automática de JWT
+- ✅ **Auto Refresh Token**: Interceptor Axios com renovação automática de token Sanctum
 - ✅ **DDD Architecture**: Backend organizado em Domain, Application, Infrastructure e Presentation
 - ✅ **Type Safety**: TypeScript com inferência automática de tipos via Zod schemas
 - ✅ **Documentação Padronizada**: PHPDoc e JSDoc/TSDoc

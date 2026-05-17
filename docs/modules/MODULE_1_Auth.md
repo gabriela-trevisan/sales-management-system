@@ -6,7 +6,7 @@
 
 ## 📋 Visão Geral
 
-Sistema completo de autenticação com JWT via Laravel Sanctum + layout da aplicação com sidebar e header.
+Sistema completo de autenticação com Laravel Sanctum (SPA Cookie `httpOnly`) + layout da aplicação com sidebar e header.
 
 ---
 
@@ -19,7 +19,7 @@ Sistema completo de autenticação com JWT via Laravel Sanctum + layout da aplic
   - `GET /api/auth/me` - Dados do usuário autenticado
 
 ### Laravel Sanctum
-- ✅ Configurado para API stateless (Bearer tokens)
+- ✅ Configurado para SPA Cookie (`httpOnly; SameSite=Strict`) + Bearer Token para clientes não-SPA
 - ✅ Token expiration: 24 horas
 - ✅ Middleware: `auth:sanctum`
 - ✅ Rate limiting: 5 tentativas/minuto no login
@@ -80,16 +80,17 @@ Sistema completo de autenticação com JWT via Laravel Sanctum + layout da aplic
 ```typescript
 interface AuthContextType {
   user: User | null;
-  token: string | null;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 ```
 
 **Features:**
 - ✅ Gerencia estado do usuário logado
-- ✅ Persiste token no localStorage
+- ✅ Persiste apenas metadados do usuário no `localStorage` (nunca o token)
+- ✅ Sessão trafega exclusivamente por cookie `httpOnly` (SPA Cookie)
 - ✅ Provider global para toda aplicação
 
 ### PrivateRoute

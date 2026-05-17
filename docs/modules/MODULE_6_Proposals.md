@@ -25,17 +25,16 @@ Sistema de gerenciamento de propostas técnicas/comerciais com:
 **1. app/Domain/Proposal/Models/Proposal.php**
 - Model principal com relacionamentos
 - **Campos:**
-  - `code` (string, unique) - PROP-YYYY-XXXX
+  - `number` (string, unique) - PROP-YYYY-XXXX
   - `customer_id` (FK)
   - `opportunity_id` (FK nullable) - Futuro Module 4
-  - `title` (string)
-  - `description` (text nullable)
-  - `status` (enum: draft, sent, accepted, rejected, expired)
+  - `status` (enum: draft, sent, approved, rejected, expired)
   - `issue_date` (date)
-  - `expiry_date` (date)
+  - `expiration_date` (date)
+  - `notes` (text nullable)
   - `subtotal` (decimal 15,2)
-  - `discount_amount` (decimal 15,2)
-  - `total_amount` (decimal 15,2)
+  - `discount` (decimal 15,2)
+  - `total` (decimal 15,2)
   - `created_by` (FK) - Usuário que criou
 - **Relationships:**
   - `belongsTo(Customer)`
@@ -71,7 +70,7 @@ Sistema de gerenciamento de propostas técnicas/comerciais com:
   - `create(array $data)`
   - `update(int $id, array $data)`
   - `delete(int $id)`
-  - `generateCode()` - Gera próximo código sequencial
+  - `generateProposalNumber()` - Gera próximo número sequencial
 - PHPDoc completo com tipos
 
 ### Infrastructure Layer
@@ -80,9 +79,9 @@ Sistema de gerenciamento de propostas técnicas/comerciais com:
 - Implementação do Repository
 - **Features:**
   - Eager loading: `customer`, `creator`, `items.product`
-  - Filtros: `status`, `customer_id`, `search` (title, description, code)
+  - Filtros: `status`, `customer_id`, `search` (number, notes)
   - Paginação com ordenação DESC
-  - `generateCode()`: Query MAX + incremento
+  - `generateProposalNumber()`: Query MAX + incremento
     - Formato: `PROP-2026-0001`, `PROP-2026-0002`
     - Busca maior número do ano corrente
     - Padding com zeros (4 dígitos)
@@ -95,14 +94,10 @@ Sistema de gerenciamento de propostas técnicas/comerciais com:
   ```php
   public readonly int $customerId;
   public readonly ?int $opportunityId;
-  public readonly string $title;
-  public readonly ?string $description;
-  public readonly string $status;
   public readonly string $issueDate;
-  public readonly string $expiryDate;
-  public readonly float $subtotal;
-  public readonly float $discountAmount;
-  public readonly float $totalAmount;
+  public readonly string $expirationDate;
+  public readonly ?string $notes;
+  public readonly string $status;
   public readonly int $createdBy;
   public readonly array $items;
   ```
@@ -135,9 +130,9 @@ Sistema de gerenciamento de propostas técnicas/comerciais com:
   - `opportunity_id`: nullable, integer (validação `exists:opportunities` comentada até Module 4)
   - `title`: required, string, max:255
   - `description`: nullable, string
-  - `status`: required, enum (draft, sent, accepted, rejected, expired)
+  - `status`: required, enum (draft, sent, approved, rejected, expired)
   - `issue_date`: required, date
-  - `expiry_date`: required, date, after:issue_date
+  - `expiration_date`: required, date, after:issue_date
   - `subtotal`: required, numeric, min:0
   - `discount_amount`: nullable, numeric, min:0
   - `total_amount`: required, numeric, min:0

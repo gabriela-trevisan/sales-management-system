@@ -48,7 +48,7 @@
 3. Module 2: Dashboard ✅
 4. Module 3: Customers ✅
 5. Module 5: Products ✅
-6. Module 6: Proposals 🟡 70%
+6. Module 6: Proposals ✅ 100%
 7. Module 4: Opportunities ⏳
 8. Modules 7-10: Avançados ⏳
 

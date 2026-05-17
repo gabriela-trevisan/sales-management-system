@@ -17,7 +17,8 @@ class CustomerSeeder extends Seeder
     public function run(): void
     {
         $users = User::all();
-        
+        $userIds = $users->sortBy('id')->pluck('id')->values();
+
         $customers = [
             [
                 'name' => 'Tech Solutions Ltda',
@@ -136,7 +137,7 @@ class CustomerSeeder extends Seeder
             ],
         ];
 
-        foreach ($customers as $customerData) {
+        foreach ($customers as $index => $customerData) {
             // Normaliza o documento para coincidir com o valor armazenado (sem formatação)
             $document = preg_replace('/[^0-9]/', '', $customerData['document']);
 
@@ -148,7 +149,7 @@ class CustomerSeeder extends Seeder
                     'phone'      => $customerData['phone'],
                     'segment_id' => $customerData['segment_id'],
                     'status'     => $customerData['status'],
-                    'assigned_to' => $customerData['assigned_to'],
+                    'assigned_to' => $userIds[$index % $userIds->count()],
                 ]
             );
 

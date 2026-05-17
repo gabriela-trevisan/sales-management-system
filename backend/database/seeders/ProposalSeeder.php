@@ -15,6 +15,7 @@ class ProposalSeeder extends Seeder
         $opportunities = DB::table('opportunities')->exists() ? DB::table('opportunities')->get() : collect();
         $customers = DB::table('customers')->get();
         $users = User::all();
+        $userIds = $users->sortBy('id')->pluck('id')->values();
         $products = DB::table('products')->get();
 
         if ($customers->count() < 3 || $products->count() < 3) {
@@ -102,13 +103,16 @@ class ProposalSeeder extends Seeder
             ];
         }
 
-        foreach ($proposals as $proposalData) {
+        foreach ($proposals as $index => $proposalData) {
             if (DB::table('proposals')->where('number', $proposalData['number'])->exists()) {
                 continue;
             }
 
             $items = $proposalData['items'];
             unset($proposalData['items']);
+
+            // Atribuição determinística por índice (evita randomização do seeder)
+            $proposalData['created_by'] = $userIds[$index % $userIds->count()];
 
             $totals = Proposal::aggregateTotalsFromLines($items);
 

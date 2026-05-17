@@ -54,6 +54,7 @@ class Customer extends Model implements Auditable
 
     protected $casts = [
         'rfm_score' => 'array',
+        'assigned_to' => 'integer',
     ];
 
     /**

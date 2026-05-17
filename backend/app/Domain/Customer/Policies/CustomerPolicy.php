@@ -12,12 +12,25 @@ use App\Models\User;
  * Registrada explicitamente em AppServiceProvider::boot() via Gate::policy(),
  * pois o Model está em um namespace não-padrão (Domain layer).
  *
+ * Modelo de acesso: CRM compartilhado por equipe.
+ * Qualquer membro autenticado pode gerenciar qualquer registro.
+ * O campo assigned_to rastreia responsabilidade (workflow/comissões),
+ * mas não restringe acesso — isso seria padrão multi-tenant, não intra-equipe.
+ *
  * OWASP A01:2021 – Broken Access Control:
- * Garante que apenas o vendedor responsável (assigned_to) pode
- * visualizar, atualizar ou excluir seus próprios clientes.
+ * Proteção aplicada pelo middleware auth:sanctum (token válido obrigatório).
+ * Isolamento multi-tenant seria necessário apenas em SaaS com múltiplas empresas.
  */
 class CustomerPolicy
 {
+    /**
+     * Qualquer usuário autenticado pode criar clientes.
+     */
+    public function create(User $user): bool
+    {
+        return true;
+    }
+
     /**
      * Qualquer usuário autenticado pode listar clientes.
      */
@@ -27,8 +40,7 @@ class CustomerPolicy
     }
 
     /**
-     * Qualquer usuário autenticado pode visualizar o cliente.
-     * Restrição de escrita (update/delete) permanece exclusiva do responsável.
+     * Qualquer usuário autenticado pode visualizar qualquer cliente.
      */
     public function view(User $user, Customer $customer): bool
     {
@@ -36,18 +48,19 @@ class CustomerPolicy
     }
 
     /**
-     * Apenas o vendedor responsável pode atualizar o cliente.
+     * Qualquer membro da equipe pode atualizar qualquer cliente.
+     * O campo assigned_to indica o responsável, não restringe edição.
      */
     public function update(User $user, Customer $customer): bool
     {
-        return $user->id === $customer->assigned_to;
+        return true;
     }
 
     /**
-     * Apenas o vendedor responsável pode remover o cliente.
+     * Qualquer membro da equipe pode remover qualquer cliente.
      */
     public function delete(User $user, Customer $customer): bool
     {
-        return $user->id === $customer->assigned_to;
+        return true;
     }
 }

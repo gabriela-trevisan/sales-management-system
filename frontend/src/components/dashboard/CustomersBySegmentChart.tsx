@@ -76,10 +76,10 @@ export function CustomersBySegmentChart() {
                 borderRadius: '8px',
                 color: 'var(--color-foreground)',
               }}
-              formatter={(value: number, _name: string, props: { payload?: { percentage?: number } }) => [
-                `${value} clientes (${props.payload?.percentage ?? 0}%)`,
-                '',
-              ]}
+              formatter={(value, _name, props) => {
+                const percentage = (props.payload as { percentage?: number } | undefined)?.percentage ?? 0;
+                return [`${value ?? 0} clientes (${percentage}%)`, ''];
+              }}
             />
             <Legend
               verticalAlign="bottom"

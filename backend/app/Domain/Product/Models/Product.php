@@ -2,7 +2,7 @@
 
 namespace App\Domain\Product\Models;
 
-use App\Domain\Product\Models\ProductCategory;
+use App\Domain\Shared\Exceptions\InvalidDomainStateException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,5 +64,39 @@ class Product extends Model
     public function scopeByCategory($query, int $categoryId)
     {
         return $query->where('category_id', $categoryId);
+    }
+
+    public function activate(): void
+    {
+        $this->is_active = true;
+    }
+
+    public function deactivate(): void
+    {
+        $this->is_active = false;
+    }
+
+    public function requireApproval(): void
+    {
+        $this->requires_approval = true;
+    }
+
+    public function waiveApproval(): void
+    {
+        $this->requires_approval = false;
+    }
+
+    public function updatePricing(float $basePrice, float $costPrice): void
+    {
+        if ($basePrice < 0 || $costPrice < 0) {
+            throw new InvalidDomainStateException('Preços não podem ser negativos.');
+        }
+
+        if ($costPrice > $basePrice) {
+            throw new InvalidDomainStateException('O preço de custo não pode ser maior que o preço base.');
+        }
+
+        $this->base_price = $basePrice;
+        $this->cost_price = $costPrice;
     }
 }

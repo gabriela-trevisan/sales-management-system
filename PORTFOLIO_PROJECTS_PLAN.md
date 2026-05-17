@@ -62,7 +62,7 @@
 - **Documentação:** Swagger/OpenAPI
 
 **Features Principais:**
-- ✅ Pipeline de vendas com 6 estágios (Prospecção → Discovery → Proposta Técnica → Negociação → Contrato → Ganho)
+- ✅ Pipeline de vendas com 6 estágios definidos (Prospecção → Discovery → Proposta Técnica → Negociação → Contrato → Ganho) — estágios como referência de dados e visíveis no Dashboard; UI Kanban gerenciável listada separadamente abaixo
 - ✅ Dashboard com métricas reais e gráficos (Recharts)
 - ✅ CRUD Completo de Clientes com filtros, paginação, validação e segmentação por setor
 - ✅ Gestão de clientes segmentados por setor (Indústria, Financeiro, Varejo, Saúde, Logística, Educação)
@@ -80,8 +80,8 @@
   - (Drag-and-drop: baixa prioridade, não é foco)
   - Ver detalhes em: `docs/modules/MODULE_2_Dashboard.md` seção "Melhorias Planejadas"
   - Análise de gráficos: `docs/quality/DASHBOARD_CHARTS_ANALYSIS.md`
+- ✅ **CRUD Completo de Propostas** (criação, edição, exclusão, geração de PDF profissional, envio por email com PDF anexo)
 - ⏳ Kanban board com drag-and-drop para pipeline visual
-- ⏳ Gestão de propostas técnicas com PDF
 - ⏳ Cálculo de comissões por tipo de serviço
 - ⏳ RFM Score e segmentação inteligente
 - ⏳ Automação de follow-ups

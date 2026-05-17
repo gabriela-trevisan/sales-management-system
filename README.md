@@ -42,7 +42,7 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 - 🔒 **Segurança de Dados**: CPF/CNPJ, telefones e CEPs armazenados sem formatação (apenas números)
 - 🛡️ **LGPD Compliance**: Laravel Auditing automático (owen-it/laravel-auditing v14.0.0)
 - 👥 **Responsabilidade de Clientes**: Auto-atribuição ao criador, campo protegido contra alteração
-- ⚡ **Performance**: Redis cache, 13 índices de banco, queries 10-100x mais rápidas
+- ⚡ **Performance**: Redis cache, 11 índices de banco, queries 10-100x mais rápidas
 - 🔐 **Segurança**: Rate limiting, token expiration (24h), 6 security headers (OWASP)
 - 🎯 **Qualidade**: PHPStan Level 6, RFC 7807 error handling
 
@@ -57,7 +57,7 @@ Focado em gerenciar projetos customizados, alocação de equipes, propostas téc
 - **Laravel Auditing** 14.0.0 (Audit automático LGPD)
 - **l5-swagger** 10.1 (OpenAPI Documentation)
 - **PHPStan** 2.1.36 (Static Analysis Level 6)
-- **MySQL** 9.0 (13 índices de performance)
+- **MySQL** 9.0 (11 índices de performance)
 - **Redis** 7.2 (Cache de queries)
 - **PHPUnit** 11.x
 
@@ -408,7 +408,7 @@ A documentação completa da API está disponível via Swagger/OpenAPI:
 - ✅ **Type Safety**: TypeScript com inferência automática de tipos via Zod schemas
 - ✅ **Documentação Padronizada**: PHPDoc e JSDoc/TSDoc
 - ✅ **Swagger/OpenAPI**: Documentação completa de todos os endpoints
-- ✅ **Performance**: Redis cache, 13 índices de banco, queries 10-100x mais rápidas
+- ✅ **Performance**: Redis cache, 11 índices de banco, queries 10-100x mais rápidas
 - ✅ **LGPD Compliance**: Laravel Auditing automático (owen-it/laravel-auditing v14.0.0)
 - ✅ **Componentes UI Reutilizáveis**: ConfirmDialog moderno com 3 variantes (danger, warning, info)
 

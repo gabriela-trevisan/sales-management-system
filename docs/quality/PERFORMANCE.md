@@ -38,18 +38,22 @@ docker exec sms_backend vendor/bin/phpstan analyse --memory-limit=512M
 
 ### 2. Database Indexes ✅
 
-**11 Índices Criados:**
+**11 Índices de Performance:**
+
+> 9 criados na migration `add_performance_indexes_v2` + 2 definidos nas migrations originais.
 
 **Customers (4):**
-- `idx_customers_filters` - (status, assigned_to, created_at)
+- `idx_customers_filters` - (status, assigned_to, created_at) — filtros compostos da listagem
 - `idx_customers_document` - Busca por CPF/CNPJ
-- `idx_customers_created_at` - Ordenação
+- `idx_customers_created_at` - Ordenação por data de cadastro
 - `idx_customers_email` - Busca por email
 
-**Opportunities (3):**
+**Opportunities (5):**
+- `(customer_id, status)` - Filtros na listagem de oportunidades *(migration original)*
+- `(assigned_to, status)` - Oportunidades por vendedor *(migration original)*
 - `idx_opportunities_pipeline` - (pipeline_stage_id, assigned_to, created_at)
-- `idx_opportunities_value` - Cálculos de pipeline
-- `idx_opportunities_expected_close` - Ordenação por fechamento
+- `idx_opportunities_value` - Cálculos de valor de pipeline
+- `idx_opportunities_expected_close` - Ordenação por data de fechamento
 
 **Addresses (1):**
 - `idx_addresses_zipcode` - Busca por CEP

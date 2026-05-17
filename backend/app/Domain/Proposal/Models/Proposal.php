@@ -3,7 +3,11 @@
 namespace App\Domain\Proposal\Models;
 
 use App\Domain\Customer\Models\Customer;
-use App\Domain\Product\Models\Product;
+use App\Domain\Proposal\Enums\ProposalStatus;
+use App\Domain\Proposal\Events\ProposalStatusChanged;
+use App\Domain\Proposal\ValueObjects\ProposalLineAmount;
+use App\Domain\Shared\Events\RecordsDomainEvents;
+use App\Domain\Shared\Exceptions\InvalidDomainStateException;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,45 +18,14 @@ use OwenIt\Auditing\Contracts\Auditable;
 use OwenIt\Auditing\Auditable as AuditableTrait;
 
 /**
- * Proposal Model
- * 
- * Representa uma proposta comercial enviada ao cliente.
- * Pode ou não estar vinculada a uma oportunidade (opportunity_id nullable).
- * 
- * @property int $id
- * @property string $number Número único da proposta
- * @property int|null $opportunity_id ID da oportunidade (opcional)
- * @property int $customer_id ID do cliente
- * @property \Carbon\Carbon $issue_date Data de emissão
- * @property \Carbon\Carbon $expiration_date Data de validade
- * @property string|null $notes Observações/notas adicionais
- * @property string $status Status da proposta (draft, sent, approved, rejected, expired)
- * @property float $subtotal Subtotal antes dos descontos
- * @property float $discount Valor total de desconto
- * @property float $total Valor total final
- * @property int $created_by ID do usuário que criou
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon|null $deleted_at
- * 
- * @property-read Customer $customer
- * @property-read User $creator
- * @property-read \Illuminate\Database\Eloquent\Collection<ProposalItem> $items
+ * Aggregate root: proposta comercial e seus itens.
  */
 class Proposal extends Model implements Auditable
 {
-    use HasFactory, SoftDeletes, AuditableTrait;
+    use HasFactory, SoftDeletes, AuditableTrait, RecordsDomainEvents;
 
-    /**
-     * The table associated with the model.
-     */
     protected $table = 'proposals';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<string>
-     */
     protected $fillable = [
         'number',
         'opportunity_id',
@@ -67,11 +40,6 @@ class Proposal extends Model implements Auditable
         'created_by',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'issue_date' => 'date',
         'expiration_date' => 'date',
@@ -83,89 +51,174 @@ class Proposal extends Model implements Auditable
         'deleted_at' => 'datetime',
     ];
 
-    /**
-     * Get the customer that owns the proposal.
-     *
-     * @return BelongsTo<Customer, Proposal>
-     */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    /**
-     * Get the user who created the proposal.
-     *
-     * @return BelongsTo<User, Proposal>
-     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /**
-     * Get the items for the proposal.
-     *
-     * @return HasMany<ProposalItem>
-     */
     public function items(): HasMany
     {
         return $this->hasMany(ProposalItem::class);
     }
 
-    /**
-     * Scope a query to only include proposals with a specific status.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $status
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
+    public function proposalStatus(): ProposalStatus
+    {
+        return ProposalStatus::from($this->status);
+    }
+
     public function scopeByStatus($query, string $status)
     {
         return $query->where('status', $status);
     }
 
-    /**
-     * Scope a query to only include proposals for a specific customer.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $customerId
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeByCustomer($query, int $customerId)
     {
         return $query->where('customer_id', $customerId);
     }
 
-    /**
-     * Scope a query to only include active (not expired) proposals.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeActive($query)
     {
         return $query->where('expiration_date', '>=', now())
-                     ->whereIn('status', ['draft', 'sent']);
+            ->whereIn('status', [ProposalStatus::Draft->value, ProposalStatus::Sent->value]);
     }
 
-    /**
-     * Check if the proposal is expired.
-     *
-     * @return bool
-     */
     public function isExpired(): bool
     {
-        return $this->expiration_date < now() && $this->status !== 'approved';
+        return $this->expiration_date < now()
+            && $this->proposalStatus() !== ProposalStatus::Approved;
+    }
+
+    public function canBeEdited(): bool
+    {
+        return $this->proposalStatus()->isEditable();
     }
 
     /**
-     * Check if the proposal can be edited.
-     *
-     * @return bool
+     * @param array<int, array{product_id: int, description?: string|null, quantity: int, unit_price: float, discount_percentage?: float}> $lines
+     * @return array{subtotal: float, discount: float, total: float}
      */
-    public function canBeEdited(): bool
+    public static function aggregateTotalsFromLines(array $lines): array
     {
-        return in_array($this->status, ['draft', 'sent']);
+        if ($lines === []) {
+            throw new InvalidDomainStateException('A proposta deve conter ao menos um item.');
+        }
+
+        $subtotal = 0.0;
+        $totalDiscount = 0.0;
+
+        foreach ($lines as $line) {
+            $amounts = ProposalLineAmount::fromLine($line);
+            $subtotal += $amounts->subtotal;
+            $totalDiscount += $amounts->discountAmount;
+        }
+
+        return [
+            'subtotal' => $subtotal,
+            'discount' => $totalDiscount,
+            'total' => $subtotal - $totalDiscount,
+        ];
+    }
+
+    /**
+     * Persiste itens no agregado (requer proposta já salva).
+     *
+     * @param array<int, array{product_id: int, description?: string|null, quantity: int, unit_price: float, discount_percentage?: float}> $lines
+     */
+    public function attachItems(array $lines): void
+    {
+        foreach ($lines as $line) {
+            $amounts = ProposalLineAmount::fromLine($line);
+            $this->items()->create(ProposalItem::attributesFromLine($line, $amounts));
+        }
+    }
+
+    /**
+     * Substitui todos os itens e recalcula totais do agregado.
+     *
+     * @param array<int, array{product_id: int, description?: string|null, quantity: int, unit_price: float, discount_percentage?: float}> $lines
+     */
+    public function replaceItems(array $lines): void
+    {
+        $this->ensureEditable();
+
+        $this->fill(self::aggregateTotalsFromLines($lines));
+        $this->items()->delete();
+        $this->attachItems($lines);
+    }
+
+    public function send(): void
+    {
+        $this->applyStatusTransition(ProposalStatus::Sent);
+    }
+
+    public function approve(): void
+    {
+        $this->applyStatusTransition(ProposalStatus::Approved);
+    }
+
+    public function reject(): void
+    {
+        $this->applyStatusTransition(ProposalStatus::Rejected);
+    }
+
+    public function markAsExpired(): void
+    {
+        $this->applyStatusTransition(ProposalStatus::Expired);
+    }
+
+    /**
+     * Atualiza campos do cabeçalho (sem itens). Itens usam replaceItems().
+     *
+     * @param array<string, mixed> $headerData
+     */
+    public function updateHeader(array $headerData): void
+    {
+        $this->ensureEditable();
+
+        if (isset($headerData['status'])) {
+            $this->applyStatusTransition(ProposalStatus::from($headerData['status']));
+            unset($headerData['status']);
+        }
+
+        $this->fill($headerData);
+    }
+
+    private function applyStatusTransition(ProposalStatus $next): void
+    {
+        $current = $this->proposalStatus();
+
+        if (! $current->canTransitionTo($next)) {
+            throw new InvalidDomainStateException(
+                "Não é possível alterar o status de '{$current->value}' para '{$next->value}'."
+            );
+        }
+
+        if ($current === $next) {
+            return;
+        }
+
+        $this->status = $next->value;
+
+        if ($this->exists) {
+            $this->recordDomainEvent(new ProposalStatusChanged(
+                proposalId: (int) $this->id,
+                from: $current,
+                to: $next,
+            ));
+        }
+    }
+
+    private function ensureEditable(): void
+    {
+        if ($this->exists && ! $this->canBeEdited()) {
+            throw new InvalidDomainStateException(
+                'Propostas aprovadas, rejeitadas ou expiradas não podem ser alteradas.'
+            );
+        }
     }
 }

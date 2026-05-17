@@ -2,6 +2,8 @@
 
 namespace App\Domain\Customer\Models;
 
+use App\Domain\Customer\Enums\CustomerStatus;
+use App\Domain\Shared\Exceptions\InvalidDomainStateException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -79,6 +81,44 @@ class Customer extends Model implements Auditable
     public function setPhoneAttribute(?string $value): void
     {
         $this->attributes['phone'] = $value ? preg_replace('/[^0-9]/', '', $value) : null;
+    }
+
+    public function customerStatus(): CustomerStatus
+    {
+        return CustomerStatus::from($this->status);
+    }
+
+    public function activate(): void
+    {
+        $this->status = CustomerStatus::Active->value;
+    }
+
+    public function deactivate(): void
+    {
+        $this->status = CustomerStatus::Inactive->value;
+    }
+
+    public function markAsProspect(): void
+    {
+        $this->status = CustomerStatus::Prospect->value;
+    }
+
+    public function markAsChurned(): void
+    {
+        if ($this->customerStatus() === CustomerStatus::Churned) {
+            return;
+        }
+
+        $this->status = CustomerStatus::Churned->value;
+    }
+
+    public function assignTo(int $userId): void
+    {
+        if ($userId <= 0) {
+            throw new InvalidDomainStateException('O responsável pelo cliente deve ser um usuário válido.');
+        }
+
+        $this->assigned_to = $userId;
     }
 
     /**

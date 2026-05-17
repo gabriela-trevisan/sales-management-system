@@ -543,6 +543,8 @@ public function update(UpdateCustomerRequest $request, int $id): JsonResponse
 
 > O `laravel-auditing` registra `old_values` e `new_values` automaticamente no evento `updated` do Eloquent — não é necessário nenhum código manual.
 
+> **✅ Resolvido em 15/05/2026** — `CustomerController::update()` não captura mais `$oldValues` manualmente. O `laravel-auditing` registra os valores anteriores e novos automaticamente via `$auditInclude` no evento `updated` do Eloquent — sem queries extras.
+
 ---
 
 ## 8. 🟡 Importante — `JsonResponse` serializado no cache Redis
@@ -893,6 +895,8 @@ const api = axios.create({
 });
 ```
 
+> **✅ Resolvido em 15/05/2026** — `src/services/api.ts` usa `import.meta.env.VITE_API_URL` como `baseURL`. O `docker-compose.yml` define `VITE_API_URL=/api` (URL relativa encaminhada pelo Vite proxy ao Nginx internamente), eliminando qualquer referência hardcoded a `localhost`.
+
 ---
 
 ## 13. 🔵 Melhoria — Assimetria entre use cases no Application layer
@@ -1110,6 +1114,8 @@ $limit = $request->query('limit', 10); // sem validação
 $limit = min(max(1, (int) $request->query('limit', 10)), 50);
 ```
 
+> **✅ Resolvido em 15/05/2026** — `DashboardController::recentActivities()` usa `min(max((int) $request->query('limit', '10'), 1), 100)`, capando o limite em 100 registros.
+
 ---
 
 ## 17. 🔵 Melhoria — Eager loading desnecessário em `update()`
@@ -1139,6 +1145,8 @@ public function update(int $id, array $data): Customer
     return $this->findById($id); // recarrega completo com relações para o retorno da API
 }
 ```
+
+> **✅ Resolvido em 15/05/2026** — `EloquentCustomerRepository::update()` usa `Customer::findOrFail($id)` (1 query) em vez de `findById()` (5 queries com eager load de relações). O `findById()` completo é chamado apenas no `return`, garantindo que o response da API contenha os dados com todas as relações.
 
 ---
 
@@ -1373,28 +1381,28 @@ class ValidDocumentRuleTest extends TestCase
 
 ## Resumo de Prioridades
 
-| # | Problema | Severidade | Esforço Estimado |
+| # | Problema | Severidade | Status |
 |---|---|---|---|
-| 1 | Autorização por recurso (IDOR) | 🔴 Crítico | Médio |
-| 2 | NullPointerException no repository | 🔴 Crítico | Baixo |
-| 3 | JWT em localStorage (XSS) | 🔴 Crítico | Alto |
-| 4 | CORS aberto | 🔴 Crítico | Baixo |
-| 5 | Cache key com input não-sanitizado | 🟡 Importante | Baixo |
-| 6 | `per_page` sem limite (DoS) | 🟡 Importante | Baixo |
-| 7 | `$oldValues` código morto | 🟡 Importante | Baixo |
-| 8 | `JsonResponse` no cache Redis | 🟡 Importante | Baixo |
-| 9 | `recentActivities` sem cache | 🟡 Importante | Baixo |
-| 10 | Validação CPF/CNPJ ausente no backend | 🟡 Importante | Médio |
-| 11 | Conflito de headers Nginx/PHP | 🟡 Importante | Baixo |
-| 12 | URL da API hardcoded | 🟡 Importante | Baixo |
-| 13 | Assimetria no Application layer | 🔵 Melhoria | Médio |
-| 14 | `AuthController` fora da camada Presentation | 🔵 Melhoria | Baixo |
-| 15 | Email síncrono bloqueia request | 🔵 Melhoria | Médio |
-| 16 | `limit` sem cap em activities | 🔵 Melhoria | Baixo |
-| 17 | Eager loading excessivo em update | 🔵 Melhoria | Baixo |
-| 18 | Parse inseguro de localStorage | 🔵 Melhoria | Baixo |
-| 19 | `isRemoteEnabled` no DomPDF (SSRF) | 🔵 Melhoria | Baixo |
-| 20 | Ausência de testes | ⬜ Estrutural | Alto |
+| 1 | Autorização por recurso (IDOR) | 🔴 Crítico | ✅ Resolvido |
+| 2 | NullPointerException no repository | 🔴 Crítico | ✅ Resolvido |
+| 3 | JWT em localStorage (XSS) | 🔴 Crítico | ✅ Resolvido |
+| 4 | CORS aberto | 🔴 Crítico | ✅ Resolvido |
+| 5 | Cache key com input não-sanitizado | 🟡 Importante | ⬛ Pendente |
+| 6 | `per_page` sem limite (DoS) | 🟡 Importante | ⬛ Pendente |
+| 7 | `$oldValues` código morto | 🟡 Importante | ✅ Resolvido |
+| 8 | `JsonResponse` no cache Redis | 🟡 Importante | ⬛ Pendente |
+| 9 | `recentActivities` sem cache | 🟡 Importante | ⬛ Pendente |
+| 10 | Validação CPF/CNPJ ausente no backend | 🟡 Importante | ⬛ Pendente |
+| 11 | Conflito de headers Nginx/PHP | 🟡 Importante | ⬛ Pendente |
+| 12 | URL da API hardcoded | 🟡 Importante | ✅ Resolvido |
+| 13 | Assimetria no Application layer | 🔵 Melhoria | ⬛ Pendente |
+| 14 | `AuthController` fora da camada Presentation | 🔵 Melhoria | ⬛ Pendente |
+| 15 | Email síncrono bloqueia request | 🔵 Melhoria | ⬛ Pendente |
+| 16 | `limit` sem cap em activities | 🔵 Melhoria | ✅ Resolvido |
+| 17 | Eager loading excessivo em update | 🔵 Melhoria | ✅ Resolvido |
+| 18 | Parse inseguro de localStorage | 🔵 Melhoria | ⬛ Pendente |
+| 19 | `isRemoteEnabled` no DomPDF (SSRF) | 🔵 Melhoria | ⬛ Pendente |
+| 20 | Ausência de testes | ⬜ Estrutural | ⬛ Pendente |
 
 ---
 

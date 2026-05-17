@@ -4,6 +4,9 @@ namespace App\Domain\Customer\Models;
 
 use App\Domain\Customer\Enums\CustomerStatus;
 use App\Domain\Shared\Exceptions\InvalidDomainStateException;
+use App\Domain\Shared\ValueObjects\Document;
+use App\Domain\Shared\ValueObjects\Email;
+use App\Domain\Shared\ValueObjects\Phone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -60,27 +63,74 @@ class Customer extends Model implements Auditable
      */
     public function setDocumentAttribute(string $value): void
     {
-        $this->attributes['document'] = preg_replace('/[^0-9]/', '', $value);
+        $this->attributes['document'] = Document::fromString($value)->value();
     }
 
-    /**
-     * Normaliza email antes de salvar.
-     * 
-     * Converte para minúsculas e remove espaços.
-     */
     public function setEmailAttribute(string $value): void
     {
-        $this->attributes['email'] = strtolower(trim($value));
+        $this->attributes['email'] = Email::fromString($value)->value();
+    }
+
+    public function setPhoneAttribute(?string $value): void
+    {
+        $phone = Phone::fromString($value);
+        $this->attributes['phone'] = $phone?->value();
+    }
+
+    public function documentValue(): Document
+    {
+        return Document::fromString($this->document);
+    }
+
+    public function emailValue(): Email
+    {
+        return Email::fromString($this->email);
+    }
+
+    public function phoneValue(): ?Phone
+    {
+        return Phone::fromString($this->phone);
     }
 
     /**
-     * Remove formatação do telefone antes de salvar.
-     * 
-     * Armazena apenas números (fixo: 10 dígitos, celular: 11 dígitos).
+     * Atualiza dados de perfil com validação via Value Objects.
      */
-    public function setPhoneAttribute(?string $value): void
+    public function updateProfile(
+        ?string $name = null,
+        ?Document $document = null,
+        ?Email $email = null,
+    ): void {
+        if ($name !== null) {
+            $this->name = $name;
+        }
+
+        if ($document !== null) {
+            $this->document = $document->value();
+        }
+
+        if ($email !== null) {
+            $this->email = $email->value();
+        }
+    }
+
+    public function updatePhone(?Phone $phone): void
     {
-        $this->attributes['phone'] = $value ? preg_replace('/[^0-9]/', '', $value) : null;
+        $this->phone = $phone?->value();
+    }
+
+    public function assignSegment(?int $segmentId): void
+    {
+        $this->segment_id = $segmentId;
+    }
+
+    public function applyStatus(CustomerStatus $status): void
+    {
+        match ($status) {
+            CustomerStatus::Active => $this->activate(),
+            CustomerStatus::Inactive => $this->deactivate(),
+            CustomerStatus::Prospect => $this->markAsProspect(),
+            CustomerStatus::Churned => $this->markAsChurned(),
+        };
     }
 
     public function customerStatus(): CustomerStatus

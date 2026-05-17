@@ -2,12 +2,14 @@
 
 namespace App\Domain\Proposal\ValueObjects;
 
+use App\Domain\Shared\ValueObjects\Money;
+
 final readonly class ProposalLineAmount
 {
     public function __construct(
-        public float $subtotal,
-        public float $discountAmount,
-        public float $total,
+        public Money $subtotal,
+        public Money $discountAmount,
+        public Money $total,
     ) {}
 
     /**
@@ -20,24 +22,35 @@ final readonly class ProposalLineAmount
         $discountPercentage = (float) ($line['discount_percentage'] ?? 0);
 
         if ($quantity <= 0) {
-            throw new \InvalidArgumentException('A quantidade do item deve ser maior que zero.');
+            throw new \App\Domain\Shared\Exceptions\DomainArgumentException('A quantidade do item deve ser maior que zero.');
         }
 
         if ($unitPrice < 0) {
-            throw new \InvalidArgumentException('O preço unitário não pode ser negativo.');
+            throw new \App\Domain\Shared\Exceptions\DomainArgumentException('O preço unitário não pode ser negativo.');
         }
 
-        if ($discountPercentage < 0 || $discountPercentage > 100) {
-            throw new \InvalidArgumentException('O desconto percentual deve estar entre 0 e 100.');
-        }
-
-        $subtotal = $quantity * $unitPrice;
-        $discountAmount = $subtotal * ($discountPercentage / 100);
+        $subtotal = new Money($quantity * $unitPrice);
+        $discountAmount = $subtotal->discountAmount($discountPercentage);
 
         return new self(
             subtotal: $subtotal,
             discountAmount: $discountAmount,
-            total: $subtotal - $discountAmount,
+            total: $subtotal->subtract($discountAmount),
         );
+    }
+
+    public function subtotalAsFloat(): float
+    {
+        return $this->subtotal->toFloat();
+    }
+
+    public function discountAmountAsFloat(): float
+    {
+        return $this->discountAmount->toFloat();
+    }
+
+    public function totalAsFloat(): float
+    {
+        return $this->total->toFloat();
     }
 }

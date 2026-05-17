@@ -15,14 +15,14 @@ class ProposalLineAmountTest extends TestCase
             'discount_percentage' => 10,
         ]);
 
-        $this->assertSame(2500.0, $amounts->subtotal);
-        $this->assertSame(250.0, $amounts->discountAmount);
-        $this->assertSame(2250.0, $amounts->total);
+        $this->assertSame(2500.0, $amounts->subtotalAsFloat());
+        $this->assertSame(250.0, $amounts->discountAmountAsFloat());
+        $this->assertSame(2250.0, $amounts->totalAsFloat());
     }
 
     public function test_rejects_invalid_discount(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(\App\Domain\Shared\Exceptions\DomainArgumentException::class);
 
         ProposalLineAmount::fromLine([
             'quantity' => 1,

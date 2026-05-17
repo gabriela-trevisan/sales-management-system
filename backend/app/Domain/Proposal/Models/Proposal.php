@@ -113,8 +113,8 @@ class Proposal extends Model implements Auditable
 
         foreach ($lines as $line) {
             $amounts = ProposalLineAmount::fromLine($line);
-            $subtotal += $amounts->subtotal;
-            $totalDiscount += $amounts->discountAmount;
+            $subtotal += $amounts->subtotalAsFloat();
+            $totalDiscount += $amounts->discountAmountAsFloat();
         }
 
         return [

@@ -57,7 +57,7 @@ class ProposalItem extends Model
             'quantity' => (int) $line['quantity'],
             'unit_price' => $line['unit_price'],
             'discount_percentage' => $line['discount_percentage'] ?? 0,
-            'total' => $amounts->total,
+            'total' => $amounts->totalAsFloat(),
         ];
     }
 
@@ -72,12 +72,12 @@ class ProposalItem extends Model
 
     public function getDiscountAmount(): float
     {
-        return $this->lineAmount()->discountAmount;
+        return $this->lineAmount()->discountAmountAsFloat();
     }
 
     public function getSubtotal(): float
     {
-        return $this->lineAmount()->subtotal;
+        return $this->lineAmount()->subtotalAsFloat();
     }
 
     /**
@@ -85,6 +85,6 @@ class ProposalItem extends Model
      */
     public function calculateTotal(): void
     {
-        $this->total = $this->lineAmount()->total;
+        $this->total = $this->lineAmount()->totalAsFloat();
     }
 }

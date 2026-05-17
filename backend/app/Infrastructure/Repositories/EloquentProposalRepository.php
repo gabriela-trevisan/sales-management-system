@@ -91,6 +91,14 @@ class EloquentProposalRepository implements ProposalRepositoryInterface
         });
     }
 
+    public function save(Proposal $proposal): Proposal
+    {
+        $proposal->save();
+        $this->dispatchDomainEvents($proposal);
+
+        return $proposal->fresh(['customer', 'creator', 'items.product']) ?? $proposal;
+    }
+
     public function delete(int $id): bool
     {
         $proposal = Proposal::findOrFail($id);

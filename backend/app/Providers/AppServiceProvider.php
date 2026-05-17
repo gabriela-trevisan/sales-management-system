@@ -4,8 +4,12 @@ namespace App\Providers;
 
 use App\Domain\Customer\Models\Customer;
 use App\Domain\Customer\Policies\CustomerPolicy;
+use App\Domain\Proposal\Events\ProposalStatusChanged;
 use App\Domain\Proposal\Models\Proposal;
 use App\Domain\Proposal\Policies\ProposalPolicy;
+use App\Infrastructure\Listeners\LogProposalStatusChanged;
+use App\Infrastructure\Listeners\NotifyProposalStatusChanged;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,5 +33,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Customer::class, CustomerPolicy::class);
         Gate::policy(Proposal::class, ProposalPolicy::class);
+
+        Event::listen(ProposalStatusChanged::class, LogProposalStatusChanged::class);
+        Event::listen(ProposalStatusChanged::class, NotifyProposalStatusChanged::class);
     }
 }

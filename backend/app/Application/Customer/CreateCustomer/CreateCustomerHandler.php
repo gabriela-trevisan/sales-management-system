@@ -4,7 +4,7 @@ namespace App\Application\Customer\CreateCustomer;
 
 use App\Domain\Customer\Contracts\CustomerRepositoryInterface;
 use App\Domain\Customer\Models\Customer;
-use Illuminate\Support\Facades\Validator;
+use App\Domain\Shared\ValueObjects\Document;
 use Illuminate\Validation\ValidationException;
 
 class CreateCustomerHandler
@@ -20,9 +20,11 @@ class CreateCustomerHandler
      */
     public function handle(CreateCustomerCommand $command): Customer
     {
-        if ($this->customerRepository->findByDocument($command->document)) {
+        $document = Document::fromString($command->document);
+
+        if ($this->customerRepository->findByDocument($document->value())) {
             throw ValidationException::withMessages([
-                'document' => ['Cliente com este documento já existe.']
+                'document' => ['Cliente com este documento já existe.'],
             ]);
         }
 

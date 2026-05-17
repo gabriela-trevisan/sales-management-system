@@ -4,6 +4,8 @@ namespace App\Presentation\Http\Controllers\API\Customer;
 
 use App\Application\Customer\CreateCustomer\CreateCustomerCommand;
 use App\Application\Customer\CreateCustomer\CreateCustomerHandler;
+use App\Application\Customer\UpdateCustomer\UpdateCustomerCommand;
+use App\Application\Customer\UpdateCustomer\UpdateCustomerHandler;
 use App\Domain\Customer\Contracts\CustomerRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Presentation\Http\Requests\Customer\CreateCustomerRequest;
@@ -18,7 +20,8 @@ class CustomerController extends Controller
 {
     public function __construct(
         private CustomerRepositoryInterface $customerRepository,
-        private CreateCustomerHandler $createCustomerHandler
+        private CreateCustomerHandler $createCustomerHandler,
+        private UpdateCustomerHandler $updateCustomerHandler,
     ) {}
 
     #[OA\Get(
@@ -274,10 +277,21 @@ class CustomerController extends Controller
 
         $this->authorize('update', $customer);
 
-        $data = $request->validated();
-        unset($data['assigned_to']);
+        $validated = $request->validated();
 
-        $customer = $this->customerRepository->update($id, $data);
+        $command = new UpdateCustomerCommand(
+            id: $id,
+            name: $validated['name'] ?? null,
+            document: $validated['document'] ?? null,
+            email: $validated['email'] ?? null,
+            phone: $validated['phone'] ?? null,
+            hasPhone: array_key_exists('phone', $validated),
+            status: $validated['status'] ?? null,
+            segmentId: $validated['segment_id'] ?? null,
+            hasSegmentId: array_key_exists('segment_id', $validated),
+        );
+
+        $customer = $this->updateCustomerHandler->handle($command);
 
         // invalida cache do dashboard pois métricas agregadas do período podem ter mudado
         Cache::forget('dashboard.metrics');

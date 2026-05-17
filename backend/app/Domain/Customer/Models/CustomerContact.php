@@ -2,6 +2,8 @@
 
 namespace App\Domain\Customer\Models;
 
+use App\Domain\Shared\ValueObjects\Email;
+use App\Domain\Shared\ValueObjects\Phone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -27,17 +29,15 @@ class CustomerContact extends Model
      */
     public function setEmailAttribute(?string $value): void
     {
-        $this->attributes['email'] = strtolower(trim($value));
+        $this->attributes['email'] = $value !== null && $value !== ''
+            ? Email::fromString($value)->value()
+            : null;
     }
 
-    /**
-     * Remove formatação do telefone antes de salvar.
-     * 
-     * Armazena apenas números.
-     */
     public function setPhoneAttribute(?string $value): void
     {
-        $this->attributes['phone'] = $value ? preg_replace('/[^0-9]/', '', $value) : null;
+        $phone = Phone::fromString($value);
+        $this->attributes['phone'] = $phone?->value();
     }
 
     /**

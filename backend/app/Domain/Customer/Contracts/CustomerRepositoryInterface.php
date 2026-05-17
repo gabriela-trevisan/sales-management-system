@@ -43,6 +43,11 @@ interface CustomerRepositoryInterface
     public function update(int $id, array $data): Customer;
 
     /**
+     * Persist domain changes on an existing customer.
+     */
+    public function save(Customer $customer): Customer;
+
+    /**
      * Delete a customer
      */
     public function delete(int $id): bool;

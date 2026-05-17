@@ -45,6 +45,14 @@ interface ProposalRepositoryInterface
     public function update(int $id, array $data);
 
     /**
+     * Persist domain changes on an existing proposal and dispatch domain events.
+     *
+     * @param \App\Domain\Proposal\Models\Proposal $proposal
+     * @return \App\Domain\Proposal\Models\Proposal
+     */
+    public function save(\App\Domain\Proposal\Models\Proposal $proposal);
+
+    /**
      * Delete a proposal (soft delete).
      *
      * @param int $id

@@ -2,30 +2,27 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Proposal\Models\Proposal;
+use App\Domain\Proposal\Models\ProposalItem;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class ProposalSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Busca opportunities se a tabela existir e tiver dados
         $opportunities = DB::table('opportunities')->exists() ? DB::table('opportunities')->get() : collect();
         $customers = DB::table('customers')->get();
         $users = User::all();
         $products = DB::table('products')->get();
 
-        // Garante que temos dados suficientes
         if ($customers->count() < 3 || $products->count() < 3) {
             $this->command->error('É necessário ter pelo menos 3 clientes e 3 produtos para popular as propostas.');
+
             return;
         }
 
-        // Usa índices válidos baseados no que realmente temos
         $maxProductIndex = $products->count() - 1;
         $maxCustomerIndex = $customers->count() - 1;
 
@@ -40,8 +37,8 @@ class ProposalSeeder extends Seeder
                 'status' => 'sent',
                 'created_by' => $users->random()->id,
                 'items' => [
-                    ['product_id' => $products[min(1, $maxProductIndex)]->id, 'description' => null, 'quantity' => 40, 'unit_price' => 250.00, 'discount' => 10],
-                    ['product_id' => $products[min(2, $maxProductIndex)]->id, 'description' => null, 'quantity' => 80, 'unit_price' => 180.00, 'discount' => 10],
+                    ['product_id' => $products[min(1, $maxProductIndex)]->id, 'description' => null, 'quantity' => 40, 'unit_price' => 250.00, 'discount_percentage' => 10],
+                    ['product_id' => $products[min(2, $maxProductIndex)]->id, 'description' => null, 'quantity' => 80, 'unit_price' => 180.00, 'discount_percentage' => 10],
                 ],
             ],
             [
@@ -54,7 +51,7 @@ class ProposalSeeder extends Seeder
                 'status' => 'approved',
                 'created_by' => $users->random()->id,
                 'items' => [
-                    ['product_id' => $products[0]->id, 'description' => null, 'quantity' => 1, 'unit_price' => 80000.00, 'discount' => 5],
+                    ['product_id' => $products[0]->id, 'description' => null, 'quantity' => 1, 'unit_price' => 80000.00, 'discount_percentage' => 5],
                 ],
             ],
             [
@@ -67,12 +64,11 @@ class ProposalSeeder extends Seeder
                 'status' => 'sent',
                 'created_by' => $users->random()->id,
                 'items' => [
-                    ['product_id' => $products[0]->id, 'description' => 'Consultoria especializada', 'quantity' => 80, 'unit_price' => 350.00, 'discount' => 0],
+                    ['product_id' => $products[0]->id, 'description' => 'Consultoria especializada', 'quantity' => 80, 'unit_price' => 350.00, 'discount_percentage' => 0],
                 ],
             ],
         ];
 
-        // Adiciona mais propostas se tivermos clientes e produtos suficientes
         if ($maxCustomerIndex >= 3 && $maxProductIndex >= 5) {
             $proposals[] = [
                 'number' => 'PROP-2026-004',
@@ -84,8 +80,8 @@ class ProposalSeeder extends Seeder
                 'status' => 'draft',
                 'created_by' => $users->random()->id,
                 'items' => [
-                    ['product_id' => $products[3]->id, 'description' => null, 'quantity' => 6, 'unit_price' => 35000.00, 'discount' => 8],
-                    ['product_id' => $products[4]->id, 'description' => null, 'quantity' => 40, 'unit_price' => 220.00, 'discount' => 0],
+                    ['product_id' => $products[3]->id, 'description' => null, 'quantity' => 6, 'unit_price' => 35000.00, 'discount_percentage' => 8],
+                    ['product_id' => $products[4]->id, 'description' => null, 'quantity' => 40, 'unit_price' => 220.00, 'discount_percentage' => 0],
                 ],
             ];
         }
@@ -101,57 +97,36 @@ class ProposalSeeder extends Seeder
                 'status' => 'expired',
                 'created_by' => $users->random()->id,
                 'items' => [
-                    ['product_id' => $products[min(1, $maxProductIndex)]->id, 'description' => null, 'quantity' => 120, 'unit_price' => 250.00, 'discount' => 12],
+                    ['product_id' => $products[min(1, $maxProductIndex)]->id, 'description' => null, 'quantity' => 120, 'unit_price' => 250.00, 'discount_percentage' => 12],
                 ],
             ];
         }
 
         foreach ($proposals as $proposalData) {
-            $subtotal = 0;
-            $totalDiscount = 0;
-
-            // Calcular totais
-            foreach ($proposalData['items'] as $item) {
-                $itemSubtotal = $item['unit_price'] * $item['quantity'];
-                $itemDiscount = $itemSubtotal * ($item['discount'] / 100);
-                $subtotal += $itemSubtotal;
-                $totalDiscount += $itemDiscount;
-            }
-
-            $total = $subtotal - $totalDiscount;
-
             if (DB::table('proposals')->where('number', $proposalData['number'])->exists()) {
                 continue;
             }
 
+            $items = $proposalData['items'];
+            unset($proposalData['items']);
+
+            $totals = Proposal::aggregateTotalsFromLines($items);
+
             $proposalId = DB::table('proposals')->insertGetId([
-                'number' => $proposalData['number'],
-                'opportunity_id' => $proposalData['opportunity_id'],
-                'customer_id' => $proposalData['customer_id'],
-                'issue_date' => $proposalData['issue_date'],
-                'expiration_date' => $proposalData['expiration_date'],
-                'notes' => $proposalData['notes'],
-                'status' => $proposalData['status'],
-                'subtotal' => $subtotal,
-                'discount' => $totalDiscount,
-                'total' => $total,
-                'created_by' => $proposalData['created_by'],
+                ...$proposalData,
+                'subtotal' => $totals['subtotal'],
+                'discount' => $totals['discount'],
+                'total' => $totals['total'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
 
-            // Adicionar itens da proposta
-            foreach ($proposalData['items'] as $item) {
-                $itemTotal = ($item['unit_price'] * $item['quantity']) * (1 - $item['discount'] / 100);
+            foreach ($items as $line) {
+                $attributes = ProposalItem::attributesFromLine($line);
 
                 DB::table('proposal_items')->insert([
                     'proposal_id' => $proposalId,
-                    'product_id' => $item['product_id'],
-                    'description' => $item['description'] ?? null,
-                    'quantity' => $item['quantity'],
-                    'unit_price' => $item['unit_price'],
-                    'discount_percentage' => $item['discount'],
-                    'total' => $itemTotal,
+                    ...$attributes,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

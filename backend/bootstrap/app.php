@@ -1,5 +1,6 @@
 <?php
 
+use App\Domain\Shared\Exceptions\InvalidDomainStateException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -43,6 +44,33 @@ return Application::configure(basePath: dirname(__DIR__))
          * }
          */
         
+        // Domain rule violations (422)
+        $exceptions->render(function (InvalidDomainStateException $e, Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'type' => url('/docs/errors/domain-rule-violation'),
+                    'title' => 'Domain Rule Violation',
+                    'status' => 422,
+                    'detail' => $e->getMessage(),
+                    'instance' => $request->path(),
+                    'timestamp' => now()->toIso8601String(),
+                ], 422);
+            }
+        });
+
+        $exceptions->render(function (\App\Domain\Shared\Exceptions\DomainArgumentException $e, Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'type' => url('/docs/errors/domain-argument'),
+                    'title' => 'Invalid Domain Value',
+                    'status' => 422,
+                    'detail' => $e->getMessage(),
+                    'instance' => $request->path(),
+                    'timestamp' => now()->toIso8601String(),
+                ], 422);
+            }
+        });
+
         // Validation Errors (422)
         $exceptions->render(function (ValidationException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson()) {

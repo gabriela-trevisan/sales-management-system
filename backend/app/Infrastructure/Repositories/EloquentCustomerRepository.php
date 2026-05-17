@@ -4,6 +4,7 @@ namespace App\Infrastructure\Repositories;
 
 use App\Domain\Customer\Contracts\CustomerRepositoryInterface;
 use App\Domain\Customer\Models\Customer;
+use App\Domain\Shared\ValueObjects\Document;
 
 class EloquentCustomerRepository implements CustomerRepositoryInterface
 {
@@ -14,7 +15,13 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
 
     public function findByDocument(string $document): ?Customer
     {
-        return Customer::where('document', $document)->first();
+        try {
+            $normalized = Document::fromString($document)->value();
+        } catch (\App\Domain\Shared\Exceptions\DomainArgumentException) {
+            return null;
+        }
+
+        return Customer::where('document', $normalized)->first();
     }
 
     /**
@@ -69,11 +76,17 @@ class EloquentCustomerRepository implements CustomerRepositoryInterface
      */
     public function update(int $id, array $data): Customer
     {
-        // findOrFail lança ModelNotFoundException → handler global retorna 404
         $customer = Customer::findOrFail($id);
         $customer->update($data);
 
         return $this->findById($id) ?? $customer;
+    }
+
+    public function save(Customer $customer): Customer
+    {
+        $customer->save();
+
+        return $this->findById((int) $customer->id) ?? $customer;
     }
 
     public function delete(int $id): bool
